@@ -1,18 +1,9 @@
-workflows:
-  yarn-node-build:
-    name: Build (use Yarn)
-    environment:
-      node: "20"
-    scripts:
-      - name: Install dependencies (use Yarn)
-        script: |
-          cd $CM_BUILD_DIR
-          yarn install --check-files
-      - name: Build app
-        script: |
-          cd $CM_BUILD_DIR
-          yarn build
-    artifacts:
-      - .next/**
-      - out/**
-      - public/**
+scripts:
+  - name: Install dependencies (use Yarn)
+    script: |
+      cd $CM_BUILD_DIR
+      yarn install --frozen-lockfile || yarn install
+  - name: Build app
+    script: |
+      cd $CM_BUILD_DIR
+      yarn build
