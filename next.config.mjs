@@ -8,13 +8,14 @@ const nextConfig = withPWA({
   },
   eslint: {
     ignoreDuringBuilds: true,
+mport withPWA from "next-pwa";
+/** @type {import('next').NextConfig} */
+const nextConfig = withPWA({
+  pwa: {
+    dest: "public",
+    register: true,
+    skipWaiting: true,
   },
-  typescript: {
-    ignoreBuildErrors: true,
-  },
-  images: {
-    unoptimized: true,
-  },
-});
+  eslint: {
+    ignoreDuringBuilds: true,
 
-export default nextConfig;
