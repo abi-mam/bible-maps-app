@@ -5,7 +5,6 @@ workflows:
       node: 18
     scripts:
       - name: Install dependencies
-        # Use immutable mode to avoid deprecated frozen-lockfile
         script: yarn install --immutable
       - name: Build Next.js app
         script: yarn build
