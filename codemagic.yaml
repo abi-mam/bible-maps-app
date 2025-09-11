@@ -5,11 +5,12 @@ workflows:
       node: 18
     scripts:
       - name: Install dependencies
-        script: pnpm install --frozen-lockfile
+        script: yarn install --frozen-lockfile
       - name: Build Next.js app
-        script: pnpm build
+        script: yarn build
       - name: Export static site
-        script: pnpm export
+        script: yarn export
     artifacts:
       - out/**
+
 
