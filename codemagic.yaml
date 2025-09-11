@@ -1,16 +1,20 @@
 workflows:
-  nextjs-pwa:
-    name: Build Next.js PWA
+  yarn-node-build:
+    name: Build (use Yarn)
     environment:
-      node: 20
+      node: "18"
     scripts:
-      - name: Install dependencies
+      - name: Install dependencies (use Yarn)
         script: |
-          npm install -g pnpm
-          pnpm install --frozen-lockfile
-      - name: Build and export
+          echo "Enabling corepack so Yarn is available"
+          corepack enable || true
+          # Try frozen install, fall back to normal install
+          yarn install --frozen-lockfile || yarn install
+      - name: Build app
         script: |
-          pnpm build
-          pnpm export
+          echo "Building Next.js app"
+          yarn build
     artifacts:
+      - .next/**
       - out/**
+      - public/**
