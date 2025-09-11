@@ -4,14 +4,14 @@ workflows:
     environment:
       node: "20"
     scripts:
-  - name: Install dependencies (use Yarn)
-    script: |
-      cd $CM_BUILD_DIR
-      yarn install --frozen-lockfile || yarn install
-  - name: Build app
-    script: |
-      cd $CM_BUILD_DIR
-      yarn build
+      - name: Install dependencies (use Yarn)
+        script: |
+          cd $CM_BUILD_DIR
+          yarn install --frozen-lockfile || yarn install
+      - name: Build app
+        script: |
+          cd $CM_BUILD_DIR
+          yarn build
     artifacts:
       - .next/**
       - out/**
