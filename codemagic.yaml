@@ -2,17 +2,15 @@ workflows:
   yarn-node-build:
     name: Build (use Yarn)
     environment:
-      node: "18"
+      node: "20"
     scripts:
       - name: Install dependencies (use Yarn)
         script: |
-          echo "Enabling corepack so Yarn is available"
-          corepack enable || true
-          # Try frozen install, fall back to normal install
-          yarn install --frozen-lockfile || yarn install
+          cd $CM_BUILD_DIR
+          yarn install --check-files
       - name: Build app
         script: |
-          echo "Building Next.js app"
+          cd $CM_BUILD_DIR
           yarn build
     artifacts:
       - .next/**
