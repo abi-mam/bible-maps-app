@@ -13,6 +13,8 @@ const nextConfig = {
   images: {
     unoptimized: true,
   },
+  // 👇 this is the new way instead of next export
+  output: "export",
 };
 
 export default withPWA({
@@ -20,4 +22,3 @@ export default withPWA({
   register: true,
   skipWaiting: true,
 })(nextConfig);
-
