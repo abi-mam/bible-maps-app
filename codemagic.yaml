@@ -4,6 +4,8 @@ workflows:
     environment:
       node: 18
     scripts:
+      - name: Force standalone Yarn project
+        script: export YARN_IGNORE_PATH=1
       - name: Install dependencies
         script: yarn install --immutable
       - name: Build Next.js app
@@ -12,5 +14,6 @@ workflows:
         script: yarn export
     artifacts:
       - out/**
+
 
 
