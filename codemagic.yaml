@@ -1,0 +1,16 @@
+workflows:
+  web-app:
+    name: Bible Maps Web App
+    environment:
+      node: 18
+    scripts:
+      - name: Install pnpm
+        script: npm i -g pnpm
+      - name: Install dependencies
+        script: pnpm install --frozen-lockfile
+      - name: Build Next.js app
+        script: pnpm build
+      - name: Export static site
+        script: pnpm export
+    artifacts:
+      - out/**
