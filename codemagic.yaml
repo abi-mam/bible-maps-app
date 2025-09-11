@@ -4,8 +4,6 @@ workflows:
     environment:
       node: 18
     scripts:
-      - name: Install pnpm
-        script: npm i -g pnpm
       - name: Install dependencies
         script: pnpm install --frozen-lockfile
       - name: Build Next.js app
@@ -14,3 +12,4 @@ workflows:
         script: pnpm export
     artifacts:
       - out/**
+
