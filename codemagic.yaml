@@ -1,19 +1,16 @@
 workflows:
-  web-app:
-    name: Bible Maps Web App
+  nextjs-pwa:
+    name: Build Next.js PWA
     environment:
-      node: 18
+      node: 20
     scripts:
-      - name: Force standalone Yarn project
-        script: export YARN_IGNORE_PATH=1
       - name: Install dependencies
-        script: yarn install --immutable
-      - name: Build Next.js app
-        script: yarn build
-      - name: Export static site
-        script: yarn export
+        script: |
+          npm install -g pnpm
+          pnpm install --frozen-lockfile
+      - name: Build and export
+        script: |
+          pnpm build
+          pnpm export
     artifacts:
       - out/**
-
-
-
