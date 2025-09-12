@@ -1,57 +1,99 @@
 workflows:
   android-debug:
-    name: Build Android Debug APK
-    max_build_duration: 60
+    name: Android Debug Build
+    max_build_duration: 30
     environment:
-      node: "20"
-      java: "17"
+      flutter: stable
       vars:
-        PACKAGE_NAME: "com.abi.biblemaps"
+        PACKAGE_NAME: "com.example.biblemaps"
     scripts:
-      - name: Install dependencies
-        script: |
-          yarn install --immutable
-      - name: Build Next.js static app
-        script: |
-          rm -rf .next out
-          yarn build
-      - name: Install Capacitor + Android
-        script: |
-          npm install @capacitor/core @capacitor/cli @capacitor/android
-          npx cap add android || true
-      - name: Sync web build to Android
-        script: |
-          npx cap sync android
       - name: Build Debug APK
-        working_directory: android
-        script: ./gradlew assembleDebug
+        script: |
+          cd bible-maps-appc-pwa-ready
+          npx cap sync android
+          cd android
+          ./gradlew assembleDebug
     artifacts:
       - android/app/build/outputs/**/*.apk
 
   android-release:
-    name: Build Android Release APK
+    name: Android Release Build
+    max_build_duration: 30
+    environment:
+      flutter: stable
+      vars:
+        PACKAGE_NAME: "com.example.biblemaps"
+        KEYSTORE_PATH: /tmp/keystore.keystore
+        KEYSTORE_PASSWORD: $KEYSTORE_PASSWORD
+        KEY_ALIAS: $KEY_ALIAS
+        KEY_PASSWORD: $KEY_PASSWORD
+    scripts:
+      - name: Setup Keystore
+        script: |
+          if [ -n "$CM_KEYSTORE" ]; then
+            echo $CM_KEYSTORE | base64 --decode > $KEYSTORE_PATH
+          else
+            echo "⚠️ No keystore provided. Build will fail for release."
+          fi
+      - name: Build Signed Release APK
+        script: |
+          cd bible-maps-appc-pwa-ready
+          npx cap sync android
+          cd android
+          ./gradlew assembleRelease \
+            -Pandroid.injected.signing.store.file=$KEYSTORE_PATH \
+            -Pandroid.injected.signing.store.password=$KEYSTORE_PASSWORD \
+            -Pandroid.injected.signing.key.alias=$KEY_ALIAS \
+            -Pandroid.injected.signing.key.password=$KEY_PASSWORD
+    artifacts:
+      - android/app/build/outputs/**/*.apk
+
+  ios-debug:
+    name: iOS Debug Build
     max_build_duration: 60
     environment:
-      node: "20"
-      java: "17"
-      vars:
-        PACKAGE_NAME: "com.abi.biblemaps"
+      xcode: latest
+      cocoapods: default
     scripts:
-      - name: Install dependencies
+      - name: Build iOS Debug (Simulator)
         script: |
-          yarn install --immutable
-      - name: Build Next.js static app
+          cd bible-maps-appc-pwa-ready
+          npx cap sync ios
+          cd ios
+          xcodebuild \
+            -workspace App/App.xcworkspace \
+            -scheme App \
+            -sdk iphonesimulator \
+            -configuration Debug \
+            build
+    artifacts:
+      - ios/build/**/*.app
+
+  ios-release:
+    name: iOS Release Build
+    max_build_duration: 60
+    environment:
+      xcode: latest
+      cocoapods: default
+      vars:
+        APPLE_TEAM_ID: $APPLE_TEAM_ID
+        BUNDLE_ID: "com.example.biblemaps"
+        CODE_SIGN_IDENTITY: "Apple Distribution"
+        PROVISIONING_PROFILE_UUID: $PROVISIONING_PROFILE_UUID
+    scripts:
+      - name: Build iOS Release
         script: |
-          rm -rf .next out
-          yarn build
-      - name: Install Capacitor + Android
-        script: |
-         npm install @capacitor/core @capacitor/cli @capacitor/android 
-         npx cap add android || true 
-      - name: Sync web build to Android
-        script: | 
-          npx cap sync android 
-      - name: Build Release APK
-        working_directory: android
-        script: ./gradlew assembleRelease
-    artifacts: - android/app/build/outputs/**/*.apk
+          cd bible-maps-appc-pwa-ready
+          npx cap sync ios
+          cd ios
+          xcodebuild \
+            -workspace App/App.xcworkspace \
+            -scheme App \
+            -sdk iphoneos \
+            -configuration Release \
+            -allowProvisioningUpdates \
+            DEVELOPMENT_TEAM=$APPLE_TEAM_ID \
+            CODE_SIGN_IDENTITY="$CODE_SIGN_IDENTITY" \
+            PROVISIONING_PROFILE_SPECIFIER=$PROVISIONING_PROFILE_UUID
+    artifacts:
+      - ios/build/**/*.ipa
