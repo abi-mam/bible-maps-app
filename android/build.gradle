@@ -4,11 +4,18 @@ plugins {
     id "org.jetbrains.kotlin.android" version "1.9.25" apply false
 }
 
-// ✅ Force Java 17 globally, including capacitor-android
+// ✅ Force Java 17 globally via toolchain
 subprojects {
     tasks.withType(JavaCompile).configureEach {
         sourceCompatibility = JavaVersion.VERSION_17
         targetCompatibility = JavaVersion.VERSION_17
-        options.release = 17
+    }
+
+    plugins.withId("java") {
+        java {
+            toolchain {
+                languageVersion = JavaLanguageVersion.of(17)
+            }
+        }
     }
 }
