@@ -18,7 +18,6 @@ workflows:
       - name: Install Capacitor + Android
         script: |
           npm install @capacitor/core @capacitor/cli @capacitor/android
-          npx cap init "Bible Maps" com.abi.biblemaps --web-dir=out --npm-client=yarn || true
           npx cap add android || true
       - name: Sync web build to Android
         script: |
@@ -47,14 +46,12 @@ workflows:
           yarn build
       - name: Install Capacitor + Android
         script: |
-          npm install @capacitor/core @capacitor/cli @capacitor/android
-          npx cap init "Bible Maps" com.abi.biblemaps --web-dir=out --npm-client=yarn || true
-          npx cap add android || true
+         npm install @capacitor/core @capacitor/cli @capacitor/android 
+         npx cap add android || true 
       - name: Sync web build to Android
-        script: |
-          npx cap sync android
+        script: | 
+          npx cap sync android 
       - name: Build Release APK
         working_directory: android
         script: ./gradlew assembleRelease
-    artifacts:
-      - android/app/build/outputs/**/*.apk
+    artifacts: - android/app/build/outputs/**/*.apk
