@@ -7,14 +7,13 @@ pluginManagement {
 }
 
 dependencyResolutionManagement {
-    // ✅ Use PREFER_PROJECT so Gradle doesn't ignore repositories in build.gradle
-    repositoriesMode.set(RepositoriesMode.PREFER_PROJECT)
+    // Force all repos to be declared here, ignore project-level ones
+    repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
     repositories {
         google()
         mavenCentral()
     }
 }
 
-// ✅ Ensure your app module is included
 rootProject.name = "BibleMaps"
 include(":app")
