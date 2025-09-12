@@ -51,8 +51,8 @@ dependencies {
     // Material 3
     implementation "com.google.android.material:material:1.12.0"
 
-    // ✅ Capacitor core (needed for BridgeActivity)
-    implementation "com.getcapacitor:capacitor-android:5.7.0"
+    // ✅ Capacitor core (BridgeActivity is here)
+    implementation project(':capacitor-android')
 
     // Testing
     testImplementation "junit:junit:4.13.2"

@@ -7,7 +7,8 @@ pluginManagement {
 }
 
 dependencyResolutionManagement {
-    repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
+    // Allow project-level repositories so we can use node_modules
+    repositoriesMode.set(RepositoriesMode.PREFER_PROJECT)
     repositories {
         google()
         mavenCentral()
@@ -16,3 +17,7 @@ dependencyResolutionManagement {
 
 rootProject.name = "BibleMaps"
 include(":app")
+
+// ✅ Link Capacitor from node_modules
+include(":capacitor-android")
+project(":capacitor-android").projectDir = new File("../node_modules/@capacitor/android/capacitor")
