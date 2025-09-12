@@ -1,71 +1,98 @@
 workflows:
+  android-workflow:
+    name: Android Debug + Release
+    max_build_duration: 60
+    environment:
+      vars:
+        PACKAGE_NAME: "com.abi.biblemaps"
+      flutter: stable
+      xcode: latest
+      java: 17
+      node: 18
+    scripts:
+      - name: Install dependencies
+        script: |
+          yarn install
+      - name: Build PWA
+        script: |
+          yarn build
+      - name: Copy PWA into Capacitor
+        script: |
+          npx cap sync android
+      - name: Build Debug APK
+        script: |
+          cd android
+          ./gradlew assembleDebug
+      - name: Build Release APK (unsigned for now)
+        script: |
+          cd android
+          ./gradlew assembleRelease
+    artifacts:
+      - android/app/build/outputs/**/*.apk
+
+  ios-workflow:
+    name: iOS Debug + Release
+    max_build_duration: 60
+    environment:
+      vars:
+        PACKAGE_NAME: "com.abi.biblemaps"
+      flutter: stable
+      xcode: latest
+      java: 17
+      node: 18
+    scripts:
+      - name: Install dependencies
+        script: |
+          yarn install
+      - name: Build PWA
+        script: |
+          yarn build
+      - name: Copy PWA into Capacitor
+        script: |
+          npx cap sync ios
+      - name: Build iOS Debug
+        script: |
+          cd ios
+          xcodebuild -workspace App.xcworkspace -scheme App -configuration Debug -sdk iphonesimulator -derivedDataPath build
+      - name: Build iOS Release (unsigned for now)
+        script: |
+          cd ios
+          xcodebuild -workspace App.xcworkspace -scheme App -configuration Release -sdk iphoneos -derivedDataPath build
+    artifacts:
+      - ios/build/**/*.app
+      - ios/build/**/*.ipa
+
   android-ios-workflow:
     name: Android & iOS Debug + Release
     max_build_duration: 60
     environment:
       vars:
         PACKAGE_NAME: "com.abi.biblemaps"
+      flutter: stable
+      xcode: latest
       java: 17
       node: 18
-      xcode: latest
     scripts:
       - name: Install dependencies
         script: |
-          npm install -g yarn
-          yarn install --frozen-lockfile
-
-      - name: Build PWA for Capacitor
+          yarn install
+      - name: Build PWA
         script: |
           yarn build
-
-      - name: Copy web assets into Capacitor
+      - name: Copy PWA into Capacitor
         script: |
           npx cap sync
-
-      # ---------------- ANDROID ----------------
-      - name: Build Debug APK
+      - name: Build Android APKs
         script: |
           cd android
-          chmod +x gradlew
           ./gradlew assembleDebug
-
-      - name: Build Release APK
-        script: |
-          cd android
-          chmod +x gradlew
           ./gradlew assembleRelease
-
-      # ---------------- iOS ----------------
-      - name: Install CocoaPods
+      - name: Build iOS apps
         script: |
-          cd ios/App
-          pod install
-
-      - name: Build iOS Debug
-        script: |
-          xcodebuild \
-            -workspace ios/App/App.xcworkspace \
-            -scheme App \
-            -configuration Debug \
-            -sdk iphoneos \
-            -archivePath $CM_BUILD_DIR/ios/App.xcarchive \
-            archive
-
-      - name: Build iOS Release
-        script: |
-          xcodebuild \
-            -workspace ios/App/App.xcworkspace \
-            -scheme App \
-            -configuration Release \
-            -sdk iphoneos \
-            -archivePath $CM_BUILD_DIR/ios/AppRelease.xcarchive \
-            archive
-
+          cd ios
+          xcodebuild -workspace App.xcworkspace -scheme App -configuration Debug -sdk iphonesimulator -derivedDataPath build
+          xcodebuild -workspace App.xcworkspace -scheme App -configuration Release -sdk iphoneos -derivedDataPath build
     artifacts:
       - android/app/build/outputs/**/*.apk
-      - $CM_BUILD_DIR/ios/**/*.xcarchive
-
-    publishing:
-      email:
-        recipients:
-          - your-email@example.com
+      - ios/build/**/*.app
+      - ios/build/**/*.ipa
