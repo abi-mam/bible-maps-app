@@ -8,7 +8,7 @@ workflows:
       flutter: stable
       xcode: latest
       java: 17
-      node: 18
+      node: 20.11.1   # ✅ upgraded to Node 20
     scripts:
       - name: Install dependencies
         script: |
@@ -39,7 +39,7 @@ workflows:
       flutter: stable
       xcode: latest
       java: 17
-      node: 18
+      node: 20.11.1   # ✅ upgraded to Node 20
     scripts:
       - name: Install dependencies
         script: |
@@ -71,7 +71,7 @@ workflows:
       flutter: stable
       xcode: latest
       java: 17
-      node: 18
+      node: 20.11.1   # ✅ upgraded to Node 20
     scripts:
       - name: Install dependencies
         script: |
