@@ -1,18 +1,60 @@
 workflows:
-  yarn-node-build:
-    name: Build (use Yarn)
+  android-debug:
+    name: Build Android Debug APK
+    max_build_duration: 60
     environment:
       node: "20"
+      java: "17"
+      vars:
+        PACKAGE_NAME: "com.abi.biblemaps"
     scripts:
-      - name: Install dependencies (use Yarn)
+      - name: Install dependencies
         script: |
-          cd $CM_BUILD_DIR
-          yarn install --frozen-lockfile || yarn install
-      - name: Build app
+          yarn install --immutable
+      - name: Build Next.js static app
         script: |
-          cd $CM_BUILD_DIR
+          rm -rf .next out
           yarn build
+      - name: Install Capacitor + Android
+        script: |
+          npm install @capacitor/core @capacitor/cli @capacitor/android
+          npx cap init "Bible Maps" com.abi.biblemaps --web-dir=out --npm-client=yarn || true
+          npx cap add android || true
+      - name: Sync web build to Android
+        script: |
+          npx cap sync android
+      - name: Build Debug APK
+        working_directory: android
+        script: ./gradlew assembleDebug
     artifacts:
-      - .next/**
-      - out/**
-      - public/**
+      - android/app/build/outputs/**/*.apk
+
+  android-release:
+    name: Build Android Release APK
+    max_build_duration: 60
+    environment:
+      node: "20"
+      java: "17"
+      vars:
+        PACKAGE_NAME: "com.abi.biblemaps"
+    scripts:
+      - name: Install dependencies
+        script: |
+          yarn install --immutable
+      - name: Build Next.js static app
+        script: |
+          rm -rf .next out
+          yarn build
+      - name: Install Capacitor + Android
+        script: |
+          npm install @capacitor/core @capacitor/cli @capacitor/android
+          npx cap init "Bible Maps" com.abi.biblemaps --web-dir=out --npm-client=yarn || true
+          npx cap add android || true
+      - name: Sync web build to Android
+        script: |
+          npx cap sync android
+      - name: Build Release APK
+        working_directory: android
+        script: ./gradlew assembleRelease
+    artifacts:
+      - android/app/build/outputs/**/*.apk
