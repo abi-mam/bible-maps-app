@@ -1,30 +1,57 @@
-# See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
-
-# dependencies
-/node_modules
-
-# next.js
-/.next/
-/out/
-
-# production
-/build
-
-# debug
+# --- Node.js / Next.js ---
+node_modules/
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 .pnpm-debug.log*
-
-# env files
-.env*
-
-# vercel
-.vercel
-
-# typescript
-*.tsbuildinfo
-next-env.d.tsout/
+.next/
 out/
-ios/App/build/
-android/app/build/
+dist/
+.cache/
+.vercel/
+
+# Environment
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# Build artifacts
+*.log
+*.gz
+*.br
+
+# --- Android / Gradle ---
+.gradle/
+local.properties
+/.idea/
+/android/app/build/
+/android/build/
+/captures/
+/outputs/
+/*.iml
+.DS_Store
+
+# Keystore files (don’t commit secrets!)
+*.jks
+*.keystore
+
+# --- Cordova ---
+platforms/
+plugins/
+www/
+cordova-build-*
+
+# --- OS / Editor ---
+Thumbs.db
+*.swp
+*.swo
+*~
+.vscode/
+*.tmp
+*.bak
+
+# --- Workbox / PWA auto-generated ---
+public/workbox-*.js
+public/sw.js
