@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="NONE" />
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="9013c09b-bf7f-4940-9c88-6748216a8bcb" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/../out/404.html" beforeDir="false" afterPath="$PROJECT_DIR$/../out/404.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../out/_next/static/chunks/117-03c7387c429b911e.js" beforeDir="false" afterPath="$PROJECT_DIR$/../out/_next/static/chunks/117-03c7387c429b911e.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../out/_next/static/chunks/117-e88d4fdeadf04a00.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../out/_next/static/chunks/app/layout-907e40705d762589.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../out/_next/static/chunks/app/page-d72e578f79f7e191.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../out/_next/static/chunks/main-c763f0c98dd96698.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../out/_next/static/chunks/main-e6aee58d42ca0520.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../out/_next/static/chunks/webpack-a2a4cd64a41621e2.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../out/_next/static/css/428d5e4fc6750701.css" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../out/_next/static/css/5356465798c4fb91.css" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../out/_next/static/m2mHSJmcDvDkLIxMIppqJ/_buildManifest.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../out/_next/static/m2mHSJmcDvDkLIxMIppqJ/_ssgManifest.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../out/_next/static/wHdBhftMlK0j-5Pre0HRO/_buildManifest.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../out/_next/static/wHdBhftMlK0j-5Pre0HRO/_ssgManifest.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../out/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/../out/index.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../out/index.txt" beforeDir="false" afterPath="$PROJECT_DIR$/../out/index.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../out/sw.js" beforeDir="false" afterPath="$PROJECT_DIR$/../out/sw.js" afterDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="ClangdSettings">
+    <option name="formatViaClangd" value="false" />
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/.." />
+  </component>
+  <component name="ProjectColorInfo"><![CDATA[{
+  "associatedIndex": 6
+}]]></component>
+  <component name="ProjectId" id="32ZfHm0srKIY2SAOPUQG1NnD2Y6" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "ModuleVcsDetector.initialDetectionPerformed": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "RunOnceActivity.cidr.known.project.marker": "true",
+    "RunOnceActivity.git.unshallow": "true",
+    "RunOnceActivity.readMode.enableVisualFormatting": "true",
+    "android.gradle.sync.needed": "true",
+    "cf.first.check.clang-format": "false",
+    "cidr.known.project.marker": "true",
+    "git-widget-placeholder": "gh-pages"
+  }
+}]]></component>
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="9013c09b-bf7f-4940-9c88-6748216a8bcb" name="Changes" comment="" />
+      <created>1757632931012</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1757632931012</updated>
+    </task>
+    <servers />
+  </component>
+</project>
