@@ -1,63 +1,71 @@
 workflows:
-  android-standalone:
-    name: Android Debug & Release
+  android-ios-workflow:
+    name: Android & iOS Debug + Release
     max_build_duration: 60
     environment:
-      node: latest
+      vars:
+        PACKAGE_NAME: "com.abi.biblemaps"
       java: 17
+      node: 18
+      xcode: latest
     scripts:
       - name: Install dependencies
         script: |
+          npm install -g yarn
           yarn install --frozen-lockfile
-      - name: Build PWA
+
+      - name: Build PWA for Capacitor
         script: |
           yarn build
-      - name: Copy PWA into Capacitor
+
+      - name: Copy web assets into Capacitor
         script: |
-          npx cap sync android
+          npx cap sync
+
+      # ---------------- ANDROID ----------------
       - name: Build Debug APK
         script: |
           cd android
+          chmod +x gradlew
           ./gradlew assembleDebug
-      - name: Build Release APK (unsigned for now)
+
+      - name: Build Release APK
         script: |
           cd android
+          chmod +x gradlew
           ./gradlew assembleRelease
-    artifacts:
-      - android/app/build/outputs/**/*.apk
 
-  ios-standalone:
-    name: iOS Debug & Release
-    max_build_duration: 60
-    environment:
-      node: latest
-      xcode: latest
-      cocoapods: default
-    scripts:
-      - name: Install dependencies
+      # ---------------- iOS ----------------
+      - name: Install CocoaPods
         script: |
-          yarn install --frozen-lockfile
-      - name: Build PWA
-        script: |
-          yarn build
-      - name: Copy PWA into Capacitor
-        script: |
-          npx cap sync ios
-      - name: Build Debug IPA
+          cd ios/App
+          pod install
+
+      - name: Build iOS Debug
         script: |
           xcodebuild \
             -workspace ios/App/App.xcworkspace \
             -scheme App \
             -configuration Debug \
             -sdk iphoneos \
-            -derivedDataPath build
-      - name: Build Release IPA (unsigned for now)
+            -archivePath $CM_BUILD_DIR/ios/App.xcarchive \
+            archive
+
+      - name: Build iOS Release
         script: |
           xcodebuild \
             -workspace ios/App/App.xcworkspace \
             -scheme App \
             -configuration Release \
             -sdk iphoneos \
-            -derivedDataPath build
+            -archivePath $CM_BUILD_DIR/ios/AppRelease.xcarchive \
+            archive
+
     artifacts:
-      - build/**/*.ipa
+      - android/app/build/outputs/**/*.apk
+      - $CM_BUILD_DIR/ios/**/*.xcarchive
+
+    publishing:
+      email:
+        recipients:
+          - your-email@example.com
