@@ -1,16 +1,16 @@
 plugins {
     id "com.android.application"
-    id "kotlin-android"
+    id "org.jetbrains.kotlin.android"
 }
 
 android {
     namespace "com.abi.biblemaps"
-    compileSdk 35   // ✅ hardcoded
+    compileSdk 35
 
     defaultConfig {
         applicationId "com.abi.biblemaps"
-        minSdk 23    // ✅ hardcoded
-        targetSdk 35 // ✅ hardcoded
+        minSdk 23
+        targetSdk 35
         versionCode 1
         versionName "1.0"
 
