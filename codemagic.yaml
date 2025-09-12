@@ -1,99 +1,63 @@
 workflows:
-  android-debug:
-    name: Android Debug Build
-    max_build_duration: 30
+  android-standalone:
+    name: Android Debug & Release
+    max_build_duration: 60
     environment:
-      flutter: stable
-      vars:
-        PACKAGE_NAME: "com.example.biblemaps"
+      node: latest
+      java: 17
     scripts:
+      - name: Install dependencies
+        script: |
+          yarn install --frozen-lockfile
+      - name: Build PWA
+        script: |
+          yarn build
+      - name: Copy PWA into Capacitor
+        script: |
+          npx cap sync android
       - name: Build Debug APK
         script: |
-          cd bible-maps-appc-pwa-ready
-          npx cap sync android
           cd android
           ./gradlew assembleDebug
-    artifacts:
-      - android/app/build/outputs/**/*.apk
-
-  android-release:
-    name: Android Release Build
-    max_build_duration: 30
-    environment:
-      flutter: stable
-      vars:
-        PACKAGE_NAME: "com.example.biblemaps"
-        KEYSTORE_PATH: /tmp/keystore.keystore
-        KEYSTORE_PASSWORD: $KEYSTORE_PASSWORD
-        KEY_ALIAS: $KEY_ALIAS
-        KEY_PASSWORD: $KEY_PASSWORD
-    scripts:
-      - name: Setup Keystore
+      - name: Build Release APK (unsigned for now)
         script: |
-          if [ -n "$CM_KEYSTORE" ]; then
-            echo $CM_KEYSTORE | base64 --decode > $KEYSTORE_PATH
-          else
-            echo "⚠️ No keystore provided. Build will fail for release."
-          fi
-      - name: Build Signed Release APK
-        script: |
-          cd bible-maps-appc-pwa-ready
-          npx cap sync android
           cd android
-          ./gradlew assembleRelease \
-            -Pandroid.injected.signing.store.file=$KEYSTORE_PATH \
-            -Pandroid.injected.signing.store.password=$KEYSTORE_PASSWORD \
-            -Pandroid.injected.signing.key.alias=$KEY_ALIAS \
-            -Pandroid.injected.signing.key.password=$KEY_PASSWORD
+          ./gradlew assembleRelease
     artifacts:
       - android/app/build/outputs/**/*.apk
 
-  ios-debug:
-    name: iOS Debug Build
+  ios-standalone:
+    name: iOS Debug & Release
     max_build_duration: 60
     environment:
+      node: latest
       xcode: latest
       cocoapods: default
     scripts:
-      - name: Build iOS Debug (Simulator)
+      - name: Install dependencies
         script: |
-          cd bible-maps-appc-pwa-ready
+          yarn install --frozen-lockfile
+      - name: Build PWA
+        script: |
+          yarn build
+      - name: Copy PWA into Capacitor
+        script: |
           npx cap sync ios
-          cd ios
+      - name: Build Debug IPA
+        script: |
           xcodebuild \
-            -workspace App/App.xcworkspace \
+            -workspace ios/App/App.xcworkspace \
             -scheme App \
-            -sdk iphonesimulator \
             -configuration Debug \
-            build
-    artifacts:
-      - ios/build/**/*.app
-
-  ios-release:
-    name: iOS Release Build
-    max_build_duration: 60
-    environment:
-      xcode: latest
-      cocoapods: default
-      vars:
-        APPLE_TEAM_ID: $APPLE_TEAM_ID
-        BUNDLE_ID: "com.example.biblemaps"
-        CODE_SIGN_IDENTITY: "Apple Distribution"
-        PROVISIONING_PROFILE_UUID: $PROVISIONING_PROFILE_UUID
-    scripts:
-      - name: Build iOS Release
-        script: |
-          cd bible-maps-appc-pwa-ready
-          npx cap sync ios
-          cd ios
-          xcodebuild \
-            -workspace App/App.xcworkspace \
-            -scheme App \
             -sdk iphoneos \
+            -derivedDataPath build
+      - name: Build Release IPA (unsigned for now)
+        script: |
+          xcodebuild \
+            -workspace ios/App/App.xcworkspace \
+            -scheme App \
             -configuration Release \
-            -allowProvisioningUpdates \
-            DEVELOPMENT_TEAM=$APPLE_TEAM_ID \
-            CODE_SIGN_IDENTITY="$CODE_SIGN_IDENTITY" \
-            PROVISIONING_PROFILE_SPECIFIER=$PROVISIONING_PROFILE_UUID
+            -sdk iphoneos \
+            -derivedDataPath build
     artifacts:
-      - ios/build/**/*.ipa
+      - build/**/*.ipa
