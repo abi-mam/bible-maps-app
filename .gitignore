@@ -22,6 +22,27 @@ dist/
 *.gz
 *.br
 
+# --- Flutter / Dart ---
+build/
+.dart_tool/
+.flutter-plugins
+.flutter-plugins-dependencies
+.packages
+pubspec.lock
+generated_plugin_registrant.dart
+
+# iOS
+ios/Pods/
+ios/Flutter/Flutter.framework
+ios/Flutter/Flutter.podspec
+ios/Flutter/Generated.xcconfig
+ios/ServiceDefinitions.json
+ios/Runner/GeneratedPluginRegistrant.*
+*.xcworkspace/
+*.xcuserstate
+*.xcuserdata/
+*.lock
+
 # --- Android / Gradle ---
 .gradle/
 local.properties
@@ -31,7 +52,6 @@ local.properties
 /captures/
 /outputs/
 /*.iml
-.DS_Store
 
 # Keystore files (don’t commit secrets!)
 *.jks
@@ -51,6 +71,7 @@ Thumbs.db
 .vscode/
 *.tmp
 *.bak
+.DS_Store
 
 # --- Workbox / PWA auto-generated ---
 public/workbox-*.js
