@@ -8,22 +8,24 @@ workflows:
       flutter: stable
       xcode: latest
       java: 17
-      node: 20.11.1   # ✅ upgraded to Node 20
+      node: 20.11.1
+    cache:
+      cache_paths:
+        - $FCI_BUILD_DIR/node_modules
+        - $HOME/.gradle/caches
+        - $HOME/.pub-cache
     scripts:
       - name: Install dependencies
-        script: |
-          yarn install
+        script: yarn install
       - name: Build PWA
-        script: |
-          yarn build
-      - name: Copy PWA into Capacitor
-        script: |
-          npx cap sync android
+        script: yarn build
+      - name: Copy PWA into Capacitor (Android)
+        script: npx cap sync android
       - name: Build Debug APK
         script: |
           cd android
           ./gradlew assembleDebug
-      - name: Build Release APK (unsigned for now)
+      - name: Build Release APK (unsigned)
         script: |
           cd android
           ./gradlew assembleRelease
@@ -39,25 +41,37 @@ workflows:
       flutter: stable
       xcode: latest
       java: 17
-      node: 20.11.1   # ✅ upgraded to Node 20
+      node: 20.11.1
+    cache:
+      cache_paths:
+        - $FCI_BUILD_DIR/node_modules
+        - $HOME/Library/Caches/CocoaPods
+        - $HOME/.pub-cache
     scripts:
       - name: Install dependencies
-        script: |
-          yarn install
+        script: yarn install
       - name: Build PWA
-        script: |
-          yarn build
-      - name: Copy PWA into Capacitor
-        script: |
-          npx cap sync ios
+        script: yarn build
+      - name: Copy PWA into Capacitor (iOS)
+        script: npx cap sync ios
       - name: Build iOS Debug
         script: |
           cd ios
-          xcodebuild -workspace App.xcworkspace -scheme App -configuration Debug -sdk iphonesimulator -derivedDataPath build
-      - name: Build iOS Release (unsigned for now)
+          xcodebuild \
+            -workspace App.xcworkspace \
+            -scheme App \
+            -configuration Debug \
+            -sdk iphonesimulator \
+            -derivedDataPath build
+      - name: Build iOS Release (unsigned)
         script: |
           cd ios
-          xcodebuild -workspace App.xcworkspace -scheme App -configuration Release -sdk iphoneos -derivedDataPath build
+          xcodebuild \
+            -workspace App.xcworkspace \
+            -scheme App \
+            -configuration Release \
+            -sdk iphoneos \
+            -derivedDataPath build
     artifacts:
       - ios/build/**/*.app
       - ios/build/**/*.ipa
@@ -71,27 +85,40 @@ workflows:
       flutter: stable
       xcode: latest
       java: 17
-      node: 20.11.1   # ✅ upgraded to Node 20
+      node: 20.11.1
+    cache:
+      cache_paths:
+        - $FCI_BUILD_DIR/node_modules
+        - $HOME/.gradle/caches
+        - $HOME/Library/Caches/CocoaPods
+        - $HOME/.pub-cache
     scripts:
       - name: Install dependencies
-        script: |
-          yarn install
+        script: yarn install
       - name: Build PWA
-        script: |
-          yarn build
-      - name: Copy PWA into Capacitor
-        script: |
-          npx cap sync
-      - name: Build Android APKs
+        script: yarn build
+      - name: Copy PWA into Capacitor (Android + iOS)
+        script: npx cap sync
+      - name: Build Android Debug + Release
         script: |
           cd android
           ./gradlew assembleDebug
           ./gradlew assembleRelease
-      - name: Build iOS apps
+      - name: Build iOS Debug + Release
         script: |
           cd ios
-          xcodebuild -workspace App.xcworkspace -scheme App -configuration Debug -sdk iphonesimulator -derivedDataPath build
-          xcodebuild -workspace App.xcworkspace -scheme App -configuration Release -sdk iphoneos -derivedDataPath build
+          xcodebuild \
+            -workspace App.xcworkspace \
+            -scheme App \
+            -configuration Debug \
+            -sdk iphonesimulator \
+            -derivedDataPath build
+          xcodebuild \
+            -workspace App.xcworkspace \
+            -scheme App \
+            -configuration Release \
+            -sdk iphoneos \
+            -derivedDataPath build
     artifacts:
       - android/app/build/outputs/**/*.apk
       - ios/build/**/*.app
