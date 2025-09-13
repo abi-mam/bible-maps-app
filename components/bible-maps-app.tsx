@@ -90,19 +90,31 @@ const BibleMapsApp = () => {
   }
 
   const getAllMaps = () =>
-    Object.entries(mockMapData).flatMap(([category, data]) =>
-      data.maps.map((map: any) => ({ ...map, category }))
-    )
+  Object.entries(mockMapData || {}).flatMap(([category, data]: any) =>
+    Array.isArray(data?.maps)
+      ? data.maps.map((map: any) => ({ ...map, category }))
+      : []
+  )
 
-  const getFilteredMaps = () => {
-    let maps = showFavorites
-      ? getAllMaps().filter((m: any) => favorites.has(m.id))
-      : currentCategory
-      ? mockMapData[currentCategory].maps.map((m: any) => ({ ...m, category: currentCategory }))
-      : getAllMaps()
-    return searchQuery
-      ? maps.filter((m: any) => m.title.toLowerCase().includes(searchQuery.toLowerCase()))
-      : maps
+ const getFilteredMaps = () => {
+   let maps: any[] = []
+
+   if (showFavorites) {
+     maps = getAllMaps().filter((m: any) => favorites.has(m.id))
+   } else if (currentCategory && mockMapData[currentCategory]) {
+     const categoryMaps = mockMapData[currentCategory].maps
+     maps = Array.isArray(categoryMaps)
+       ? categoryMaps.map((m: any) => ({ ...m, category: currentCategory }))
+       : []
+   } else {
+     maps = getAllMaps()
+   }
+
+   return searchQuery
+     ? maps.filter((m: any) =>
+         m?.title?.toLowerCase().includes(searchQuery.toLowerCase())
+       )
+     : maps
   }
 
   const calculateFitToPageScale = () => {
