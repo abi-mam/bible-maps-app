@@ -1,0 +1,66 @@
+[33mcommit a1be3cee8eff063e71f2b843eb693c6860ad2f1a[m
+Author: abi-mam <abdachisa.dugasa@gmail.com>
+Date:   Fri Sep 12 17:26:47 2025 +0100
+
+    chore: add codemagic.yaml + Android/iOS build configs + PWA setup
+
+[33mcommit dc654326171195db87ef94675a723430af262536[m
+Author: abi-mam <abdachisa.dugasa@gmail.com>
+Date:   Fri Sep 12 15:38:19 2025 +0100
+
+    Add final codemagic.yaml with Android + iOS workflows
+
+[33mcommit 2927fabbc0c26fbd0c9367d3a06581da7312b984[m
+Author: abi-mam <abdachisa.dugasa@gmail.com>
+Date:   Fri Sep 12 15:29:02 2025 +0100
+
+    Add codemagic.yaml for Android/iOS builds
+
+[33mcommit ab2905ca6dd12c597ed3ebe65cc383a8d0b33d75[m
+Merge: 71b1213 44a99a1
+Author: abi-mam <abdachisa.dugasa@gmail.com>
+Date:   Fri Sep 12 11:29:51 2025 +0100
+
+    Resolved all merge conflicts and replaced with cleaned versions
+
+[33mcommit 44a99a16c69f71fdfbbcee6462cc94423278de16[m[33m ([m[1;32mgh-pages[m[33m)[m
+Author: abi-mam <abdachisa.dugasa@gmail.com>
+Date:   Fri Sep 12 02:42:36 2025 +0100
+
+    Fix Codemagic: use out/ as webDir, remove cap init
+
+[33mcommit 7ecd1a79d6439b2330105cda352d90709aebfe67[m
+Author: abi-mam <abdachisa.dugasa@gmail.com>
+Date:   Fri Sep 12 02:06:57 2025 +0100
+
+    Add codemagic.yaml to main
+
+[33mcommit af7584db00c9f6957e15577edd04326cd8a6f9ab[m
+Author: abi-mam <abdachisa.dugasa@gmail.com>
+Date:   Fri Sep 12 01:08:10 2025 +0100
+
+    chore: add debug + release apk workflows
+
+[33mcommit 33f9ed1a7e7c2c8665b6eae194bad0737969b639[m
+Author: abi-mam <abdachisa.dugasa@gmail.com>
+Date:   Thu Sep 11 18:29:49 2025 +0100
+
+    ci: fix codemagic.yaml indentation
+
+[33mcommit ae653d1439ef70d134a66848c5cde936b9e23d7a[m
+Author: abi-mam <abdachisa.dugasa@gmail.com>
+Date:   Thu Sep 11 18:27:23 2025 +0100
+
+    ci: upgrade Codemagic build environment to Node 20
+
+[33mcommit 7672e20e22679652e2748f59ecb823077bdc5a91[m
+Author: abi-mam <abdachisa.dugasa@gmail.com>
+Date:   Thu Sep 11 18:20:28 2025 +0100
+
+    ci: fix yarn install flags for Yarn 1.x on Codemagic
+
+[33mcommit 5d525ccff48bbc7277858e49975389afd536a5ce[m
+Author: abi-mam <abdachisa.dugasa@gmail.com>
+Date:   Thu Sep 11 18:16:56 2025 +0100
+
+    ci: upgrade Codemagic build environment to Node 20
