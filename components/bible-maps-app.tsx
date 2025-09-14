@@ -164,6 +164,7 @@ const BookIcon = ({ className }) => (
 // Mock data structure for maps
 
 const BibleMapsApp = () => {
+  console.log("mockMapData =", mockMapData)
   const [currentScreen, setCurrentScreen] = useState("home")
   const [currentCategory, setCurrentCategory] = useState(null)
   const [viewMode, setViewMode] = useState("smallList") // 'grid', 'smallList', 'largeList'
@@ -439,11 +440,11 @@ const BibleMapsApp = () => {
                 className="bg-white rounded-xl p-6 shadow-sm border border-gray-200 cursor-pointer hover:shadow-md transition-shadow"
               >
                 <div className="flex flex-col items-center mb-4">
-                  <Icon className="w-16 h-16 text-blue-600 mb-2" />
+                  {Icon ? <Icon className="w-16 h-16 text-blue-600 mb-2" /> : null}
                   <h3 className="text-lg font-normal text-blue-600">{category}</h3>
                 </div>
                 <div className="flex justify-between items-end">
-                  <span className="text-sm text-green-700 opacity-75">{data.count} maps available</span>
+                  <span className="text-sm text-green-700 opacity-75">{data.maps.length} maps available</span>
                   <span className="text-sm text-green-700 opacity-75">Explore Maps →</span>
                 </div>
               </div>
