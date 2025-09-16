@@ -4,12 +4,10 @@ import React, { useState, useEffect, useRef } from "react"
 import { Search, Star, Grid3X3, List, ChevronLeft, ChevronRight, ArrowLeft, Home } from "lucide-react"
 
 // ---------------- BOTTOM BAR ----------------
-const BottomBar = ({ activeTab, onTabChange, isSystemNavVisible }) => {
+const BottomBar = ({ activeTab, onTabChange }) => {
   return (
     <div
-      className={`fixed inset-x-0 bottom-0 h-14 bg-white/95 backdrop-blur-md border-t border-gray-300 z-50 flex items-center justify-around pb-[env(safe-area-inset-bottom)] transition-opacity duration-300 ${
-        isSystemNavVisible ? 'opacity-30 pointer-events-none' : 'opacity-100'
-      }`}
+      className="fixed inset-x-0 bottom-0 h-14 bg-white/95 backdrop-blur-md border-t border-gray-300 z-50 flex items-center justify-around pb-[env(safe-area-inset-bottom)]"
     >
       <button
         onClick={() => onTabChange("search")}
@@ -181,61 +179,61 @@ const mockMapData = {
     maps: [
       {
         id: "ot_ot_01_the_holy_land_relief",
-        title: "Ot 01 The Holy Land Relief",
+        title: "The Holy Land Relief",
         thumbnail: "/maps/ot/ot_01_the_holy_land_relief.jpeg",
         fullImage: "/maps/ot/ot_01_the_holy_land_relief.jpeg",
       },
       {
         id: "ot_ot_02_the_world_of_patriarchs",
-        title: "Ot 02 The World Of Patriarchs",
+        title: "The World Of Patriarchs",
         thumbnail: "/maps/ot/ot_02_the_world_of_patriarchs.jpeg",
         fullImage: "/maps/ot/ot_02_the_world_of_patriarchs.jpeg",
       },
       {
         id: "ot_ot_03_the_exodus_and_conquest_of_canaan",
-        title: "Ot 03 The Exodus And Conquest Of Canaan",
+        title: "The Exodus And Conquest Of Canaan",
         thumbnail: "/maps/ot/ot_03_the_exodus_and_conquest_of_canaan.jpeg",
         fullImage: "/maps/ot/ot_03_the_exodus_and_conquest_of_canaan.jpeg",
       },
       {
         id: "ot_ot_04_the_twelve_tribes_of_israel",
-        title: "Ot 04 The Twelve Tribes Of Israel",
+        title: "The Twelve Tribes Of Israel",
         thumbnail: "/maps/ot/ot_04_the_twelve_tribes_of_israel.jpeg",
         fullImage: "/maps/ot/ot_04_the_twelve_tribes_of_israel.jpeg",
       },
       {
         id: "ot_ot_05_the_kingdoms_of_saul_david_and_solomon",
-        title: "Ot 05 The Kingdoms Of Saul David And Solomon",
+        title: "The Kingdoms Of Saul David And Solomon",
         thumbnail: "/maps/ot/ot_05_the_kingdoms_of_saul_david_and_solomon.jpeg",
         fullImage: "/maps/ot/ot_05_the_kingdoms_of_saul_david_and_solomon.jpeg",
       },
       {
         id: "ot_ot_06_the_kingdoms_of_israel_and_judah",
-        title: "Ot 06 The Kingdoms Of Israel And Judah",
+        title: "The Kingdoms Of Israel And Judah",
         thumbnail: "/maps/ot/ot_06_the_kingdoms_of_israel_and_judah.jpeg",
         fullImage: "/maps/ot/ot_06_the_kingdoms_of_israel_and_judah.jpeg",
       },
       {
         id: "ot_ot_07_the_prophets_of_judah_and_israel",
-        title: "Ot 07 The Prophets Of Judah And Israel",
+        title: "The Prophets Of Judah And Israel",
         thumbnail: "/maps/ot/ot_07_the_prophets_of_judah_and_israel.jpeg",
         fullImage: "/maps/ot/ot_07_the_prophets_of_judah_and_israel.jpeg",
       },
       {
         id: "ot_ot_08_the_assyrian_empire_c_700_bc",
-        title: "Ot 08 The Assyrian Empire C 700 Bc",
+        title: "The Assyrian Empire C 700 Bc",
         thumbnail: "/maps/ot/ot_08_the_assyrian_empire_c_700_bc.jpeg",
         fullImage: "/maps/ot/ot_08_the_assyrian_empire_c_700_bc.jpeg",
       },
       {
         id: "ot_ot_09_the_babylonian_empire_c_600_bc",
-        title: "Ot 09 The Babylonian Empire C 600 Bc",
+        title: "The Babylonian Empire C 600 Bc",
         thumbnail: "/maps/ot/ot_09_the_babylonian_empire_c_600_bc.jpeg",
         fullImage: "/maps/ot/ot_09_the_babylonian_empire_c_600_bc.jpeg",
       },
       {
         id: "ot_ot_10_the_persian_empire_c_450_bc",
-        title: "Ot 10 The Persian Empire C 450 Bc",
+        title: "The Persian Empire C 450 Bc",
         thumbnail: "/maps/ot/ot_10_the_persian_empire_c_450_bc.jpeg",
         fullImage: "/maps/ot/ot_10_the_persian_empire_c_450_bc.jpeg",
       },
@@ -247,97 +245,97 @@ const mockMapData = {
     maps: [
       {
         id: "nt_nt_01_the_holy_land_in_time_of_jesus",
-        title: "Nt 01 The Holy Land In Time Of Jesus",
+        title: "The Holy Land In Time Of Jesus",
         thumbnail: "/maps/nt/nt_01_the_holy_land_in_time_of_jesus.jpeg",
         fullImage: "/maps/nt/nt_01_the_holy_land_in_time_of_jesus.jpeg",
       },
       {
         id: "nt_nt_02_the_ministry_of_jesus",
-        title: "Nt 02 The Ministry Of Jesus",
+        title: "The Ministry Of Jesus",
         thumbnail: "/maps/nt/nt_02_the_ministry_of_jesus.jpeg",
         fullImage: "/maps/nt/nt_02_the_ministry_of_jesus.jpeg",
       },
       {
         id: "nt_nt_03_jesus_final_week_in_jerusalem",
-        title: "Nt 03 Jesus Final Week In Jerusalem",
+        title: "Jesus Final Week In Jerusalem",
         thumbnail: "/maps/nt/nt_03_jesus_final_week_in_jerusalem.jpeg",
         fullImage: "/maps/nt/nt_03_jesus_final_week_in_jerusalem.jpeg",
       },
       {
         id: "nt_nt_04_the_early_spread_of_christianity",
-        title: "Nt 04 The Early Spread Of Christianity",
+        title: "The Early Spread Of Christianity",
         thumbnail: "/maps/nt/nt_04_the_early_spread_of_christianity.jpeg",
         fullImage: "/maps/nt/nt_04_the_early_spread_of_christianity.jpeg",
       },
       {
         id: "nt_nt_05_pauls_missionary_travels_and_journey_to_rome",
-        title: "Nt 05 Pauls Missionary Travels And Journey To Rome",
+        title: "Pauls Missionary Travels And Journey To Rome",
         thumbnail: "/maps/nt/nt_05_pauls_missionary_travels_and_journey_to_rome.jpeg",
         fullImage: "/maps/nt/nt_05_pauls_missionary_travels_and_journey_to_rome.jpeg",
       },
       {
         id: "nt_nt_06_the_roman_empire_and_the_early_church",
-        title: "Nt 06 The Roman Empire And The Early Church",
+        title: "The Roman Empire And The Early Church",
         thumbnail: "/maps/nt/nt_06_the_roman_empire_and_the_early_church.jpeg",
         fullImage: "/maps/nt/nt_06_the_roman_empire_and_the_early_church.jpeg",
       },
       {
         id: "nt_nt_07_rome_empire",
-        title: "Nt 07 Rome Empire",
+        title: "Rome Empire",
         thumbnail: "/maps/nt/nt_07_rome_empire.jpeg",
         fullImage: "/maps/nt/nt_07_rome_empire.jpeg",
       },
       {
         id: "nt_nt_08_division_of_levant",
-        title: "Nt 08 Division Of Levant",
+        title: "Division Of Levant",
         thumbnail: "/maps/nt/nt_08_division_of_levant.jpeg",
         fullImage: "/maps/nt/nt_08_division_of_levant.jpeg",
       },
       {
         id: "nt_nt_09_christ_in_galilee",
-        title: "Nt 09 Christ In Galilee",
+        title: "Christ In Galilee",
         thumbnail: "/maps/nt/nt_09_christ_in_galilee.jpeg",
         fullImage: "/maps/nt/nt_09_christ_in_galilee.jpeg",
       },
       {
         id: "nt_nt_10_galilee_to_jerusalem",
-        title: "Nt 10 Galilee To Jerusalem",
+        title: "Galilee To Jerusalem",
         thumbnail: "/maps/nt/nt_10_galilee_to_jerusalem.jpeg",
         fullImage: "/maps/nt/nt_10_galilee_to_jerusalem.jpeg",
       },
       {
         id: "nt_nt_11_christ_in_judea",
-        title: "Nt 11 Christ In Judea",
+        title: "Christ In Judea",
         thumbnail: "/maps/nt/nt_11_christ_in_judea.jpeg",
         fullImage: "/maps/nt/nt_11_christ_in_judea.jpeg",
       },
       {
         id: "nt_nt_12_jerusalem",
-        title: "Nt 12 Jerusalem",
+        title: "Jerusalem",
         thumbnail: "/maps/nt/nt_12_jerusalem.jpeg",
         fullImage: "/maps/nt/nt_12_jerusalem.jpeg",
       },
       {
         id: "nt_nt_13_early_christianity_east",
-        title: "Nt 13 Early Christianity East",
+        title: "Early Christianity East",
         thumbnail: "/maps/nt/nt_13_early_christianity_east.jpeg",
         fullImage: "/maps/nt/nt_13_early_christianity_east.jpeg",
       },
       {
         id: "nt_nt_14_early_christianity_west",
-        title: "Nt 14 Early Christianity West",
+        title: "Early Christianity West",
         thumbnail: "/maps/nt/nt_14_early_christianity_west.jpeg",
         fullImage: "/maps/nt/nt_14_early_christianity_west.jpeg",
       },
       {
         id: "nt_nt_15_pauls_journeys",
-        title: "Nt 15 Pauls Journeys",
+        title: "Pauls Journeys",
         thumbnail: "/maps/nt/nt_15_pauls_journeys.jpeg",
         fullImage: "/maps/nt/nt_15_pauls_journeys.jpeg",
       },
       {
         id: "nt_nt_16_epistles_overview",
-        title: "Nt 16 Epistles Overview",
+        title: "Epistles Overview",
         thumbnail: "/maps/nt/nt_16_epistles_overview.jpeg",
         fullImage: "/maps/nt/nt_16_epistles_overview.jpeg",
       },
@@ -349,325 +347,325 @@ const mockMapData = {
     maps: [
       {
         id: "nt_books_ntb_001_rome_empire",
-        title: "Ntb 001 Rome Empire",
+        title: "Rome Empire",
         thumbnail: "/maps/nt_books/ntb_001_rome_empire.jpeg",
         fullImage: "/maps/nt_books/ntb_001_rome_empire.jpeg",
       },
       {
         id: "nt_books_ntb_002_division_of_levant",
-        title: "Ntb 002 Division Of Levant",
+        title: "Division Of Levant",
         thumbnail: "/maps/nt_books/ntb_002_division_of_levant.jpeg",
         fullImage: "/maps/nt_books/ntb_002_division_of_levant.jpeg",
       },
       {
         id: "nt_books_ntb_003_christ_in_galilee",
-        title: "Ntb 003 Christ In Galilee",
+        title: "Christ In Galilee",
         thumbnail: "/maps/nt_books/ntb_003_christ_in_galilee.jpeg",
         fullImage: "/maps/nt_books/ntb_003_christ_in_galilee.jpeg",
       },
       {
         id: "nt_books_ntb_004_galilee_to_jerusalem",
-        title: "Ntb 004 Galilee To Jerusalem",
+        title: "Galilee To Jerusalem",
         thumbnail: "/maps/nt_books/ntb_004_galilee_to_jerusalem.jpeg",
         fullImage: "/maps/nt_books/ntb_004_galilee_to_jerusalem.jpeg",
       },
       {
         id: "nt_books_ntb_005_christ_in_judea",
-        title: "Ntb 005 Christ In Judea",
+        title: "Christ In Judea",
         thumbnail: "/maps/nt_books/ntb_005_christ_in_judea.jpeg",
         fullImage: "/maps/nt_books/ntb_005_christ_in_judea.jpeg",
       },
       {
         id: "nt_books_ntb_006_jerusalem",
-        title: "Ntb 006 Jerusalem",
+        title: "Jerusalem",
         thumbnail: "/maps/nt_books/ntb_006_jerusalem.jpeg",
         fullImage: "/maps/nt_books/ntb_006_jerusalem.jpeg",
       },
       {
         id: "nt_books_ntb_007_matthew_2",
-        title: "Ntb 007 Matthew 2",
+        title: "Matthew 2",
         thumbnail: "/maps/nt_books/ntb_007_matthew_2.png",
         fullImage: "/maps/nt_books/ntb_007_matthew_2.png",
       },
       {
         id: "nt_books_ntb_008_luke_2",
-        title: "Ntb 008 Luke 2",
+        title: "Luke 2",
         thumbnail: "/maps/nt_books/ntb_008_luke_2.png",
         fullImage: "/maps/nt_books/ntb_008_luke_2.png",
       },
       {
         id: "nt_books_ntb_009_luke_24",
-        title: "Ntb 009 Luke 24",
+        title: "Luke 24",
         thumbnail: "/maps/nt_books/ntb_009_luke_24.png",
         fullImage: "/maps/nt_books/ntb_009_luke_24.png",
       },
       {
         id: "nt_books_ntb_010_john_1",
-        title: "Ntb 010 John 1",
+        title: "John 1",
         thumbnail: "/maps/nt_books/ntb_010_john_1.png",
         fullImage: "/maps/nt_books/ntb_010_john_1.png",
       },
       {
         id: "nt_books_ntb_011_john_2-3",
-        title: "Ntb 011 John 2 3",
+        title: "John 2 3",
         thumbnail: "/maps/nt_books/ntb_011_john_2-3.png",
         fullImage: "/maps/nt_books/ntb_011_john_2-3.png",
       },
       {
         id: "nt_books_ntb_012_john_4",
-        title: "Ntb 012 John 4",
+        title: "John 4",
         thumbnail: "/maps/nt_books/ntb_012_john_4.png",
         fullImage: "/maps/nt_books/ntb_012_john_4.png",
       },
       {
         id: "nt_books_ntb_013_john_6",
-        title: "Ntb 013 John 6",
+        title: "John 6",
         thumbnail: "/maps/nt_books/ntb_013_john_6.png",
         fullImage: "/maps/nt_books/ntb_013_john_6.png",
       },
       {
         id: "nt_books_ntb_014_john_7-10",
-        title: "Ntb 014 John 7 10",
+        title: "John 7 10",
         thumbnail: "/maps/nt_books/ntb_014_john_7-10.png",
         fullImage: "/maps/nt_books/ntb_014_john_7-10.png",
       },
       {
         id: "nt_books_ntb_015_john_11-12",
-        title: "Ntb 015 John 11 12",
+        title: "John 11 12",
         thumbnail: "/maps/nt_books/ntb_015_john_11-12.png",
         fullImage: "/maps/nt_books/ntb_015_john_11-12.png",
       },
       {
         id: "nt_books_ntb_016_early_christianity_east",
-        title: "Ntb 016 Early Christianity East",
+        title: "Early Christianity East",
         thumbnail: "/maps/nt_books/ntb_016_early_christianity_east.png",
         fullImage: "/maps/nt_books/ntb_016_early_christianity_east.png",
       },
       {
         id: "nt_books_ntb_017_early_christianity_west",
-        title: "Ntb 017 Early Christianity West",
+        title: "Early Christianity West",
         thumbnail: "/maps/nt_books/ntb_017_early_christianity_west.png",
         fullImage: "/maps/nt_books/ntb_017_early_christianity_west.png",
       },
       {
         id: "nt_books_ntb_018_pauls_journeys",
-        title: "Ntb 018 Pauls Journeys",
+        title: "Pauls Journeys",
         thumbnail: "/maps/nt_books/ntb_018_pauls_journeys.png",
         fullImage: "/maps/nt_books/ntb_018_pauls_journeys.png",
       },
       {
         id: "nt_books_ntb_019_antioch",
-        title: "Ntb 019 Antioch",
+        title: "Antioch",
         thumbnail: "/maps/nt_books/ntb_019_antioch.jpeg",
         fullImage: "/maps/nt_books/ntb_019_antioch.jpeg",
       },
       {
         id: "nt_books_ntb_020_athens",
-        title: "Ntb 020 Athens",
+        title: "Athens",
         thumbnail: "/maps/nt_books/ntb_020_athens.jpeg",
         fullImage: "/maps/nt_books/ntb_020_athens.jpeg",
       },
       {
         id: "nt_books_ntb_021_corinth",
-        title: "Ntb 021 Corinth",
+        title: "Corinth",
         thumbnail: "/maps/nt_books/ntb_021_corinth.jpeg",
         fullImage: "/maps/nt_books/ntb_021_corinth.jpeg",
       },
       {
         id: "nt_books_ntb_022_ephesus",
-        title: "Ntb 022 Ephesus",
+        title: "Ephesus",
         thumbnail: "/maps/nt_books/ntb_022_ephesus.jpeg",
         fullImage: "/maps/nt_books/ntb_022_ephesus.jpeg",
       },
       {
         id: "nt_books_ntb_023_caesarea",
-        title: "Ntb 023 Caesarea",
+        title: "Caesarea",
         thumbnail: "/maps/nt_books/ntb_023_caesarea.jpeg",
         fullImage: "/maps/nt_books/ntb_023_caesarea.jpeg",
       },
       {
         id: "nt_books_ntb_024_rome",
-        title: "Ntb 024 Rome",
+        title: "Rome",
         thumbnail: "/maps/nt_books/ntb_024_rome.jpeg",
         fullImage: "/maps/nt_books/ntb_024_rome.jpeg",
       },
       {
         id: "nt_books_ntb_025_acts_2",
-        title: "Ntb 025 Acts 2",
+        title: "Acts 2",
         thumbnail: "/maps/nt_books/ntb_025_acts_2.jpeg",
         fullImage: "/maps/nt_books/ntb_025_acts_2.jpeg",
       },
       {
         id: "nt_books_ntb_026_acts_6",
-        title: "Ntb 026 Acts 6",
+        title: "Acts 6",
         thumbnail: "/maps/nt_books/ntb_026_acts_6.jpeg",
         fullImage: "/maps/nt_books/ntb_026_acts_6.jpeg",
       },
       {
         id: "nt_books_ntb_027_acts_7",
-        title: "Ntb 027 Acts 7",
+        title: "Acts 7",
         thumbnail: "/maps/nt_books/ntb_027_acts_7.jpeg",
         fullImage: "/maps/nt_books/ntb_027_acts_7.jpeg",
       },
       {
         id: "nt_books_ntb_028_acts_8",
-        title: "Ntb 028 Acts 8",
+        title: "Acts 8",
         thumbnail: "/maps/nt_books/ntb_028_acts_8.jpeg",
         fullImage: "/maps/nt_books/ntb_028_acts_8.jpeg",
       },
       {
         id: "nt_books_ntb_029_acts_9",
-        title: "Ntb 029 Acts 9",
+        title: "Acts 9",
         thumbnail: "/maps/nt_books/ntb_029_acts_9.jpeg",
         fullImage: "/maps/nt_books/ntb_029_acts_9.jpeg",
       },
       {
         id: "nt_books_ntb_030_acts_9-11",
-        title: "Ntb 030 Acts 9 11",
+        title: "Acts 9 11",
         thumbnail: "/maps/nt_books/ntb_030_acts_9-11.jpeg",
         fullImage: "/maps/nt_books/ntb_030_acts_9-11.jpeg",
       },
       {
         id: "nt_books_ntb_031_acts_11",
-        title: "Ntb 031 Acts 11",
+        title: "Acts 11",
         thumbnail: "/maps/nt_books/ntb_031_acts_11.jpeg",
         fullImage: "/maps/nt_books/ntb_031_acts_11.jpeg",
       },
       {
         id: "nt_books_ntb_032_acts_12",
-        title: "Ntb 032 Acts 12",
+        title: "Acts 12",
         thumbnail: "/maps/nt_books/ntb_032_acts_12.jpeg",
         fullImage: "/maps/nt_books/ntb_032_acts_12.jpeg",
       },
       {
         id: "nt_books_ntb_033_acts_13",
-        title: "Ntb 033 Acts 13",
+        title: "Acts 13",
         thumbnail: "/maps/nt_books/ntb_033_acts_13.jpeg",
         fullImage: "/maps/nt_books/ntb_033_acts_13.jpeg",
       },
       {
         id: "nt_books_ntb_034_acts_14",
-        title: "Ntb 034 Acts 14",
+        title: "Acts 14",
         thumbnail: "/maps/nt_books/ntb_034_acts_14.jpeg",
         fullImage: "/maps/nt_books/ntb_034_acts_14.jpeg",
       },
       {
         id: "nt_books_ntb_035_acts_15",
-        title: "Ntb 035 Acts 15",
+        title: "Acts 15",
         thumbnail: "/maps/nt_books/ntb_035_acts_15.jpeg",
         fullImage: "/maps/nt_books/ntb_035_acts_15.jpeg",
       },
       {
         id: "nt_books_ntb_036_acts_16am",
-        title: "Ntb 036 Acts 16Am",
+        title: "Acts 16Am",
         thumbnail: "/maps/nt_books/ntb_036_acts_16am.jpeg",
         fullImage: "/maps/nt_books/ntb_036_acts_16am.jpeg",
       },
       {
         id: "nt_books_ntb_037_acts_16-18",
-        title: "Ntb 037 Acts 16 18",
+        title: "Acts 16 18",
         thumbnail: "/maps/nt_books/ntb_037_acts_16-18.jpeg",
         fullImage: "/maps/nt_books/ntb_037_acts_16-18.jpeg",
       },
       {
         id: "nt_books_ntb_038_acts_18",
-        title: "Ntb 038 Acts 18",
+        title: "Acts 18",
         thumbnail: "/maps/nt_books/ntb_038_acts_18.jpeg",
         fullImage: "/maps/nt_books/ntb_038_acts_18.jpeg",
       },
       {
         id: "nt_books_ntb_039_acts_19-20",
-        title: "Ntb 039 Acts 19 20",
+        title: "Acts 19 20",
         thumbnail: "/maps/nt_books/ntb_039_acts_19-20.jpeg",
         fullImage: "/maps/nt_books/ntb_039_acts_19-20.jpeg",
       },
       {
         id: "nt_books_ntb_040_acts_21",
-        title: "Ntb 040 Acts 21",
+        title: "Acts 21",
         thumbnail: "/maps/nt_books/ntb_040_acts_21.jpeg",
         fullImage: "/maps/nt_books/ntb_040_acts_21.jpeg",
       },
       {
         id: "nt_books_ntb_041_acts_23",
-        title: "Ntb 041 Acts 23",
+        title: "Acts 23",
         thumbnail: "/maps/nt_books/ntb_041_acts_23.jpeg",
         fullImage: "/maps/nt_books/ntb_041_acts_23.jpeg",
       },
       {
         id: "nt_books_ntb_042_acts_27",
-        title: "Ntb 042 Acts 27",
+        title: "Acts 27",
         thumbnail: "/maps/nt_books/ntb_042_acts_27.jpeg",
         fullImage: "/maps/nt_books/ntb_042_acts_27.jpeg",
       },
       {
         id: "nt_books_ntb_043_acts_28",
-        title: "Ntb 043 Acts 28",
+        title: "Acts 28",
         thumbnail: "/maps/nt_books/ntb_043_acts_28.jpeg",
         fullImage: "/maps/nt_books/ntb_043_acts_28.jpeg",
       },
       {
         id: "nt_books_ntb_044_epistles_overview",
-        title: "Ntb 044 Epistles Overview",
+        title: "Epistles Overview",
         thumbnail: "/maps/nt_books/ntb_044_epistles_overview.jpeg",
         fullImage: "/maps/nt_books/ntb_044_epistles_overview.jpeg",
       },
       {
         id: "nt_books_ntb_045_romans",
-        title: "Ntb 045 Romans",
+        title: "Romans",
         thumbnail: "/maps/nt_books/ntb_045_romans.jpeg",
         fullImage: "/maps/nt_books/ntb_045_romans.jpeg",
       },
       {
         id: "nt_books_ntb_046_corinthians",
-        title: "Ntb 046 Corinthians",
+        title: "Corinthians",
         thumbnail: "/maps/nt_books/ntb_046_corinthians.jpeg",
         fullImage: "/maps/nt_books/ntb_046_corinthians.jpeg",
       },
       {
         id: "nt_books_ntb_047_galatians",
-        title: "Ntb 047 Galatians",
+        title: "Galatians",
         thumbnail: "/maps/nt_books/ntb_047_galatians.jpeg",
         fullImage: "/maps/nt_books/ntb_047_galatians.jpeg",
       },
       {
         id: "nt_books_ntb_048_philippians",
-        title: "Ntb 048 Philippians",
+        title: "Philippians",
         thumbnail: "/maps/nt_books/ntb_048_philippians.jpeg",
         fullImage: "/maps/nt_books/ntb_048_philippians.jpeg",
       },
       {
         id: "nt_books_ntb_049_colossians",
-        title: "Ntb 049 Colossians",
+        title: "Colossians",
         thumbnail: "/maps/nt_books/ntb_049_colossians.jpeg",
         fullImage: "/maps/nt_books/ntb_049_colossians.jpeg",
       },
       {
         id: "nt_books_ntb_050_thessalonians",
-        title: "Ntb 050 Thessalonians",
+        title: "Thessalonians",
         thumbnail: "/maps/nt_books/ntb_050_thessalonians.jpeg",
         fullImage: "/maps/nt_books/ntb_050_thessalonians.jpeg",
       },
       {
         id: "nt_books_ntb_051_timothy",
-        title: "Ntb 051 Timothy",
+        title: "Timothy",
         thumbnail: "/maps/nt_books/ntb_051_timothy.jpeg",
         fullImage: "/maps/nt_books/ntb_051_timothy.jpeg",
       },
       {
         id: "nt_books_ntb_052_titus",
-        title: "Ntb 052 Titus",
+        title: "Titus",
         thumbnail: "/maps/nt_books/ntb_052_titus.jpeg",
         fullImage: "/maps/nt_books/ntb_052_titus.jpeg",
       },
       {
         id: "nt_books_ntb_053_peter",
-        title: "Ntb 053 Peter",
+        title: "Peter",
         thumbnail: "/maps/nt_books/ntb_053_peter.jpeg",
         fullImage: "/maps/nt_books/ntb_053_peter.jpeg",
       },
       {
         id: "nt_books_ntb_054_revelation",
-        title: "Ntb 054 Revelation",
+        title: "Revelation",
         thumbnail: "/maps/nt_books/ntb_054_revelation.png",
         fullImage: "/maps/nt_books/ntb_054_revelation.png",
       },
@@ -694,6 +692,7 @@ const BibleMapsApp = () => {
   const [favoriteFromContext, setFavoriteFromContext] = useState(null) // Track where favorites was opened from
   const [favoriteFromViewMode, setFavoriteFromViewMode] = useState("smallList") // Store view mode when opening favorites
   const [isSystemNavVisible, setIsSystemNavVisible] = useState(false) // Track system navigation visibility
+  const [highlightActiveMap, setHighlightActiveMap] = useState(false) // Track if we should highlight the active map
 
   // Map viewer states
   const [mapScale, setMapScale] = useState(1)
@@ -713,57 +712,132 @@ const BibleMapsApp = () => {
 
   const longPressProps = useLongPress(() => handleLongPress(popupTitle))
 
-  // Handle system navigation visibility
-  
-  // Handle system navigation visibility
-  
+  // Handle system navigation visibility and fullscreen
   useEffect(() => {
-    let hideSystemNavTimer = null
+    const requestFullscreen = () => {
+      if (currentScreen !== "home") {
+        // Add CSS classes and styles to hide system UI
+        document.documentElement.classList.add('fullscreen-mode')
+        document.body.classList.add('fullscreen-mode')
+      
+        // Hide system navigation bar for non-home screens
+        if (document.documentElement.requestFullscreen) {
+          document.documentElement.requestFullscreen().catch(() => {
+            // Fallback for browsers that don't support requestFullscreen
+            document.body.style.overflow = 'hidden'
+          })
+        } else {
+          // iOS Safari fallback
+          const viewport = document.querySelector('meta[name=viewport]')
+          if (viewport) {
+            viewport.setAttribute('content', 'width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no')
+          }
+          // Add CSS to hide system UI
+          document.body.style.overflow = 'hidden'
+        }
 
-    const handleTouchStart = (e) => {
-      // Only show system nav on non-home screens when touching bottom edge
-      if (currentScreen !== "home" && e.touches[0].clientY > window.innerHeight - 30) {
-        setIsSystemNavVisible(true)
+        // Add custom styles for hiding system navigation
+        const style = document.createElement('style')
+        style.id = 'fullscreen-styles'
+        style.textContent = `
+          html.fullscreen-mode, body.fullscreen-mode {
+            height: 100vh !important;
+            height: 100dvh !important;
+            overflow: hidden !important;
+            -webkit-overflow-scrolling: touch !important;
+          }
         
-        // Clear any existing timer
-        if (hideSystemNavTimer) clearTimeout(hideSystemNavTimer)
+          .fullscreen-mode {
+            /* Hide scrollbars */
+            -ms-overflow-style: none !important;
+            scrollbar-width: none !important;
+          }
         
-        // Auto-hide after 4 seconds
-        hideSystemNavTimer = setTimeout(() => {
-          setIsSystemNavVisible(false)
-        }, 4000)
+          .fullscreen-mode::-webkit-scrollbar {
+            display: none !important;
+          }
+        
+          /* iOS specific - hide home indicator and status bar */
+          @supports (padding: max(0px)) {
+            .fullscreen-mode {
+              padding-bottom: env(safe-area-inset-bottom, 0px) !important;
+            }
+          }
+        
+          /* Android specific - hide navigation bar */
+          @media (display-mode: fullscreen) {
+            html, body {
+              height: 100vh !important;
+              overflow: hidden !important;
+            }
+          }
+      `
+        if (!document.getElementById('fullscreen-styles')) {
+          document.head.appendChild(style)
+        }
+      } else {
+        // Remove fullscreen classes and styles for home screen
+        document.documentElement.classList.remove('fullscreen-mode')
+        document.body.classList.remove('fullscreen-mode')
+      
+        // Show system navigation bar for home screen
+        if (document.exitFullscreen && document.fullscreenElement) {
+          document.exitFullscreen().catch(() => {
+            document.body.style.overflow = 'auto'
+          })
+        } else {
+          document.body.style.overflow = 'auto'
+        }
+
+        // Remove custom styles
+        const existingStyle = document.getElementById('fullscreen-styles')
+        if (existingStyle) {
+          existingStyle.remove()
+        }
+
+        // Restore viewport
+        const viewport = document.querySelector('meta[name=viewport]')
+        if (viewport) {
+          viewport.setAttribute('content', 'width=device-width, initial-scale=1')
+        }
       }
     }
 
-    const handleTouchMove = (e) => {
-      // Hide system nav if user moves away from bottom edge
-      if (isSystemNavVisible && e.touches[0].clientY < window.innerHeight - 100) {
-        setIsSystemNavVisible(false)
-        if (hideSystemNavTimer) clearTimeout(hideSystemNavTimer)
+    const handleTouchStart = (e) => {
+      // Detect if touch is from bottom edge (within 50px)
+      if (currentScreen !== "home" && e.touches[0].clientY > window.innerHeight - 50) {
+        setIsSystemNavVisible(true)
+        // Auto-hide after 3 seconds
+        setTimeout(() => {
+          setIsSystemNavVisible(false)
+        }, 3000)
       }
     }
 
     const handleVisibilityChange = () => {
       if (document.visibilityState === 'visible') {
         setIsSystemNavVisible(false)
-        if (hideSystemNavTimer) clearTimeout(hideSystemNavTimer)
+        requestFullscreen()
       }
     }
 
-    // Only add listeners for non-home screens
-    if (currentScreen !== "home") {
-      document.addEventListener('touchstart', handleTouchStart, { passive: false })
-      document.addEventListener('touchmove', handleTouchMove, { passive: false })
-    }
+    requestFullscreen()
+    document.addEventListener('touchstart', handleTouchStart)
     document.addEventListener('visibilitychange', handleVisibilityChange)
 
     return () => {
-      if (hideSystemNavTimer) clearTimeout(hideSystemNavTimer)
       document.removeEventListener('touchstart', handleTouchStart)
-      document.removeEventListener('touchmove', handleTouchMove)
       document.removeEventListener('visibilitychange', handleVisibilityChange)
+      // Cleanup - restore normal state when component unmounts
+      document.documentElement.classList.remove('fullscreen-mode')
+      document.body.classList.remove('fullscreen-mode')
+      document.body.style.overflow = 'auto'
+      const existingStyle = document.getElementById('fullscreen-styles')
+      if (existingStyle) {
+        existingStyle.remove()
+      }
     }
-  }, [currentScreen, isSystemNavVisible])
+  }, [currentScreen])
 
   useEffect(() => {
     // Splash screen logic
@@ -858,8 +932,11 @@ const BibleMapsApp = () => {
         startX: touch.clientX,
         startY: touch.clientY,
         lastScale: mapScale,
+        hasMoved: false,
+        isSwipe: false,
       }
       setIsDragging(true)
+
     } else if (e.touches.length === 2) {
       const distance = Math.hypot(
         e.touches[0].clientX - e.touches[1].clientX,
@@ -878,55 +955,101 @@ const BibleMapsApp = () => {
       const deltaX = touch.clientX - touchRef.current.startX
       const deltaY = touch.clientY - touchRef.current.startY
 
-      if (mapScale <= fitToPageScale) {
-        if (Math.abs(deltaX) > 50 && Math.abs(deltaY) < 30) {
-          if (deltaX > 0 && currentMapIndex > 0) {
-            // Right swipe - previous map
-            const newIndex = currentMapIndex - 1
-            setCurrentMapIndex(newIndex)
-            setActiveMap(mockMapData[currentCategory].maps[newIndex])
-            setMapScale(mapScale) // Keep same scale
-          } else if (deltaX < 0 && currentMapIndex < mockMapData[currentCategory].maps.length - 1) {
-            // Left swipe - next map
-            const newIndex = currentMapIndex + 1
-            setCurrentMapIndex(newIndex)
-            setActiveMap(mockMapData[currentCategory].maps[newIndex])
-            setMapScale(mapScale) // Keep same scale
-          }
-          setIsDragging(false)
-        }
-      } else {
-        const newX = mapPosition.x + deltaX / mapScale
-        const newY = mapPosition.y + deltaY / mapScale
+      // Mark as having moved if movement exceeds threshold
+      if (!touchRef.current.hasMoved && (Math.abs(deltaX) > 10 || Math.abs(deltaY) > 10)) {
+        touchRef.current.hasMoved = true
+      }
 
-        // Apply boundary constraints
+      // Check if this is a swipe gesture (horizontal movement > vertical movement and sufficient distance)
+      if (!touchRef.current.isSwipe && Math.abs(deltaX) > 30 && Math.abs(deltaX) > Math.abs(deltaY) * 2) {
+        touchRef.current.isSwipe = true
+      }
+
+      if (mapScale <= fitToPageScale) {
+        // At or below fit-to-page scale
+        if (touchRef.current.isSwipe) {
+          // Handle swipe navigation between maps
+          if (Math.abs(deltaX) > 80) {
+            if (deltaX > 0 && currentMapIndex > 0) {
+              // Right swipe - previous map
+              const newIndex = currentMapIndex - 1
+              setCurrentMapIndex(newIndex)
+              setActiveMap(mockMapData[currentCategory].maps[newIndex])
+              setMapScale(mapScale) // Keep same scale
+              setMapPosition({ x: 0, y: 0 })
+              setIsDragging(false)
+              touchRef.current.isSwipe = false
+            } else if (deltaX < 0 && currentMapIndex < mockMapData[currentCategory].maps.length - 1) {
+              // Left swipe - next map
+              const newIndex = currentMapIndex + 1
+              setCurrentMapIndex(newIndex)
+              setActiveMap(mockMapData[currentCategory].maps[newIndex])
+              setMapScale(mapScale) // Keep same scale
+              setMapPosition({ x: 0, y: 0 })
+              setIsDragging(false)
+              touchRef.current.isSwipe = false
+            }
+          }
+        } else if (!touchRef.current.isSwipe && Math.abs(deltaX) > Math.abs(deltaY) && Math.abs(deltaX) > 50) {
+          // Handle left-to-right pan for navigation to category screen
+          if (deltaX > 50) {
+            setHighlightActiveMap(true)
+            setCurrentScreen("category")
+            setIsDragging(false)
+            // Clear highlight after 2 seconds
+            setTimeout(() => setHighlightActiveMap(false), 2000)
+            return
+          }
+        }
+        // Don't allow panning when at or below fit-to-page
+      } else {
+        // Above fit-to-page scale - allow panning with constraints
         const container = containerRef.current?.getBoundingClientRect()
         const img = mapRef.current
 
-        if (container && img) {
+        if (container && img && img.naturalWidth && img.naturalHeight) {
           const scaledWidth = img.naturalWidth * mapScale
           const scaledHeight = img.naturalHeight * mapScale
 
-          let clampedX = newX
-          let clampedY = newY
+          // Calculate current allowed movement
+          let newX = mapPosition.x
+          let newY = mapPosition.y
 
-          // Horizontal constraints
-          if (scaledWidth > container.width) {
+          // Apply panning constraints based on image vs viewport size
+          const imageWiderThanViewport = scaledWidth > container.width
+          const imageTallerThanViewport = scaledHeight > container.height
+
+          if (imageWiderThanViewport && !imageTallerThanViewport) {
+            // Case 1: Image wider than viewport, height fits - only horizontal panning
+            newX = mapPosition.x + deltaX / mapScale
             const maxX = (scaledWidth - container.width) / (2 * mapScale)
-            clampedX = Math.max(-maxX, Math.min(maxX, newX))
-          } else {
-            clampedX = 0
-          }
-
-          // Vertical constraints
-          if (scaledHeight > container.height) {
+            newX = Math.max(-maxX, Math.min(maxX, newX))
+            // Keep Y centered
+            newY = 0
+          } else if (!imageWiderThanViewport && imageTallerThanViewport) {
+            // Case 2: Image taller than viewport, width fits - only vertical panning  
+            newY = mapPosition.y + deltaY / mapScale
             const maxY = (scaledHeight - container.height) / (2 * mapScale)
-            clampedY = Math.max(-maxY, Math.min(maxY, newY))
+            newY = Math.max(-maxY, Math.min(maxY, newY))
+            // Keep X centered
+            newX = 0
+          } else if (imageWiderThanViewport && imageTallerThanViewport) {
+            // Case 3: Image both wider and taller - both horizontal and vertical panning
+            newX = mapPosition.x + deltaX / mapScale
+            newY = mapPosition.y + deltaY / mapScale
+            
+            const maxX = (scaledWidth - container.width) / (2 * mapScale)
+            const maxY = (scaledHeight - container.height) / (2 * mapScale)
+            
+            newX = Math.max(-maxX, Math.min(maxX, newX))
+            newY = Math.max(-maxY, Math.min(maxY, newY))
           } else {
-            clampedY = 0
+            // Case 4: Image fits entirely within viewport - no panning allowed
+            newX = 0
+            newY = 0
           }
 
-          setMapPosition({ x: clampedX, y: clampedY })
+          setMapPosition({ x: newX, y: newY })
         }
 
         touchRef.current.startX = touch.clientX
@@ -942,6 +1065,11 @@ const BibleMapsApp = () => {
         const scaleChange = distance / lastTouchDistance
         const newScale = Math.max(0.1, Math.min(5.0, mapScale * scaleChange))
         setMapScale(newScale)
+        
+        // Reset position when scaling to ensure proper centering
+        if (newScale <= fitToPageScale) {
+          setMapPosition({ x: 0, y: 0 })
+        }
       }
 
       setLastTouchDistance(distance)
@@ -951,6 +1079,10 @@ const BibleMapsApp = () => {
   const handleTouchEnd = () => {
     setIsDragging(false)
     setLastTouchDistance(0)
+    if (touchRef.current) {
+      touchRef.current.hasMoved = false
+      touchRef.current.isSwipe = false
+    }
   }
 
   const handleDoubleClick = () => {
@@ -1028,7 +1160,7 @@ const BibleMapsApp = () => {
     }
 
     return (
-      <div className={`min-h-screen ${isSearchingFromHome ? 'bg-green-50' : 'bg-gray-50'}`}>
+      <div className={`${currentScreen === 'home' ? 'min-h-screen' : 'h-screen overflow-hidden'} ${isSearchingFromHome ? 'bg-green-50' : 'bg-gray-50'}`}>                       
         {showTitlePopup && <TitlePopup title={popupTitle} onClose={() => setShowTitlePopup(false)} />}
 
         {/* Header */}
@@ -1199,13 +1331,8 @@ const BibleMapsApp = () => {
 
         {/* System Navigation Overlay */}
         {isSystemNavVisible && (
-          <div className="fixed inset-x-0 bottom-0 h-20 bg-black bg-opacity-40 z-[9999] pointer-events-none flex items-end justify-center pb-2">
-            {/* Simulated system navigation buttons */}
-            <div className="flex space-x-8 items-center bg-gray-900 bg-opacity-60 px-6 py-2 rounded-full">
-              <div className="w-6 h-6 bg-white bg-opacity-80 rounded-full"></div>
-              <div className="w-8 h-8 bg-white bg-opacity-80 rounded"></div>
-              <div className="w-6 h-6 bg-white bg-opacity-80 rounded-full"></div>
-            </div>
+          <div className="fixed inset-x-0 bottom-0 h-16 bg-black bg-opacity-50 z-[9999] pointer-events-none">
+            {/* This represents the system navigation area */}
           </div>
         )}
       </div>
@@ -1225,41 +1352,26 @@ const BibleMapsApp = () => {
     }
 
     return (
-      <div className="min-h-screen bg-green-50" style={{ paddingBottom: isSystemNavVisible ? '4rem' : '0' }}>
+      <div className="h-screen overflow-hidden bg-green-50" style={{ paddingBottom: isSystemNavVisible ? '4rem' : '0' }}>       
         {showTitlePopup && <TitlePopup title={popupTitle} onClose={() => setShowTitlePopup(false)} />}
 
         {/* Header */}
         <div className="bg-green-100 px-4 py-4">
+          {/* Row 1: Category icon + Title */}
           <div className="flex items-center mb-4">
-            <div className="mr-3 flex flex-col items-center">
-              {searchFromContext && searchFromContext !== "home" && (
-                <button 
-                  onClick={() => {
-                    // Return to category screen with original view mode
-                    setCurrentScreen("category")
-                    setViewMode(searchFromViewMode)
-                    setSearchFromContext(null)
-                    setActiveTab("view")
-                  }}
-                  className="flex items-center justify-center mb-1"
-                >
-                  <ArrowLeft className="w-6 h-6 text-blue-600" />
-                </button>
-              )}
-              <button 
-                onClick={() => {
-                  // Always navigate to home
-                  setCurrentScreen("home")
-                  setSearchFromContext(null)
-                  setIsSearchingFromHome(false)
-                  setSearchQuery("")
-                  setActiveTab("view")
-                }}
-                className="flex items-center justify-center"
-              >
-                <LayeredSquaresIcon className="w-6 h-6 text-blue-600" />
-              </button>
-            </div>
+            <button 
+              onClick={() => {
+                // Always navigate to home
+                setCurrentScreen("home")
+                setSearchFromContext(null)
+                setIsSearchingFromHome(false)
+                setSearchQuery("")
+                setActiveTab("view")
+              }}
+              className="flex items-center justify-center mr-3"
+            >
+              <LayeredSquaresIcon className="w-6 h-6 text-blue-600" />
+            </button>
             <div>
               <div className="flex items-center">
                 <Search className="w-4 h-4 text-blue-600 mr-1" />
@@ -1269,20 +1381,34 @@ const BibleMapsApp = () => {
             </div>
           </div>
 
-          {/* Search Bar */}
-          <div className="mb-4">
-            <input
-              type="text"
-              placeholder="Search maps..."
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full px-4 py-2 bg-white border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-              autoFocus
-            />
-          </div>
-
-          {/* View Mode Toggle */}
-          <div className="flex justify-end">
+          {/* Row 2: Arrow button on left, Search bar center, View Mode Toggle on right */}
+          <div className="flex items-center justify-between">
+            <div className="w-10">
+              {searchFromContext && searchFromContext !== "home" && (
+                <button 
+                  onClick={() => {
+                    // Return to category screen with original view mode
+                    setCurrentScreen("category")
+                    setViewMode(searchFromViewMode)
+                    setSearchFromContext(null)
+                    setActiveTab("view")
+                  }}
+                  className="flex items-center justify-center"
+                >
+                  <ArrowLeft className="w-6 h-6 text-blue-600" />
+                </button>
+              )}
+            </div>
+            <div className="flex-1 mx-4">
+              <input
+                type="text"
+                placeholder="Search maps..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="w-full px-3 py-2 bg-white border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm"
+                autoFocus
+              />
+            </div>
             <div className="flex items-center bg-white rounded-lg p-1">
               <button
                 onClick={() => setViewMode("grid")}
@@ -1385,12 +1511,23 @@ const BibleMapsApp = () => {
                   <div className="bg-white rounded-lg shadow-sm p-4">
                     <div className="space-y-2">
                       {searchResults.map((map, index) => (
-                        <div key={`title-${map.id}`} className="flex">
-                          <span className="text-sm text-gray-600 w-8 flex-shrink-0 text-right">{index + 1} :</span>
-                          <span className="text-sm text-black truncate ml-2">{map.title}</span>
-                          <span className="text-xs text-gray-500 ml-auto">{map.category}</span>
-                        </div>
-                      ))}
+                       <div key={`title-${map.id}`} className="flex items-center">
+                         {/* Number column, monospaced + left aligned */}
+                         <span className="text-sm font-medium text-gray-700 w-10 tabular-nums text-left">
+                           {index + 1}.
+                         </span>
+
+                         {/* Title */}
+                         <span className="text-sm text-black truncate ml-2 flex-1">
+                           {map.title}
+                         </span>
+
+                         {/* Category - aligned right with padding */}
+                         <span className="text-sm text-gray-500 ml-4 flex-shrink-0">
+                          {map.category}
+                         </span>
+                       </div>
+                     ))}
                     </div>
                   </div>
 
@@ -1440,15 +1577,10 @@ const BibleMapsApp = () => {
           )}
         </div>
 
-        {/* System Navigation Overlay */}
+        {/* System Navigation Overlay - overlays any bottom content */}
         {isSystemNavVisible && (
-          <div className="fixed inset-x-0 bottom-0 h-20 bg-black bg-opacity-40 z-[9999] pointer-events-none flex items-end justify-center pb-2">
-            {/* Simulated system navigation buttons */}
-            <div className="flex space-x-8 items-center bg-gray-900 bg-opacity-60 px-6 py-2 rounded-full">
-              <div className="w-6 h-6 bg-white bg-opacity-80 rounded-full"></div>
-              <div className="w-8 h-8 bg-white bg-opacity-80 rounded"></div>
-              <div className="w-6 h-6 bg-white bg-opacity-80 rounded-full"></div>
-            </div>
+          <div className="fixed inset-x-0 bottom-0 h-16 bg-black bg-opacity-50 z-[9999] pointer-events-none">
+            {/* This represents the system navigation area */}
           </div>
         )}
       </div>
@@ -1458,41 +1590,26 @@ const BibleMapsApp = () => {
   // Favorites Screen
   if (currentScreen === "favorites") {
     const favoritesList = getAllMaps().filter((map) => favorites.has(map.id))
-    
+   
     return (
-      <div className="min-h-screen bg-gray-50" style={{ paddingBottom: isSystemNavVisible ? '4rem' : '0' }}>
+      <div className="h-screen overflow-hidden bg-green-50" style={{ paddingBottom: isSystemNavVisible ? '4rem' : '0' }}>        
         {showTitlePopup && <TitlePopup title={popupTitle} onClose={() => setShowTitlePopup(false)} />}
 
         {/* Header */}
         <div className="bg-gray-100 px-4 py-4">
+          {/* Row 1: Category icon + Title */}
           <div className="flex items-center mb-4">
-            <div className="mr-3 flex flex-col items-center">
-              {favoriteFromContext && favoriteFromContext !== "home" && (
-                <button 
-                  onClick={() => {
-                    // Return to category screen with original view mode
-                    setCurrentScreen("category")
-                    setViewMode(favoriteFromViewMode)
-                    setFavoriteFromContext(null)
-                    setActiveTab("view")
-                  }}
-                  className="flex items-center justify-center mb-1"
-                >
-                  <ArrowLeft className="w-6 h-6 text-blue-600" />
-                </button>
-              )}
-              <button 
-                onClick={() => {
-                  // Always navigate to home
-                  setCurrentScreen("home")
-                  setFavoriteFromContext(null)
-                  setActiveTab("view")
-                }}
-                className="flex items-center justify-center"
-              >
-                <LayeredSquaresIcon className="w-6 h-6 text-blue-600" />
-              </button>
-            </div>
+            <button 
+              onClick={() => {
+                // Always navigate to home
+                setCurrentScreen("home")
+                setFavoriteFromContext(null)
+                setActiveTab("view")
+              }}
+              className="flex items-center justify-center mr-3"
+            >
+              <LayeredSquaresIcon className="w-6 h-6 text-blue-600" />
+            </button>
             <div>
               <div className="flex items-center">
                 <Star className="w-4 h-4 text-blue-600 mr-1" />
@@ -1502,8 +1619,24 @@ const BibleMapsApp = () => {
             </div>
           </div>
 
-          {/* View Mode Toggle */}
-          <div className="flex justify-end">
+          {/* Row 2: Arrow button on left, View Mode Toggle on right */}
+          <div className="flex items-center justify-between">
+            <div className="w-10">
+              {favoriteFromContext && favoriteFromContext !== "home" && (
+                <button 
+                  onClick={() => {
+                    // Return to category screen with original view mode
+                    setCurrentScreen("category")
+                    setViewMode(favoriteFromViewMode)
+                    setFavoriteFromContext(null)
+                    setActiveTab("view")
+                  }}
+                  className="flex items-center justify-center"
+                >
+                  <ArrowLeft className="w-6 h-6 text-blue-600" />
+                </button>
+              )}
+            </div>
             <div className="flex items-center bg-white rounded-lg p-1">
               <button
                 onClick={() => setViewMode("grid")}
@@ -1603,10 +1736,21 @@ const BibleMapsApp = () => {
                   <div className="bg-white rounded-lg shadow-sm p-4">
                     <div className="space-y-2">
                       {favoritesList.map((map, index) => (
-                        <div key={`title-${map.id}`} className="flex">
-                          <span className="text-sm text-gray-600 w-8 flex-shrink-0 text-right">{index + 1} :</span>
-                          <span className="text-sm text-black truncate ml-2">{map.title}</span>
-                          <span className="text-xs text-gray-500 ml-auto">{map.category}</span>
+                        <div key={`title-${map.id}`} className="flex items-center">
+                          {/* Number column, monospaced + left aligned */}
+                          <span className="text-sm font-medium text-gray-700 w-10 tabular-nums text-left">
+                            {index + 1}.
+                          </span>
+
+                          {/* Title */}
+                          <span className="text-sm text-black truncate ml-2 flex-1">
+                            {map.title}
+                          </span>
+
+                          {/* Category - aligned right with padding */}
+                          <span className="text-sm text-gray-500 ml-4 flex-shrink-0">
+                            {map.category}
+                          </span>
                         </div>
                       ))}
                     </div>
@@ -1658,13 +1802,8 @@ const BibleMapsApp = () => {
 
         {/* System Navigation Overlay */}
         {isSystemNavVisible && (
-          <div className="fixed inset-x-0 bottom-0 h-20 bg-black bg-opacity-40 z-[9999] pointer-events-none flex items-end justify-center pb-2">
-            {/* Simulated system navigation buttons */}
-            <div className="flex space-x-8 items-center bg-gray-900 bg-opacity-60 px-6 py-2 rounded-full">
-              <div className="w-6 h-6 bg-white bg-opacity-80 rounded-full"></div>
-              <div className="w-8 h-8 bg-white bg-opacity-80 rounded"></div>
-              <div className="w-6 h-6 bg-white bg-opacity-80 rounded-full"></div>
-            </div>
+          <div className="fixed inset-x-0 bottom-0 h-16 bg-black bg-opacity-50 z-[9999] pointer-events-none">
+            {/* This represents the system navigation area */}
           </div>
         )}
       </div>
@@ -1678,7 +1817,7 @@ const BibleMapsApp = () => {
     const Icon = showFavorites ? Star : mockMapData[currentCategory]?.icon || BookIcon
 
     return (
-      <div className="min-h-screen bg-gray-50" style={{ paddingBottom: isSystemNavVisible ? '4rem' : '0' }}>
+      <div className="h-screen overflow-hidden bg-gray-50" style={{ paddingBottom: isSystemNavVisible ? '4rem' : '0' }}>
         {showTitlePopup && <TitlePopup title={popupTitle} onClose={() => setShowTitlePopup(false)} />}
 
         {/* Header */}
@@ -1713,72 +1852,85 @@ const BibleMapsApp = () => {
         </div>
 
         {/* Content */}
-        <div className="px-4 py-4">
+        <div className="px-4 py-4">       
           {viewMode === "grid" && (
             <div className="grid grid-cols-2 gap-4">
-              {maps.map((map, index) => (
-                <div
-                  key={map.id}
-                  onClick={() => openMapViewer(map.category, mockMapData[map.category].maps.findIndex(m => m.id === map.id))}
-                  className="bg-white rounded-lg shadow-sm overflow-hidden cursor-pointer hover:shadow-md transition-shadow"
-                >
-                  <div className="relative">
-                    <img
-                      src={map.thumbnail || "/placeholder.svg"}
-                      alt={map.title}
-                      className="w-full h-32 object-cover"
-                    />
-                    <button
-                      onClick={(e) => {
-                        e.stopPropagation()
-                        toggleFavorite(map.id)
-                      }}
-                      className="absolute top-2 right-2"
-                    >
-                      <Star
-                        className={`w-5 h-5 ${favorites.has(map.id) ? "text-yellow-500 fill-current" : "text-gray-400"}`}
+              {maps.map((map, index) => {
+                const isActiveMap = activeMap && map.id === activeMap.id
+                const shouldHighlight = highlightActiveMap && isActiveMap
+                return (
+                  <div
+                    key={map.id}
+                    onClick={() => openMapViewer(map.category, mockMapData[map.category].maps.findIndex(m => m.id === map.id))}
+                    className={`bg-white rounded-lg shadow-sm overflow-hidden cursor-pointer hover:shadow-md transition-all duration-300 ${
+                      shouldHighlight ? 'ring-4 ring-blue-500 ring-opacity-75 shadow-lg scale-105' : ''
+                    }`}
+                  >
+                    <div className="relative">
+                      <img
+                        src={map.thumbnail || "/placeholder.svg"}
+                        alt={map.title}
+                        className="w-full h-32 object-cover"
                       />
-                    </button>
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation()
+                          toggleFavorite(map.id)
+                        }}
+                        className="absolute top-2 right-2"
+                      >
+                        <Star
+                          className={`w-5 h-5 ${favorites.has(map.id) ? "text-yellow-500 fill-current" : "text-gray-400"}`}
+                        />
+                      </button>
+                    </div>
+                    <div className="p-3">
+                      <p className="text-sm font-medium text-black line-clamp-2">{map.title}</p>
+                    </div>
                   </div>
-                  <div className="p-3">
-                    <p className="text-sm font-medium text-black line-clamp-2">{map.title}</p>
-                  </div>
-                </div>
-              ))}
+                )
+              })}
             </div>
           )}
 
           {viewMode === "smallList" && (
             <div className="bg-white rounded-lg shadow-sm">
-              {maps.map((map, index) => (
-                <div
-                  key={map.id}
-                  onClick={() => openMapViewer(map.category, mockMapData[map.category].maps.findIndex(m => m.id === map.id))}
-                  className="flex items-center p-4 border-b border-gray-100 last:border-b-0 cursor-pointer hover:bg-gray-50"
-                >
-                  <img
-                    src={map.thumbnail || "/placeholder.svg"}
-                    alt={map.title}
-                    className="w-16 h-12 object-cover rounded mr-4 flex-shrink-0"
-                  />
-                  <div className="flex-1 min-w-0">
-                    <p className="text-sm font-medium text-black truncate">{map.title}</p>
-                  </div>
-                  <button
-                    onClick={(e) => {
-                      e.stopPropagation()
-                      toggleFavorite(map.id)
-                    }}
-                    className="ml-2 flex-shrink-0"
+              {maps.map((map, index) => {
+                const isActiveMap = activeMap && map.id === activeMap.id
+                const shouldHighlight = highlightActiveMap && isActiveMap
+                return (
+                  <div
+                    key={map.id}
+                    onClick={() => openMapViewer(map.category, mockMapData[map.category].maps.findIndex(m => m.id === map.id))}
+                    className={`flex items-center p-4 border-b border-gray-100 last:border-b-0 cursor-pointer hover:bg-gray-50 transition-all duration-300 ${
+                      shouldHighlight ? 'bg-blue-50 ring-2 ring-blue-500 ring-inset' : ''
+                    }`}
                   >
-                    <Star
-                      className={`w-4 h-4 ${favorites.has(map.id) ? "text-yellow-500 fill-current" : "text-gray-400"}`}
+                    <img
+                      src={map.thumbnail || "/placeholder.svg"}
+                      alt={map.title}
+                      className="w-16 h-12 object-cover rounded mr-4 flex-shrink-0"
                     />
-                  </button>
-                </div>
-              ))}
+                    <div className="flex-1 min-w-0">
+                      <p className="text-sm font-medium text-black truncate">{map.title}</p>
+                    </div>
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation()
+                        toggleFavorite(map.id)
+                      }}
+                      className="ml-2 flex-shrink-0"
+                    >
+                      <Star
+                        className={`w-4 h-4 ${favorites.has(map.id) ? "text-yellow-500 fill-current" : "text-gray-400"}`}
+                      />
+                    </button>
+                  </div>
+                )
+              })}
             </div>
           )}
+
 
           {viewMode === "largeList" && (
             <div className="space-y-6">
@@ -1786,9 +1938,21 @@ const BibleMapsApp = () => {
               <div className="bg-white rounded-lg shadow-sm p-4">
                 <div className="space-y-2">
                   {maps.map((map, index) => (
-                    <div key={`title-${map.id}`} className="flex">
-                      <span className="text-sm text-gray-600 w-8 flex-shrink-0 text-right">{index + 1} :</span>
-                      <span className="text-sm text-black truncate ml-2">{map.title}</span>
+                    <div key={`title-${map.id}`} className="flex items-center">
+                      {/* Number column, left aligned, monospaced digits */}
+                      <span className="text-sm font-medium text-gray-700 w-10 text-left tabular-nums">
+                        {index + 1}.
+                      </span>
+
+                      {/* Title */}
+                      <span className="text-sm text-black truncate ml-2">
+                        {map.title}
+                      </span>
+
+                      {/* Category */}
+                      <span className="text-sm text-gray-500 ml-auto">
+                        {map.category}
+                      </span>
                     </div>
                   ))}
                 </div>
@@ -1796,12 +1960,17 @@ const BibleMapsApp = () => {
 
               {/* Large Thumbnails - Long Tile Container */}
               <div className="bg-white rounded-lg shadow-sm p-4">
-                {maps.map((map, index) => (
-                  <div key={map.id} className={index > 0 ? "mt-4" : ""}>
-                    <div
-                      onClick={() => openMapViewer(map.category, mockMapData[map.category].maps.findIndex(m => m.id === map.id))}
-                      className="bg-white rounded-lg shadow-sm overflow-hidden cursor-pointer hover:opacity-90 transition-opacity"
-                    >
+                {maps.map((map, index) => {
+                  const isActiveMap = activeMap && map.id === activeMap.id
+                  const shouldHighlight = highlightActiveMap && isActiveMap
+                  return (
+                    <div key={map.id} className={index > 0 ? "mt-4" : ""}>
+                      <div
+                        onClick={() => openMapViewer(map.category, mockMapData[map.category].maps.findIndex(m => m.id === map.id))}
+                        className={`bg-white rounded-lg shadow-sm overflow-hidden cursor-pointer hover:opacity-90 transition-all duration-300 ${
+                          shouldHighlight ? 'ring-4 ring-blue-500 ring-opacity-75 shadow-lg' : ''
+                        }`}
+                      >
                       <div className="relative">
                         <img
                           src={map.thumbnail || "/placeholder.svg"}
@@ -1829,15 +1998,15 @@ const BibleMapsApp = () => {
                       </div>
                     </div>
                   </div>
-                ))}
-              </div>
-            </div>
+                 )
+               })}
+             </div>
+           </div>
           )}
         </div>
 
         <BottomBar
           activeTab={activeTab}
-          isSystemNavVisible={isSystemNavVisible}
           onTabChange={(tab) => {
             setActiveTab(tab)
             if (tab === "search") {
@@ -1852,15 +2021,10 @@ const BibleMapsApp = () => {
           }}
         />
 
-        {/* System Navigation Overlay */}
+        {/* System Navigation Overlay - overlays bottom bar when visible */}
         {isSystemNavVisible && (
-          <div className="fixed inset-x-0 bottom-0 h-20 bg-black bg-opacity-40 z-[9999] pointer-events-none flex items-end justify-center pb-2">
-            {/* Simulated system navigation buttons */}
-            <div className="flex space-x-8 items-center bg-gray-900 bg-opacity-60 px-6 py-2 rounded-full">
-              <div className="w-6 h-6 bg-white bg-opacity-80 rounded-full"></div>
-              <div className="w-8 h-8 bg-white bg-opacity-80 rounded"></div>
-              <div className="w-6 h-6 bg-white bg-opacity-80 rounded-full"></div>
-            </div>
+          <div className="fixed inset-x-0 bottom-0 h-16 bg-black bg-opacity-50 z-[9999] pointer-events-none">
+            {/* This represents the system navigation area */}
           </div>
         )}
       </div>
@@ -1912,10 +2076,13 @@ const BibleMapsApp = () => {
           <div className="absolute top-4 left-4 flex flex-col pointer-events-auto">
             <button
               onClick={() => {
+                setHighlightActiveMap(true)
                 setCurrentScreen("category")
                 setShowControls(false)
+                // Clear highlight after 2 seconds
+                setTimeout(() => setHighlightActiveMap(false), 2000)
               }}
-              className="mb-2 p-2 bg-white bg-opacity-90 rounded-lg text-gray-800 shadow-sm"
+              className="mb-2 p-2 text-gray-800"
             >
               <ArrowLeft className="w-5 h-5" />
             </button>
@@ -1982,13 +2149,8 @@ const BibleMapsApp = () => {
 
         {/* System Navigation Overlay */}
         {isSystemNavVisible && (
-          <div className="fixed inset-x-0 bottom-0 h-20 bg-black bg-opacity-40 z-[9999] pointer-events-none flex items-end justify-center pb-2">
-            {/* Simulated system navigation buttons */}
-            <div className="flex space-x-8 items-center bg-gray-900 bg-opacity-60 px-6 py-2 rounded-full">
-              <div className="w-6 h-6 bg-white bg-opacity-80 rounded-full"></div>
-              <div className="w-8 h-8 bg-white bg-opacity-80 rounded"></div>
-              <div className="w-6 h-6 bg-white bg-opacity-80 rounded-full"></div>
-            </div>
+          <div className="fixed inset-x-0 bottom-0 h-16 bg-black bg-opacity-50 z-[9999] pointer-events-none">
+            {/* This represents the system navigation area */}
           </div>
         )}
       </div>
