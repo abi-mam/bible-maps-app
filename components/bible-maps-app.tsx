@@ -1,13 +1,15 @@
 "use client"
 
-import { useState, useEffect, useRef } from "react"
+import React, { useState, useEffect, useRef } from "react"
 import { Search, Star, Grid3X3, List, ChevronLeft, ChevronRight, ArrowLeft, Home } from "lucide-react"
 
 // ---------------- BOTTOM BAR ----------------
-const BottomBar = ({ activeTab, onTabChange }) => {
+const BottomBar = ({ activeTab, onTabChange, isSystemNavVisible }) => {
   return (
     <div
-      className="fixed inset-x-0 bottom-0 h-14 bg-white/95 backdrop-blur-md border-t border-gray-300 z-50 flex items-center justify-around pb-[env(safe-area-inset-bottom)]"
+      className={`fixed inset-x-0 bottom-0 h-14 bg-white/95 backdrop-blur-md border-t border-gray-300 z-50 flex items-center justify-around pb-[env(safe-area-inset-bottom)] transition-opacity duration-300 ${
+        isSystemNavVisible ? 'opacity-30 pointer-events-none' : 'opacity-100'
+      }`}
     >
       <button
         onClick={() => onTabChange("search")}
@@ -80,22 +82,22 @@ const LayeredSquaresIcon = ({ className }) => (
 // Custom Icon Components with enhanced styling from home card
 const ScrollIcon = ({ className }) => (
   <div className={className}>
-    <svg width="100%" height="100%" viewBox="0 0 128 128" xmlns="http://www.w3.org/2000/svg">
+    <svg width="100%" height="100%" viewBox="0 0 104 128" xmlns="http://www.w3.org/2000/svg">
       {/* Main scroll paper */}
-      <rect x="20" y="25" width="88" height="78" fill="#6b9b7a" rx="4" ry="4" />
+      <rect x="20" y="25" width="64" height="78" fill="#6b9b7a" rx="4" ry="4" />
       {/* Left wooden rod */}
-      <rect x="12" y="16" width="16" height="96" fill="#6b9b7a" rx="8" ry="8" />
-      <rect x="14" y="18" width="12" height="92" fill="#6b9b7a" rx="6" ry="6" />
+      <rect x="12" y="16" width="12" height="96" fill="#6b9b7a" rx="6" ry="6" />
+      <rect x="14" y="18" width="8" height="92" fill="#6b9b7a" rx="4" ry="4" />
       {/* Right wooden rod */}
-      <rect x="100" y="16" width="16" height="96" fill="#6b9b7a" rx="8" ry="8" />
-      <rect x="102" y="18" width="12" height="92" fill="#6b9b7a" rx="6" ry="6" />
+      <rect x="80" y="16" width="12" height="96" fill="#6b9b7a" rx="6" ry="6" />
+      <rect x="82" y="18" width="8" height="92" fill="#6b9b7a" rx="4" ry="4" />
       {/* Text lines on scroll */}
-      <line x1="32" y1="40" x2="96" y2="40" stroke="#f0f8f0" strokeWidth="2" />
-      <line x1="32" y1="50" x2="92" y2="50" stroke="#f0f8f0" strokeWidth="2" />
-      <line x1="32" y1="60" x2="96" y2="60" stroke="#f0f8f0" strokeWidth="2" />
-      <line x1="32" y1="70" x2="88" y2="70" stroke="#f0f8f0" strokeWidth="2" />
-      <line x1="32" y1="80" x2="96" y2="80" stroke="#f0f8f0" strokeWidth="2" />
-      <line x1="32" y1="90" x2="90" y2="90" stroke="#f0f8f0" strokeWidth="2" />
+      <line x1="28" y1="40" x2="76" y2="40" stroke="#f0f8f0" strokeWidth="2" />
+      <line x1="28" y1="50" x2="74" y2="50" stroke="#f0f8f0" strokeWidth="2" />
+      <line x1="28" y1="60" x2="76" y2="60" stroke="#f0f8f0" strokeWidth="2" />
+      <line x1="28" y1="70" x2="72" y2="70" stroke="#f0f8f0" strokeWidth="2" />
+      <line x1="28" y1="80" x2="76" y2="80" stroke="#f0f8f0" strokeWidth="2" />
+      <line x1="28" y1="90" x2="74" y2="90" stroke="#f0f8f0" strokeWidth="2" />
     </svg>
   </div>
 )
@@ -687,6 +689,11 @@ const BibleMapsApp = () => {
   const [showTitlePopup, setShowTitlePopup] = useState(false)
   const [popupTitle, setPopupTitle] = useState("")
   const [isSearchingFromHome, setIsSearchingFromHome] = useState(false)
+  const [searchFromContext, setSearchFromContext] = useState(null) // Track where search was opened from
+  const [searchFromViewMode, setSearchFromViewMode] = useState("smallList") // Store view mode when opening search
+  const [favoriteFromContext, setFavoriteFromContext] = useState(null) // Track where favorites was opened from
+  const [favoriteFromViewMode, setFavoriteFromViewMode] = useState("smallList") // Store view mode when opening favorites
+  const [isSystemNavVisible, setIsSystemNavVisible] = useState(false) // Track system navigation visibility
 
   // Map viewer states
   const [mapScale, setMapScale] = useState(1)
@@ -705,6 +712,58 @@ const BibleMapsApp = () => {
   }
 
   const longPressProps = useLongPress(() => handleLongPress(popupTitle))
+
+  // Handle system navigation visibility
+  
+  // Handle system navigation visibility
+  
+  useEffect(() => {
+    let hideSystemNavTimer = null
+
+    const handleTouchStart = (e) => {
+      // Only show system nav on non-home screens when touching bottom edge
+      if (currentScreen !== "home" && e.touches[0].clientY > window.innerHeight - 30) {
+        setIsSystemNavVisible(true)
+        
+        // Clear any existing timer
+        if (hideSystemNavTimer) clearTimeout(hideSystemNavTimer)
+        
+        // Auto-hide after 4 seconds
+        hideSystemNavTimer = setTimeout(() => {
+          setIsSystemNavVisible(false)
+        }, 4000)
+      }
+    }
+
+    const handleTouchMove = (e) => {
+      // Hide system nav if user moves away from bottom edge
+      if (isSystemNavVisible && e.touches[0].clientY < window.innerHeight - 100) {
+        setIsSystemNavVisible(false)
+        if (hideSystemNavTimer) clearTimeout(hideSystemNavTimer)
+      }
+    }
+
+    const handleVisibilityChange = () => {
+      if (document.visibilityState === 'visible') {
+        setIsSystemNavVisible(false)
+        if (hideSystemNavTimer) clearTimeout(hideSystemNavTimer)
+      }
+    }
+
+    // Only add listeners for non-home screens
+    if (currentScreen !== "home") {
+      document.addEventListener('touchstart', handleTouchStart, { passive: false })
+      document.addEventListener('touchmove', handleTouchMove, { passive: false })
+    }
+    document.addEventListener('visibilitychange', handleVisibilityChange)
+
+    return () => {
+      if (hideSystemNavTimer) clearTimeout(hideSystemNavTimer)
+      document.removeEventListener('touchstart', handleTouchStart)
+      document.removeEventListener('touchmove', handleTouchMove)
+      document.removeEventListener('visibilitychange', handleVisibilityChange)
+    }
+  }, [currentScreen, isSystemNavVisible])
 
   useEffect(() => {
     // Splash screen logic
@@ -944,7 +1003,7 @@ const BibleMapsApp = () => {
     return (
       <div className="fixed inset-0 bg-white flex items-center justify-center">
         <div className="flex flex-col items-center">
-          <BookIcon className="w-24 h-24 text-green-800 mb-4" />
+          <img src="/bible-maps-icon.png" alt="Bible Maps" className="w-24 h-24 mb-4" />
           <h1 className="text-2xl font-bold text-green-800">Bible Maps</h1>
         </div>
       </div>
@@ -995,14 +1054,11 @@ const BibleMapsApp = () => {
                   }
                 }}
                 onFocus={() => {
-                  if (searchQuery.trim()) {
-                    setIsSearchingFromHome(true)
-                  }
-                }}
-                onBlur={() => {
-                  if (!searchQuery.trim()) {
-                    setIsSearchingFromHome(false)
-                  }
+                  // Open search screen immediately when focusing on search bar
+                  setSearchFromContext("home")
+                  setSearchFromViewMode(viewMode)
+                  setCurrentScreen("search")
+                  setActiveTab("search")
                 }}
                 className="w-full px-4 py-2 bg-gray-100 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500"
               />
@@ -1011,7 +1067,10 @@ const BibleMapsApp = () => {
               onClick={() => {
                 setShowFavorites(true)
                 setCurrentCategory(null)
-                setCurrentScreen("category")
+                setFavoriteFromContext("home")
+                setFavoriteFromViewMode(viewMode)
+                setCurrentScreen("favorites")
+                setActiveTab("favorites")
               }}
               className="h-10 px-3 bg-gray-100 border border-gray-300 rounded-lg"
             >
@@ -1137,6 +1196,18 @@ const BibleMapsApp = () => {
             </div>
           </>
         )}
+
+        {/* System Navigation Overlay */}
+        {isSystemNavVisible && (
+          <div className="fixed inset-x-0 bottom-0 h-20 bg-black bg-opacity-40 z-[9999] pointer-events-none flex items-end justify-center pb-2">
+            {/* Simulated system navigation buttons */}
+            <div className="flex space-x-8 items-center bg-gray-900 bg-opacity-60 px-6 py-2 rounded-full">
+              <div className="w-6 h-6 bg-white bg-opacity-80 rounded-full"></div>
+              <div className="w-8 h-8 bg-white bg-opacity-80 rounded"></div>
+              <div className="w-6 h-6 bg-white bg-opacity-80 rounded-full"></div>
+            </div>
+          </div>
+        )}
       </div>
     )
   }
@@ -1152,17 +1223,43 @@ const BibleMapsApp = () => {
         map.title.toLowerCase().includes(searchQuery.toLowerCase())
       )
     }
-    
+
     return (
-      <div className="min-h-screen bg-green-50">
+      <div className="min-h-screen bg-green-50" style={{ paddingBottom: isSystemNavVisible ? '4rem' : '0' }}>
         {showTitlePopup && <TitlePopup title={popupTitle} onClose={() => setShowTitlePopup(false)} />}
 
         {/* Header */}
         <div className="bg-green-100 px-4 py-4">
           <div className="flex items-center mb-4">
-            <button onClick={() => setCurrentScreen("home")} className="mr-3">
-              <ArrowLeft className="w-6 h-6 text-blue-600" />
-            </button>
+            <div className="mr-3 flex flex-col items-center">
+              {searchFromContext && searchFromContext !== "home" && (
+                <button 
+                  onClick={() => {
+                    // Return to category screen with original view mode
+                    setCurrentScreen("category")
+                    setViewMode(searchFromViewMode)
+                    setSearchFromContext(null)
+                    setActiveTab("view")
+                  }}
+                  className="flex items-center justify-center mb-1"
+                >
+                  <ArrowLeft className="w-6 h-6 text-blue-600" />
+                </button>
+              )}
+              <button 
+                onClick={() => {
+                  // Always navigate to home
+                  setCurrentScreen("home")
+                  setSearchFromContext(null)
+                  setIsSearchingFromHome(false)
+                  setSearchQuery("")
+                  setActiveTab("view")
+                }}
+                className="flex items-center justify-center"
+              >
+                <LayeredSquaresIcon className="w-6 h-6 text-blue-600" />
+              </button>
+            </div>
             <div>
               <div className="flex items-center">
                 <Search className="w-4 h-4 text-blue-600 mr-1" />
@@ -1204,7 +1301,7 @@ const BibleMapsApp = () => {
         </div>
 
         {/* Search Results */}
-        <div className="px-4 py-4 pb-[calc(3.5rem+env(safe-area-inset-bottom))]">
+        <div className="px-4 py-4">
           {searchResults.length === 0 ? (
             <div className="flex flex-col items-center justify-center py-12">
               <Search className="w-12 h-12 text-gray-400 mb-4" />
@@ -1343,18 +1440,17 @@ const BibleMapsApp = () => {
           )}
         </div>
 
-        <BottomBar
-          activeTab="search"
-          onTabChange={(tab) => {
-            if (tab === "favorites") {
-              setCurrentScreen("favorites")
-              setActiveTab("favorites")
-            } else if (tab === "search") {
-              // Already on search screen
-              setActiveTab("search")
-            }
-          }}
-        />
+        {/* System Navigation Overlay */}
+        {isSystemNavVisible && (
+          <div className="fixed inset-x-0 bottom-0 h-20 bg-black bg-opacity-40 z-[9999] pointer-events-none flex items-end justify-center pb-2">
+            {/* Simulated system navigation buttons */}
+            <div className="flex space-x-8 items-center bg-gray-900 bg-opacity-60 px-6 py-2 rounded-full">
+              <div className="w-6 h-6 bg-white bg-opacity-80 rounded-full"></div>
+              <div className="w-8 h-8 bg-white bg-opacity-80 rounded"></div>
+              <div className="w-6 h-6 bg-white bg-opacity-80 rounded-full"></div>
+            </div>
+          </div>
+        )}
       </div>
     )
   }
@@ -1364,15 +1460,39 @@ const BibleMapsApp = () => {
     const favoritesList = getAllMaps().filter((map) => favorites.has(map.id))
     
     return (
-      <div className="min-h-screen bg-gray-50">
+      <div className="min-h-screen bg-gray-50" style={{ paddingBottom: isSystemNavVisible ? '4rem' : '0' }}>
         {showTitlePopup && <TitlePopup title={popupTitle} onClose={() => setShowTitlePopup(false)} />}
 
         {/* Header */}
         <div className="bg-gray-100 px-4 py-4">
           <div className="flex items-center mb-4">
-            <button onClick={() => setCurrentScreen("home")} className="mr-3">
-              <ArrowLeft className="w-6 h-6 text-blue-600" />
-            </button>
+            <div className="mr-3 flex flex-col items-center">
+              {favoriteFromContext && favoriteFromContext !== "home" && (
+                <button 
+                  onClick={() => {
+                    // Return to category screen with original view mode
+                    setCurrentScreen("category")
+                    setViewMode(favoriteFromViewMode)
+                    setFavoriteFromContext(null)
+                    setActiveTab("view")
+                  }}
+                  className="flex items-center justify-center mb-1"
+                >
+                  <ArrowLeft className="w-6 h-6 text-blue-600" />
+                </button>
+              )}
+              <button 
+                onClick={() => {
+                  // Always navigate to home
+                  setCurrentScreen("home")
+                  setFavoriteFromContext(null)
+                  setActiveTab("view")
+                }}
+                className="flex items-center justify-center"
+              >
+                <LayeredSquaresIcon className="w-6 h-6 text-blue-600" />
+              </button>
+            </div>
             <div>
               <div className="flex items-center">
                 <Star className="w-4 h-4 text-blue-600 mr-1" />
@@ -1402,7 +1522,7 @@ const BibleMapsApp = () => {
         </div>
 
         {/* Content */}
-        <div className="px-4 py-4 pb-[calc(3.5rem+env(safe-area-inset-bottom))]">
+        <div className="px-4 py-4">
           {favoritesList.length === 0 ? (
             <div className="flex flex-col items-center justify-center py-12">
               <Star className="w-12 h-12 text-gray-400 mb-4" />
@@ -1536,14 +1656,17 @@ const BibleMapsApp = () => {
           )}
         </div>
 
-        <BottomBar
-          activeTab="favorites"
-          onTabChange={(tab) => {
-            if (tab === "search") {
-              setCurrentScreen("search")
-            }
-          }}
-        />
+        {/* System Navigation Overlay */}
+        {isSystemNavVisible && (
+          <div className="fixed inset-x-0 bottom-0 h-20 bg-black bg-opacity-40 z-[9999] pointer-events-none flex items-end justify-center pb-2">
+            {/* Simulated system navigation buttons */}
+            <div className="flex space-x-8 items-center bg-gray-900 bg-opacity-60 px-6 py-2 rounded-full">
+              <div className="w-6 h-6 bg-white bg-opacity-80 rounded-full"></div>
+              <div className="w-8 h-8 bg-white bg-opacity-80 rounded"></div>
+              <div className="w-6 h-6 bg-white bg-opacity-80 rounded-full"></div>
+            </div>
+          </div>
+        )}
       </div>
     )
   }
@@ -1555,7 +1678,7 @@ const BibleMapsApp = () => {
     const Icon = showFavorites ? Star : mockMapData[currentCategory]?.icon || BookIcon
 
     return (
-      <div className="min-h-screen bg-gray-50">
+      <div className="min-h-screen bg-gray-50" style={{ paddingBottom: isSystemNavVisible ? '4rem' : '0' }}>
         {showTitlePopup && <TitlePopup title={popupTitle} onClose={() => setShowTitlePopup(false)} />}
 
         {/* Header */}
@@ -1565,32 +1688,32 @@ const BibleMapsApp = () => {
               <LayeredSquaresIcon className="w-6 h-6 text-blue-600" />
             </button>
             <div>
-              <div className="flex items-center">
-                <Icon className="w-4 h-4 text-blue-600 mr-1" />
-                <h2 className="text-lg font-bold text-black">{displayTitle}</h2>
-              </div>
+              <h2 className="text-lg font-bold text-black">{displayTitle}</h2>
               <p className="text-sm text-green-700 opacity-75">{maps.length} Maps</p>
             </div>
           </div>
 
-          <div className="flex items-center bg-white rounded-lg p-1">
-            <button
-              onClick={() => setViewMode("grid")}
-              className={`p-2 rounded ${viewMode === "grid" ? "bg-blue-100 text-blue-600" : "text-gray-600"}`}
-            >
-              <Grid3X3 className="w-4 h-4" />
-            </button>
-            <button
-              onClick={() => setViewMode(viewMode === "smallList" ? "largeList" : "smallList")}
-              className={`p-2 rounded ml-1 ${viewMode.includes("List") ? "bg-blue-100 text-blue-600" : "text-gray-600"}`}
-            >
-              <List className="w-4 h-4" />
-            </button>
+          <div className="flex items-center gap-2">
+            {/* View Mode Toggle */}
+            <div className="flex items-center bg-white rounded-lg p-1">
+              <button
+                onClick={() => setViewMode("grid")}
+                className={`p-2 rounded ${viewMode === "grid" ? "bg-blue-100 text-blue-600" : "text-gray-600"}`}
+              >
+                <Grid3X3 className="w-4 h-4" />
+              </button>
+              <button
+                onClick={() => setViewMode(viewMode === "smallList" ? "largeList" : "smallList")}
+                className={`p-2 rounded ml-1 ${viewMode.includes("List") ? "bg-blue-100 text-blue-600" : "text-gray-600"}`}
+              >
+                <List className="w-4 h-4" />
+              </button>
+            </div>
           </div>
         </div>
 
         {/* Content */}
-        <div className="px-4 py-4 pb-[calc(3.5rem+env(safe-area-inset-bottom))]">
+        <div className="px-4 py-4">
           {viewMode === "grid" && (
             <div className="grid grid-cols-2 gap-4">
               {maps.map((map, index) => (
@@ -1714,15 +1837,32 @@ const BibleMapsApp = () => {
 
         <BottomBar
           activeTab={activeTab}
+          isSystemNavVisible={isSystemNavVisible}
           onTabChange={(tab) => {
             setActiveTab(tab)
             if (tab === "search") {
+              setSearchFromContext(currentCategory)
+              setSearchFromViewMode(viewMode)
               setCurrentScreen("search")
             } else if (tab === "favorites") {
+              setFavoriteFromContext(currentCategory)
+              setFavoriteFromViewMode(viewMode)
               setCurrentScreen("favorites")
             }
           }}
         />
+
+        {/* System Navigation Overlay */}
+        {isSystemNavVisible && (
+          <div className="fixed inset-x-0 bottom-0 h-20 bg-black bg-opacity-40 z-[9999] pointer-events-none flex items-end justify-center pb-2">
+            {/* Simulated system navigation buttons */}
+            <div className="flex space-x-8 items-center bg-gray-900 bg-opacity-60 px-6 py-2 rounded-full">
+              <div className="w-6 h-6 bg-white bg-opacity-80 rounded-full"></div>
+              <div className="w-8 h-8 bg-white bg-opacity-80 rounded"></div>
+              <div className="w-6 h-6 bg-white bg-opacity-80 rounded-full"></div>
+            </div>
+          </div>
+        )}
       </div>
     )
   }
@@ -1737,7 +1877,10 @@ const BibleMapsApp = () => {
         onTouchMove={handleTouchMove}
         onTouchEnd={handleTouchEnd}
         onMouseMove={() => setShowControls(true)}
-        style={{ touchAction: "none" }}
+        style={{ 
+          touchAction: "none",
+          paddingBottom: isSystemNavVisible ? '4rem' : '0'
+        }}
       >
         {/* Map Image */}
         <div className="w-full h-full flex items-center justify-center">
@@ -1836,6 +1979,18 @@ const BibleMapsApp = () => {
 
         {/* Hide controls after timeout */}
         {showControls && setTimeout(() => setShowControls(false), 3000)}
+
+        {/* System Navigation Overlay */}
+        {isSystemNavVisible && (
+          <div className="fixed inset-x-0 bottom-0 h-20 bg-black bg-opacity-40 z-[9999] pointer-events-none flex items-end justify-center pb-2">
+            {/* Simulated system navigation buttons */}
+            <div className="flex space-x-8 items-center bg-gray-900 bg-opacity-60 px-6 py-2 rounded-full">
+              <div className="w-6 h-6 bg-white bg-opacity-80 rounded-full"></div>
+              <div className="w-8 h-8 bg-white bg-opacity-80 rounded"></div>
+              <div className="w-6 h-6 bg-white bg-opacity-80 rounded-full"></div>
+            </div>
+          </div>
+        )}
       </div>
     )
   }
