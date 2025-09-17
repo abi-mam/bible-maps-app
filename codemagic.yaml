@@ -17,7 +17,9 @@ workflows:
       - name: Install dependencies
         script: yarn install
       - name: Build PWA
-        script: yarn build
+        script: |
+          yarn build
+          yarn export   # generate ./out for Capacitor
       - name: Copy PWA into Capacitor (Android)
         script: npx cap sync android
       - name: Build Debug APK
@@ -53,7 +55,9 @@ workflows:
       - name: Install dependencies
         script: yarn install
       - name: Build PWA
-        script: yarn build
+        script: |
+          yarn build
+          yarn export   # generate ./out for Capacitor
       - name: Copy PWA into Capacitor (iOS)
         script: npx cap sync ios
       - name: Build iOS Debug
@@ -97,7 +101,9 @@ workflows:
       - name: Install dependencies
         script: yarn install
       - name: Build PWA
-        script: yarn build
+        script: |
+          yarn build
+          yarn export   # generate ./out for Capacitor
       - name: Copy PWA into Capacitor (Android + iOS)
         script: npx cap sync
       - name: Build Android Debug + Release
