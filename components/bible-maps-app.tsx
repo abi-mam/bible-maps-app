@@ -7,7 +7,8 @@ import { Search, Star, Grid3X3, List, ChevronLeft, ChevronRight, ArrowLeft, Home
 const BottomBar = ({ activeTab, onTabChange }) => {
   return (
     <div
-      className="fixed inset-x-0 bottom-0 h-14 bg-white/95 backdrop-blur-md border-t border-gray-300 z-50 flex items-center justify-around pb-[env(safe-area-inset-bottom)]"
+     className="fixed inset-x-0 bottom-0 h-14 bg-white/95 backdrop-blur-md border-t border-gray-300 z-50 flex items-center justify-around"
+style={{ paddingBottom: 'env(safe-area-inset-bottom, 8px)' }}
     >
       <button
         onClick={() => onTabChange("search")}
@@ -691,7 +692,6 @@ const BibleMapsApp = () => {
   const [searchFromViewMode, setSearchFromViewMode] = useState("smallList")
   const [favoriteFromContext, setFavoriteFromContext] = useState(null)
   const [favoriteFromViewMode, setFavoriteFromViewMode] = useState("smallList")
-  const [isSystemNavVisible, setIsSystemNavVisible] = useState(false)
   const [highlightActiveMap, setHighlightActiveMap] = useState(false)
 
   // Map viewer states
@@ -776,83 +776,28 @@ const BibleMapsApp = () => {
     setShowTitlePopup(true)
   }
 
-  // Handle system navigation visibility for Capacitor
-  useEffect(() => {
-    const setupNativeUI = async () => {
-      // Only enter immersive / hide body scrolling for the full-screen map viewer
-      if (currentScreen === "mapViewer") {
-        try {
-          // Import StatusBar plugin dynamically
-          const { StatusBar } = await import('@capacitor/status-bar')
-          await StatusBar.hide()
-        } catch (error) {
-          console.log('StatusBar plugin not available')
-        }
-
-        // Set immersive mode using native Android calls
-        if (typeof window !== 'undefined' && window.AndroidFullScreen) {
-          try {
-            await window.AndroidFullScreen.immersiveMode()
-          } catch (error) {
-            console.log('AndroidFullScreen not available')
-          }
-        }
-
-        // CSS fallback: prevent scrolling only in map viewer
-        document.body.style.overflow = 'hidden'
-        document.documentElement.style.height = '100vh'
-        document.body.style.height = '100vh'
-      } else {
-        try {
-          // Show status bar for non-map screens
-          const { StatusBar } = await import('@capacitor/status-bar')
-          await StatusBar.show()
-        } catch (error) {
-          console.log('StatusBar plugin not available')
-        }
-
-        if (typeof window !== 'undefined' && window.AndroidFullScreen) {
-          try {
-            await window.AndroidFullScreen.showSystemUI()
-          } catch (error) {
-            console.log('AndroidFullScreen not available')
-          }
-        }
-
-        // Restore normal scrolling for all other screens
-        document.body.style.overflow = 'auto'
-        document.documentElement.style.height = 'auto'
-        document.body.style.height = 'auto'
-      }
+// Handle status bar visibility (simple approach)
+useEffect(() => {
+  if (typeof window !== 'undefined' && window.Android) {
+    if (currentScreen === "mapViewer") {
+      window.Android.setMapViewerMode();
+      document.body.style.overflow = 'hidden';
+      document.body.style.height = '100vh';
+    } else {
+      window.Android.setNormalMode();
+      document.body.style.overflow = 'auto';
+      document.body.style.height = 'auto';
     }
+  }
 
-    setupNativeUI()
-
-    return () => {
-      // Cleanup on unmount or screen change
-      const cleanup = async () => {
-        try {
-          const { StatusBar } = await import('@capacitor/status-bar')
-          await StatusBar.show()
-        } catch (error) {
-          console.log('StatusBar cleanup error')
-        }
-
-        if (typeof window !== 'undefined' && window.AndroidFullScreen) {
-          try {
-            await window.AndroidFullScreen.showSystemUI()
-          } catch (error) {
-            console.log('AndroidFullScreen cleanup error')
-          }
-        }
-
-        document.body.style.overflow = 'auto'
-        document.documentElement.style.height = 'auto'
-        document.body.style.height = 'auto'
-      }
-      cleanup()
+  return () => {
+    if (typeof window !== 'undefined' && window.Android) {
+      window.Android.setNormalMode();
     }
-  }, [currentScreen])
+    document.body.style.overflow = 'auto';
+    document.body.style.height = 'auto';
+  };
+}, [currentScreen]);
 
   useEffect(() => {
     // Splash screen logic
@@ -1111,13 +1056,6 @@ const BibleMapsApp = () => {
             </div>
           </>
         )}
-
-        {/* System Navigation Overlay */}
-        {isSystemNavVisible && (
-          <div className="fixed inset-x-0 bottom-0 h-16 bg-black bg-opacity-50 z-[9999] pointer-events-none">
-            {/* This represents the system navigation area */}
-          </div>
-        )}
       </div>
     )
   }
@@ -1135,7 +1073,7 @@ const BibleMapsApp = () => {
     }
 
     return (
-      <div className="min-h-screen bg-green-50" style={{ paddingBottom: isSystemNavVisible ? '4rem' : '0' }}>
+      <div className="min-h-screen bg-green-50">
         {showTitlePopup && <TitlePopup title={popupTitle} onClose={() => setShowTitlePopup(false)} />}
 
         {/* Header */}
@@ -1348,13 +1286,6 @@ const BibleMapsApp = () => {
             </>
           )}
         </div>
-
-        {/* System Navigation Overlay - overlays any bottom content */}
-        {isSystemNavVisible && (
-          <div className="fixed inset-x-0 bottom-0 h-16 bg-black bg-opacity-50 z-[9999] pointer-events-none">
-            {/* This represents the system navigation area */}
-          </div>
-        )}
       </div>
     )
   }
@@ -1364,7 +1295,7 @@ const BibleMapsApp = () => {
     const favoritesList = getAllMaps().filter((map) => favorites.has(map.id))
    
     return (
-      <div className="min-h-screen bg-gray-50" style={{ paddingBottom: isSystemNavVisible ? '4rem' : '0' }}>
+      <div className="min-h-screen bg-green-50">
         {showTitlePopup && <TitlePopup title={popupTitle} onClose={() => setShowTitlePopup(false)} />}
 
         {/* Header */}
@@ -1561,13 +1492,6 @@ const BibleMapsApp = () => {
             </>
           )}
         </div>
-
-        {/* System Navigation Overlay */}
-        {isSystemNavVisible && (
-          <div className="fixed inset-x-0 bottom-0 h-16 bg-black bg-opacity-50 z-[9999] pointer-events-none">
-            {/* This represents the system navigation area */}
-          </div>
-        )}
       </div>
     )
   }
@@ -1579,7 +1503,7 @@ const BibleMapsApp = () => {
     const Icon = showFavorites ? Star : mockMapData[currentCategory]?.icon || BookIcon
 
     return (
-      <div className="flex flex-col h-full bg-gray-50" style={{ paddingBottom: isSystemNavVisible ? '4rem' : '0' }}>
+      <div className="min-h-screen bg-green-50">
         {showTitlePopup && <TitlePopup title={popupTitle} onClose={() => setShowTitlePopup(false)} />}
 
         {/* Header */}
@@ -1769,13 +1693,6 @@ const BibleMapsApp = () => {
             }
           }}
         />
-
-        {/* System Navigation Overlay - overlays bottom bar when visible */}
-        {isSystemNavVisible && (
-          <div className="fixed inset-x-0 bottom-0 h-16 bg-black bg-opacity-50 z-[9999] pointer-events-none">
-            {/* This represents the system navigation area */}
-          </div>
-        )}
       </div>
     )
   }
@@ -1790,10 +1707,7 @@ const BibleMapsApp = () => {
         onTouchMove={handleTouchMove}
         onTouchEnd={handleTouchEnd}
         onMouseMove={() => setShowControls(true)}
-        style={{ 
-          touchAction: "none",
-          paddingBottom: isSystemNavVisible ? '4rem' : '0'
-        }}
+        style={{ touchAction: "none" }}
       >
         {/* Map Image */}
         <div className="w-full h-full flex items-center justify-center">
@@ -1894,13 +1808,6 @@ const BibleMapsApp = () => {
             <Home className="w-5 h-5 text-gray-800" />
           </button>
         </div>
-
-        {/* System Navigation Overlay */}
-        {isSystemNavVisible && (
-          <div className="fixed inset-x-0 bottom-0 h-16 bg-black bg-opacity-50 z-[9999] pointer-events-none">
-            {/* This represents the system navigation area */}
-          </div>
-        )}
       </div>
     )
   }
