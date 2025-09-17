@@ -1801,8 +1801,9 @@ const BibleMapsApp = () => {
         <div
           className={`absolute inset-0 pointer-events-none transition-opacity duration-300 ${showControls ? "opacity-100" : "opacity-0"}`}
         >
-        {/* Arrow Button */}
-        <div className="absolute top-4 left-4 pointer-events-auto">
+
+        {/* Top Controls Row */}
+        <div className="absolute top-4 left-4 flex items-center gap-3 pointer-events-auto">
           <button
             onClick={() => {
               setHighlightActiveMap(true)
@@ -1815,10 +1816,6 @@ const BibleMapsApp = () => {
           >
             <ArrowLeft className="w-5 h-5" />
           </button>
-        </div>
-
-        {/* Title */}
-        <div className="absolute top-20 left-4 pointer-events-auto">
           <p 
             className="text-gray-800 text-xs bg-white bg-opacity-90 px-2 py-1 rounded shadow-sm max-w-xs truncate cursor-pointer"
             onClick={() => handleLongPress(activeMap.title)}
