@@ -698,18 +698,15 @@ const BibleMapsApp = () => {
   const [mapScale, setMapScale] = useState(1)
   const [mapPosition, setMapPosition] = useState({ x: 0, y: 0 })
   const [showControls, setShowControls] = useState(false)
-  const [isDragging, setIsDragging] = useState(false)
-  const [lastTouchDistance, setLastTouchDistance] = useState(0)
-  const [fitToPageScale, setFitToPageScale] = useState(1)
   const mapRef = useRef(null)
   const touchRef = useRef({ startX: 0, startY: 0, lastScale: 1 })
   const containerRef = useRef(null)
 
-// Touch handlers for map viewer
+  // Touch handlers for map viewer
   const getTouchDistance = (touches) => {
-    const dx = touches[0].clientX - touches[1].clientX
-    const dy = touches[0].clientY - touches[1].clientY
-    return Math.sqrt(dx * dx + dy * dy)
+  const dx = touches[0].clientX - touches[1].clientX
+  const dy = touches[0].clientY - touches[1].clientY
+  return Math.sqrt(dx * dx + dy * dy)
   }
 
   const handleTouchStart = (e) => {
@@ -718,10 +715,9 @@ const BibleMapsApp = () => {
       touchRef.current.startX = e.touches[0].clientX - mapPosition.x
       touchRef.current.startY = e.touches[0].clientY - mapPosition.y
     } else if (e.touches.length === 2) {
-      setLastTouchDistance(getTouchDistance(e.touches))
+      touchRef.current.lastDistance = getTouchDistance(e.touches)
     }
   }
-
   const handleTouchMove = (e) => {
     e.preventDefault()
     if (e.touches.length === 1) {
@@ -730,19 +726,17 @@ const BibleMapsApp = () => {
       setMapPosition({ x: newX, y: newY })
     } else if (e.touches.length === 2) {
       const distance = getTouchDistance(e.touches)
-      const scaleChange = distance / lastTouchDistance
+      const scaleChange = distance / touchRef.current.lastDistance
       const newScale = Math.max(0.5, Math.min(mapScale * scaleChange, 5))
       setMapScale(newScale)
-      setLastTouchDistance(distance)
+      touchRef.current.lastDistance = distance
     }
   }
 
   const handleTouchEnd = (e) => {
-    if (e.touches.length === 0) {
-      setIsDragging(false)
-    }
+    // Touch ended
   }
-
+  
   const handleDoubleClick = (e) => {
     if (mapScale > 1) {
       setMapScale(1)
@@ -764,8 +758,6 @@ const BibleMapsApp = () => {
     setPopupTitle(title)
     setShowTitlePopup(true)
   }
-
-  const longPressProps = useLongPress(() => handleLongPress(popupTitle))
 
   // Handle system navigation visibility for Capacitor
   useEffect(() => {
@@ -1797,13 +1789,10 @@ const BibleMapsApp = () => {
               transform: `scale(${mapScale}) translate(${mapPosition.x}px, ${mapPosition.y}px)`,
             }}
             onDoubleClick={handleDoubleClick}
+            
             onLoad={() => {
-              // Wait a frame to ensure image dimensions are available
-              requestAnimationFrame(() => {
-                setFitToPageScale(1)
-                setMapScale(1)
-                setMapPosition({ x: 0, y: 0 })
-              })
+              setMapScale(1)
+              setMapPosition({ x: 0, y: 0 })
             }}
           />
         </div>
@@ -1822,7 +1811,7 @@ const BibleMapsApp = () => {
                 // Clear highlight after 2 seconds
                 setTimeout(() => setHighlightActiveMap(false), 2000)
               }}
-              className="mb-2 p-2 text-gray-800"
+              className="mb-2 p-2 bg-white bg-opacity-90 rounded-full pointer-events-auto shadow-sm text-gray-800"
             >
               <ArrowLeft className="w-5 h-5" />
             </button>
@@ -1848,7 +1837,7 @@ const BibleMapsApp = () => {
                 const newIndex = currentMapIndex - 1
                 setCurrentMapIndex(newIndex)
                 setActiveMap(mockMapData[currentCategory].maps[newIndex])
-                setMapScale(fitToPageScale)
+                setMapScale(1)
                 setMapPosition({ x: 0, y: 0 })
               }}
               className="absolute left-4 top-1/2 transform -translate-y-1/2 p-2 bg-white bg-opacity-90 rounded-lg pointer-events-auto shadow-sm"
@@ -1863,7 +1852,7 @@ const BibleMapsApp = () => {
                 const newIndex = currentMapIndex + 1
                 setCurrentMapIndex(newIndex)
                 setActiveMap(mockMapData[currentCategory].maps[newIndex])
-                setMapScale(fitToPageScale)
+                setMapScale(1)
                 setMapPosition({ x: 0, y: 0 })
               }}
               className="absolute right-4 top-1/2 transform -translate-y-1/2 p-2 bg-white bg-opacity-90 rounded-lg pointer-events-auto shadow-sm"
