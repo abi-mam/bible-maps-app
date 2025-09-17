@@ -1811,7 +1811,7 @@ const BibleMapsApp = () => {
                 // Clear highlight after 2 seconds
                 setTimeout(() => setHighlightActiveMap(false), 2000)
               }}
-              className="mb-2 p-2 bg-white bg-opacity-90 rounded-full pointer-events-auto shadow-sm text-gray-800"
+              className="mb-2 p-1 bg-white bg-opacity-90 rounded-full pointer-events-auto shadow-sm text-gray-800"
             >
               <ArrowLeft className="w-5 h-5" />
             </button>
