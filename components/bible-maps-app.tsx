@@ -716,6 +716,27 @@ const BibleMapsApp = () => {
   useEffect(() => {
     const setupNativeUI = async () => {
       if (currentScreen !== "home") {
+  // ---------------- Immersive Mode & Status Bar ----------------
+  useEffect(() => {
+    const applyStatusBar = async () => {
+      try {
+        if (currentScreen === "mapViewer") {
+          await StatusBar.show()
+          await StatusBar.setBackgroundColor({ color: "#00000000" }) // always transparent
+          await StatusBar.setStyle({ style: Style.Dark })
+          setIsSystemNavVisible(false)
+        } else {
+          await StatusBar.show()
+          await StatusBar.setBackgroundColor({ color: "#4a7c59" }) // Bible Maps icon color
+          await StatusBar.setStyle({ style: Style.Dark })
+          setIsSystemNavVisible(currentScreen === "home")
+        }
+      } catch (error) {
+        console.log("StatusBar control not available", error)
+      }
+    }
+    applyStatusBar()
+  }, [currentScreen])
         try {
           // Import StatusBar plugin dynamically
           const { StatusBar } = await import('@capacitor/status-bar');
