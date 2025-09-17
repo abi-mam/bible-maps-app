@@ -17,7 +17,11 @@ workflows:
       - name: Install dependencies
         script: yarn install
       - name: Build PWA
-        script: yarn build   # 👈 no more yarn export
+        script: yarn build
+      - name: Clean Capacitor assets
+        script: |
+          rm -rf android/app/src/main/assets/*
+          rm -rf ios/App/App/public/* || true
       - name: Copy PWA into Capacitor (Android)
         script: npx cap sync android
       - name: Build Debug APK
@@ -53,7 +57,11 @@ workflows:
       - name: Install dependencies
         script: yarn install
       - name: Build PWA
-        script: yarn build   # 👈 no more yarn export
+        script: yarn build
+      - name: Clean Capacitor assets
+        script: |
+          rm -rf android/app/src/main/assets/* || true
+          rm -rf ios/App/App/public/*
       - name: Copy PWA into Capacitor (iOS)
         script: npx cap sync ios
       - name: Build iOS Debug
@@ -97,7 +105,11 @@ workflows:
       - name: Install dependencies
         script: yarn install
       - name: Build PWA
-        script: yarn build   # 👈 no more yarn export
+        script: yarn build
+      - name: Clean Capacitor assets
+        script: |
+          rm -rf android/app/src/main/assets/*
+          rm -rf ios/App/App/public/*
       - name: Copy PWA into Capacitor (Android + iOS)
         script: npx cap sync
       - name: Build Android Debug + Release
