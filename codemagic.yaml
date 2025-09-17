@@ -5,15 +5,14 @@ workflows:
     environment:
       vars:
         PACKAGE_NAME: "com.abi.biblemaps"
-      flutter: stable
-      xcode: latest
-      java: 17
       node: 20.11.1
+      java: 17
+      xcode: latest
     cache:
       cache_paths:
         - $FCI_BUILD_DIR/node_modules
+        - $HOME/.npm
         - $HOME/.gradle/caches
-        - $HOME/.pub-cache
     scripts:
       - name: Install dependencies
         script: yarn install
@@ -29,8 +28,13 @@ workflows:
         script: |
           cd android
           ./gradlew assembleRelease
+      - name: Build Release AAB (unsigned)
+        script: |
+          cd android
+          ./gradlew bundleRelease
     artifacts:
       - android/app/build/outputs/**/*.apk
+      - android/app/build/outputs/**/*.aab
 
   ios-workflow:
     name: iOS Debug + Release
@@ -38,15 +42,13 @@ workflows:
     environment:
       vars:
         PACKAGE_NAME: "com.abi.biblemaps"
-      flutter: stable
-      xcode: latest
-      java: 17
       node: 20.11.1
+      java: 17
+      xcode: latest
     cache:
       cache_paths:
         - $FCI_BUILD_DIR/node_modules
         - $HOME/Library/Caches/CocoaPods
-        - $HOME/.pub-cache
     scripts:
       - name: Install dependencies
         script: yarn install
@@ -82,16 +84,15 @@ workflows:
     environment:
       vars:
         PACKAGE_NAME: "com.abi.biblemaps"
-      flutter: stable
-      xcode: latest
-      java: 17
       node: 20.11.1
+      java: 17
+      xcode: latest
     cache:
       cache_paths:
         - $FCI_BUILD_DIR/node_modules
+        - $HOME/.npm
         - $HOME/.gradle/caches
         - $HOME/Library/Caches/CocoaPods
-        - $HOME/.pub-cache
     scripts:
       - name: Install dependencies
         script: yarn install
@@ -104,6 +105,7 @@ workflows:
           cd android
           ./gradlew assembleDebug
           ./gradlew assembleRelease
+          ./gradlew bundleRelease
       - name: Build iOS Debug + Release
         script: |
           cd ios
@@ -121,5 +123,6 @@ workflows:
             -derivedDataPath build
     artifacts:
       - android/app/build/outputs/**/*.apk
+      - android/app/build/outputs/**/*.aab
       - ios/build/**/*.app
       - ios/build/**/*.ipa
