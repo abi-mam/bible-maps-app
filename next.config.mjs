@@ -1,26 +1,10 @@
 import { createRequire } from "module";
 const require = createRequire(import.meta.url);
-const withPWA = require("next-pwa");
-
-/** @type {import('next').NextConfig} */
-const nextConfig = {
-  images: {
-    unoptimized: true, // required for static export
-  },
-  output: "export", // replaces deprecated next export
-  eslint: {
-    ignoreDuringBuilds: true,
-  },
-  typescript: {
-    ignoreBuildErrors: true,
-  },
-};
-
-export default withPWA({
-  dest: "public", // service worker & precache manifest
+const withPWA = require("next-pwa")({
+  dest: "public",
   register: true,
   skipWaiting: true,
-  disable: process.env.NODE_ENV === "development", // disable SW in dev
+  disable: process.env.NODE_ENV === "development",
   runtimeCaching: [
     {
       urlPattern: /^https:\/\/fonts\.(?:googleapis|gstatic)\.com\/.*/i,
@@ -54,4 +38,21 @@ export default withPWA({
       },
     },
   ],
-})(nextConfig);
+});
+
+/** @type {import('next').NextConfig} */
+const nextConfig = {
+  images: {
+    unoptimized: true, // required for static export
+  },
+  output: "export", // replaces deprecated next export
+  trailingSlash: true, // better compatibility with static hosting
+  eslint: {
+    ignoreDuringBuilds: true,
+  },
+  typescript: {
+    ignoreBuildErrors: true,
+  },
+};
+
+export default withPWA(nextConfig);

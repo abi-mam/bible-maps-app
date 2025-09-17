@@ -57,8 +57,19 @@ workflows:
           if [ -f yarn.lock ]; then echo "yarn.lock: present"; else echo "yarn.lock: not present"; fi
       - name: Install dependencies
         script: yarn install --frozen-lockfile
+      - name: Build Web
+        script: yarn build:web
+      - name: Clean Capacitor assets
+        script: |
+          rm -rf android/app/src/main/assets/* || true
+      - name: Copy PWA into Capacitor (Android)
+        script: npx cap sync android
       - name: Build Android Debug + Release
-        script: yarn ci:android:release
+        script: |
+          cd android
+          ./gradlew assembleDebug
+          ./gradlew assembleRelease
+          ./gradlew bundleRelease
     artifacts:
       - android/app/build/outputs/**/*.apk
       - android/app/build/outputs/**/*.aab
@@ -96,7 +107,7 @@ workflows:
       - name: Clean Capacitor assets
         script: |
           rm -rf android/app/src/main/assets/* || true
-          rm -rf ios/App/App/public/*
+          rm -rf ios/App/App/public/* || true
       - name: Copy PWA into Capacitor (iOS)
         script: npx cap sync ios
       - name: Build iOS Debug + Release
@@ -152,8 +163,8 @@ workflows:
         script: yarn build:web
       - name: Clean Capacitor assets
         script: |
-          rm -rf android/app/src/main/assets/*
-          rm -rf ios/App/App/public/*
+          rm -rf android/app/src/main/assets/* || true
+          rm -rf ios/App/App/public/* || true
       - name: Copy PWA into Capacitor (Android + iOS)
         script: npx cap sync
       - name: Build Android Debug + Release

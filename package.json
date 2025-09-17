@@ -6,8 +6,8 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build",
-    "export": "next export",
-    "build:web": "next build && next export",
+    "export": "next build",
+    "build:web": "next build",
     "start": "next start",
     "start:web": "npx serve out",
     "lint": "next lint",
