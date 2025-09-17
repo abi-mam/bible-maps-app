@@ -676,23 +676,23 @@ const mockMapData = {
 const BibleMapsApp = () => {
   const [currentScreen, setCurrentScreen] = useState("home")
   const [currentCategory, setCurrentCategory] = useState(null)
-  const [viewMode, setViewMode] = useState("smallList") // 'grid', 'smallList', 'largeList'
+  const [viewMode, setViewMode] = useState("smallList")
   const [currentMapIndex, setCurrentMapIndex] = useState(0)
   const [searchQuery, setSearchQuery] = useState("")
   const [favorites, setFavorites] = useState(new Set())
-  const [activeTab, setActiveTab] = useState("view") // Default to "view" (no tab active)
+  const [activeTab, setActiveTab] = useState("view")
   const [showFavorites, setShowFavorites] = useState(false)
   const [activeMap, setActiveMap] = useState(null)
   const [hasOpenedBefore, setHasOpenedBefore] = useState(false)
   const [showTitlePopup, setShowTitlePopup] = useState(false)
   const [popupTitle, setPopupTitle] = useState("")
   const [isSearchingFromHome, setIsSearchingFromHome] = useState(false)
-  const [searchFromContext, setSearchFromContext] = useState(null) // Track where search was opened from
-  const [searchFromViewMode, setSearchFromViewMode] = useState("smallList") // Store view mode when opening search
-  const [favoriteFromContext, setFavoriteFromContext] = useState(null) // Track where favorites was opened from
-  const [favoriteFromViewMode, setFavoriteFromViewMode] = useState("smallList") // Store view mode when opening favorites
-  const [isSystemNavVisible, setIsSystemNavVisible] = useState(false) // Track system navigation visibility
-  const [highlightActiveMap, setHighlightActiveMap] = useState(false) // Track if we should highlight the active map
+  const [searchFromContext, setSearchFromContext] = useState(null)
+  const [searchFromViewMode, setSearchFromViewMode] = useState("smallList")
+  const [favoriteFromContext, setFavoriteFromContext] = useState(null)
+  const [favoriteFromViewMode, setFavoriteFromViewMode] = useState("smallList")
+  const [isSystemNavVisible, setIsSystemNavVisible] = useState(false)
+  const [highlightActiveMap, setHighlightActiveMap] = useState(false)
 
   // Map viewer states
   const [mapScale, setMapScale] = useState(1)
@@ -705,6 +705,61 @@ const BibleMapsApp = () => {
   const touchRef = useRef({ startX: 0, startY: 0, lastScale: 1 })
   const containerRef = useRef(null)
 
+// Touch handlers for map viewer
+  const getTouchDistance = (touches) => {
+    const dx = touches[0].clientX - touches[1].clientX
+    const dy = touches[0].clientY - touches[1].clientY
+    return Math.sqrt(dx * dx + dy * dy)
+  }
+
+  const handleTouchStart = (e) => {
+    setShowControls(true)
+    if (e.touches.length === 1) {
+      touchRef.current.startX = e.touches[0].clientX - mapPosition.x
+      touchRef.current.startY = e.touches[0].clientY - mapPosition.y
+    } else if (e.touches.length === 2) {
+      setLastTouchDistance(getTouchDistance(e.touches))
+    }
+  }
+
+  const handleTouchMove = (e) => {
+    e.preventDefault()
+    if (e.touches.length === 1) {
+      const newX = e.touches[0].clientX - touchRef.current.startX
+      const newY = e.touches[0].clientY - touchRef.current.startY
+      setMapPosition({ x: newX, y: newY })
+    } else if (e.touches.length === 2) {
+      const distance = getTouchDistance(e.touches)
+      const scaleChange = distance / lastTouchDistance
+      const newScale = Math.max(0.5, Math.min(mapScale * scaleChange, 5))
+      setMapScale(newScale)
+      setLastTouchDistance(distance)
+    }
+  }
+
+  const handleTouchEnd = (e) => {
+    if (e.touches.length === 0) {
+      setIsDragging(false)
+    }
+  }
+
+  const handleDoubleClick = (e) => {
+    if (mapScale > 1) {
+      setMapScale(1)
+      setMapPosition({ x: 0, y: 0 })
+    } else {
+      const rect = e.currentTarget.getBoundingClientRect()
+      const clickX = e.clientX - rect.left
+      const clickY = e.clientY - rect.top
+      const newScale = 2
+      setMapScale(newScale)
+      setMapPosition({
+        x: (rect.width / 2 - clickX) * (newScale - 1),
+        y: (rect.height / 2 - clickY) * (newScale - 1)
+      })
+    }
+  }
+  
   const handleLongPress = (title) => {
     setPopupTitle(title)
     setShowTitlePopup(true)
@@ -715,99 +770,79 @@ const BibleMapsApp = () => {
   // Handle system navigation visibility for Capacitor
   useEffect(() => {
     const setupNativeUI = async () => {
-      if (currentScreen !== "home") {
-  // ---------------- Immersive Mode & Status Bar ----------------
-  useEffect(() => {
-    const applyStatusBar = async () => {
-      try {
-        if (currentScreen === "mapViewer") {
-          await StatusBar.show()
-          await StatusBar.setBackgroundColor({ color: "#00000000" }) // always transparent
-          await StatusBar.setStyle({ style: Style.Dark })
-          setIsSystemNavVisible(false)
-        } else {
-          await StatusBar.show()
-          await StatusBar.setBackgroundColor({ color: "#4a7c59" }) // Bible Maps icon color
-          await StatusBar.setStyle({ style: Style.Dark })
-          setIsSystemNavVisible(currentScreen === "home")
-        }
-      } catch (error) {
-        console.log("StatusBar control not available", error)
-      }
-    }
-    applyStatusBar()
-  }, [currentScreen])
+      // Only enter immersive / hide body scrolling for the full-screen map viewer
+      if (currentScreen === "mapViewer") {
         try {
           // Import StatusBar plugin dynamically
-          const { StatusBar } = await import('@capacitor/status-bar');
-          await StatusBar.hide();
+          const { StatusBar } = await import('@capacitor/status-bar')
+          await StatusBar.hide()
         } catch (error) {
-          console.log('StatusBar plugin not available');
+          console.log('StatusBar plugin not available')
         }
 
         // Set immersive mode using native Android calls
         if (typeof window !== 'undefined' && window.AndroidFullScreen) {
           try {
-            await window.AndroidFullScreen.immersiveMode();
+            await window.AndroidFullScreen.immersiveMode()
           } catch (error) {
-            console.log('AndroidFullScreen not available');
+            console.log('AndroidFullScreen not available')
           }
         }
 
-        // CSS fallback for hiding system UI
-        document.body.style.overflow = 'hidden';
-        document.documentElement.style.height = '100vh';
-        document.body.style.height = '100vh';
-        
+        // CSS fallback: prevent scrolling only in map viewer
+        document.body.style.overflow = 'hidden'
+        document.documentElement.style.height = '100vh'
+        document.body.style.height = '100vh'
       } else {
         try {
-          // Show status bar for home screen
-          const { StatusBar } = await import('@capacitor/status-bar');
-          await StatusBar.show();
+          // Show status bar for non-map screens
+          const { StatusBar } = await import('@capacitor/status-bar')
+          await StatusBar.show()
         } catch (error) {
-          console.log('StatusBar plugin not available');
+          console.log('StatusBar plugin not available')
         }
 
         if (typeof window !== 'undefined' && window.AndroidFullScreen) {
           try {
-            await window.AndroidFullScreen.showSystemUI();
+            await window.AndroidFullScreen.showSystemUI()
           } catch (error) {
-            console.log('AndroidFullScreen not available');
+            console.log('AndroidFullScreen not available')
           }
         }
 
-        document.body.style.overflow = 'auto';
-        document.documentElement.style.height = 'auto';
-        document.body.style.height = 'auto';
+        // Restore normal scrolling for all other screens
+        document.body.style.overflow = 'auto'
+        document.documentElement.style.height = 'auto'
+        document.body.style.height = 'auto'
       }
-    };
+    }
 
-    setupNativeUI();
+    setupNativeUI()
 
     return () => {
-      // Cleanup
+      // Cleanup on unmount or screen change
       const cleanup = async () => {
         try {
-          const { StatusBar } = await import('@capacitor/status-bar');
-          await StatusBar.show();
+          const { StatusBar } = await import('@capacitor/status-bar')
+          await StatusBar.show()
         } catch (error) {
-          console.log('StatusBar cleanup error');
+          console.log('StatusBar cleanup error')
         }
 
         if (typeof window !== 'undefined' && window.AndroidFullScreen) {
           try {
-            await window.AndroidFullScreen.showSystemUI();
+            await window.AndroidFullScreen.showSystemUI()
           } catch (error) {
-            console.log('AndroidFullScreen cleanup error');
+            console.log('AndroidFullScreen cleanup error')
           }
         }
 
-        document.body.style.overflow = 'auto';
-        document.documentElement.style.height = 'auto';
-        document.body.style.height = 'auto';
-      };
-      cleanup();
-    };
+        document.body.style.overflow = 'auto'
+        document.documentElement.style.height = 'auto'
+        document.body.style.height = 'auto'
+      }
+      cleanup()
+    }
   }, [currentScreen])
 
   useEffect(() => {
@@ -824,6 +859,14 @@ const BibleMapsApp = () => {
     }
   }, [currentScreen, hasOpenedBefore, activeMap])
 
+  // Handle controls timeout
+  useEffect(() => {
+    if (showControls && currentScreen === "mapViewer") {
+      const timer = setTimeout(() => setShowControls(false), 3000)
+      return () => clearTimeout(timer)
+    }
+  }, [showControls, currentScreen])
+  
   const toggleFavorite = (mapId) => {
     const newFavorites = new Set(favorites)
     if (newFavorites.has(mapId)) {
@@ -853,253 +896,13 @@ const BibleMapsApp = () => {
     )
   }
 
+  // Helper function to get filtered maps for category screen
   const getFilteredMaps = () => {
-    let maps = getAllMaps()
-
-    // Apply search filter
-    if (searchQuery.trim()) {
-      maps = maps.filter((map) => 
-        map.title.toLowerCase().includes(searchQuery.toLowerCase())
-      )
-    }
-
-    // Apply category filter
-    if (currentCategory && !showFavorites) {
-      maps = maps.filter((map) => map.category === currentCategory)
-    }
-
-    // Apply favorites filter
     if (showFavorites) {
-      maps = maps.filter((map) => favorites.has(map.id))
+      return getAllMaps().filter((map) => favorites.has(map.id))
     }
-
-    return maps
+    return currentCategory ? mockMapData[currentCategory].maps : []
   }
-  
-  const calculateFitToPageScale = () => {
-    // Fit-to-page is what's currently showing as "scale 1"
-    return 1
-  }
-
-  const calculateNaturalScale = () => {
-    if (!mapRef.current || !containerRef.current) return 2
-
-    const container = containerRef.current.getBoundingClientRect()
-    const img = mapRef.current
-
-    if (!img.naturalWidth || !img.naturalHeight) return 2
-
-    // Calculate what scale would show the image at its natural pixel size
-    const currentFitScale = Math.min(container.width / img.naturalWidth, container.height / img.naturalHeight)
-  
-    // Natural scale is 1.0 divided by the fit scale (to show actual pixels)
-    return 1.0 / currentFitScale
-  }
-
-  const handleTouchStart = (e) => {
-    if (e.touches.length === 1) {
-      const touch = e.touches[0]
-      touchRef.current = {
-        startX: touch.clientX,
-        startY: touch.clientY,
-        lastScale: mapScale,
-        hasMoved: false,
-        isSwipe: false,
-      }
-      setIsDragging(true)
-
-    } else if (e.touches.length === 2) {
-      const distance = Math.hypot(
-        e.touches[0].clientX - e.touches[1].clientX,
-        e.touches[0].clientY - e.touches[1].clientY,
-      )
-      setLastTouchDistance(distance)
-    }
-    setShowControls(true)
-  }
-
-const handleTouchMove = (e) => {
-    e.preventDefault()
-
-    if (e.touches.length === 1 && isDragging) {
-      const touch = e.touches[0]
-      const deltaX = touch.clientX - touchRef.current.startX
-      const deltaY = touch.clientY - touchRef.current.startY
-
-      // Mark as having moved if movement exceeds threshold
-      if (!touchRef.current.hasMoved && (Math.abs(deltaX) > 10 || Math.abs(deltaY) > 10)) {
-        touchRef.current.hasMoved = true
-      }
-
-      // Check if this is a swipe gesture (horizontal movement > vertical movement and sufficient distance)
-      if (!touchRef.current.isSwipe && Math.abs(deltaX) > 30 && Math.abs(deltaX) > Math.abs(deltaY) * 2) {
-        touchRef.current.isSwipe = true
-      }
-
-      if (mapScale <= fitToPageScale) {
-        // At or below fit-to-page scale
-        if (touchRef.current.isSwipe) {
-          // Handle swipe navigation between maps
-          if (Math.abs(deltaX) > 80) {
-            if (deltaX > 0 && currentMapIndex > 0) {
-              // Right swipe - previous map
-              const newIndex = currentMapIndex - 1
-              setCurrentMapIndex(newIndex)
-              setActiveMap(mockMapData[currentCategory].maps[newIndex])
-              setMapScale(mapScale) // Keep same scale
-              setMapPosition({ x: 0, y: 0 })
-              setIsDragging(false)
-              touchRef.current.isSwipe = false
-            } else if (deltaX < 0 && currentMapIndex < mockMapData[currentCategory].maps.length - 1) {
-              // Left swipe - next map
-              const newIndex = currentMapIndex + 1
-              setCurrentMapIndex(newIndex)
-              setActiveMap(mockMapData[currentCategory].maps[newIndex])
-              setMapScale(mapScale) // Keep same scale
-              setMapPosition({ x: 0, y: 0 })
-              setIsDragging(false)
-              touchRef.current.isSwipe = false
-            }
-          }
-        } else if (!touchRef.current.isSwipe && Math.abs(deltaX) > Math.abs(deltaY) && Math.abs(deltaX) > 50) {
-          // Handle left-to-right pan for navigation to category screen
-          if (deltaX > 50) {
-            setHighlightActiveMap(true)
-            setCurrentScreen("category")
-            setIsDragging(false)
-            // Clear highlight after 2 seconds
-            setTimeout(() => setHighlightActiveMap(false), 2000)
-            return
-          }
-        }
-        // Don't allow panning when at or below fit-to-page
-      } else {
-        // Above fit-to-page scale - allow panning with constraints
-        const container = containerRef.current?.getBoundingClientRect()
-        const img = mapRef.current
-
-        if (container && img && img.naturalWidth && img.naturalHeight) {
-          const scaledWidth = img.naturalWidth * mapScale
-          const scaledHeight = img.naturalHeight * mapScale
-
-          // Calculate current allowed movement
-          let newX = mapPosition.x
-          let newY = mapPosition.y
-
-          // Apply panning constraints based on image vs viewport size
-          const imageWiderThanViewport = scaledWidth > container.width
-          const imageTallerThanViewport = scaledHeight > container.height
-
-          if (imageWiderThanViewport && !imageTallerThanViewport) {
-            // Case 1: Image wider than viewport, height fits - only horizontal panning
-            newX = mapPosition.x + deltaX / mapScale
-            const maxX = (scaledWidth - container.width) / (2 * mapScale)
-            newX = Math.max(-maxX, Math.min(maxX, newX))
-            // Keep Y centered
-            newY = 0
-          } else if (!imageWiderThanViewport && imageTallerThanViewport) {
-            // Case 2: Image taller than viewport, width fits - only vertical panning  
-            newY = mapPosition.y + deltaY / mapScale
-            const maxY = (scaledHeight - container.height) / (2 * mapScale)
-            newY = Math.max(-maxY, Math.min(maxY, newY))
-            // Keep X centered
-            newX = 0
-          } else if (imageWiderThanViewport && imageTallerThanViewport) {
-            // Case 3: Image both wider and taller - both horizontal and vertical panning
-            newX = mapPosition.x + deltaX / mapScale
-            newY = mapPosition.y + deltaY / mapScale
-            
-            const maxX = (scaledWidth - container.width) / (2 * mapScale)
-            const maxY = (scaledHeight - container.height) / (2 * mapScale)
-            
-            newX = Math.max(-maxX, Math.min(maxX, newX))
-            newY = Math.max(-maxY, Math.min(maxY, newY))
-          } else {
-            // Case 4: Image fits entirely within viewport - no panning allowed
-            newX = 0
-            newY = 0
-          }
-
-          setMapPosition({ x: newX, y: newY })
-        }
-
-        touchRef.current.startX = touch.clientX
-        touchRef.current.startY = touch.clientY
-      }
-    } else if (e.touches.length === 2) {
-      const distance = Math.hypot(
-        e.touches[0].clientX - e.touches[1].clientX,
-        e.touches[0].clientY - e.touches[1].clientY,
-      )
-
-      if (lastTouchDistance > 0) {
-        const scaleChange = distance / lastTouchDistance
-        const newScale = Math.max(0.1, Math.min(5.0, mapScale * scaleChange))
-        setMapScale(newScale)
-        
-        // Reset position when scaling to ensure proper centering
-        if (newScale <= fitToPageScale) {
-          setMapPosition({ x: 0, y: 0 })
-        }
-      }
-
-      setLastTouchDistance(distance)
-    }
-  }
-
-  const handleTouchEnd = () => {
-    setIsDragging(false)
-    setLastTouchDistance(0)
-    if (touchRef.current) {
-      touchRef.current.hasMoved = false
-      touchRef.current.isSwipe = false
-    }
-  }
-
-  const handleDoubleClick = () => {
-    if (mapScale === fitToPageScale) {
-      const naturalScale = calculateNaturalScale()
-      setMapScale(naturalScale) // Go to actual natural image size
-    } else {
-      setMapScale(fitToPageScale) // Go back to fit-to-page (scale 1)
-    }
-    setMapPosition({ x: 0, y: 0 })
-  }
- 
-  useEffect(() => {
-   const timer = setTimeout(() => {
-     if (mapRef.current && containerRef.current && activeMap) {
-       setFitToPageScale(1) // Fit-to-page is scale 1
-       setMapScale(1) // Start at fit-to-page
-       setMapPosition({ x: 0, y: 0 })
-     }
-   }, 100)
-   return () => clearTimeout(timer)
-  }, [activeMap])
-
-  // Handle window resize and orientation changes
-  useEffect(() => {
-   const handleResize = () => {
-     if (mapRef.current && containerRef.current && activeMap) {
-       setTimeout(() => {
-         setFitToPageScale(1) // Keep fit-to-page as scale 1
-         // Only update scale if currently at fit-to-page scale
-         if (Math.abs(mapScale - fitToPageScale) < 0.1) {
-           setMapScale(1)
-           setMapPosition({ x: 0, y: 0 })
-         }
-       }, 100)
-     }
-   }
-
-   window.addEventListener('resize', handleResize)
-   window.addEventListener('orientationchange', handleResize)
-
-   return () => {
-     window.removeEventListener('resize', handleResize)
-     window.removeEventListener('orientationchange', handleResize)
-   }
-  }, [activeMap, mapScale, fitToPageScale])
 
   // Splash Screen
   if (currentScreen === "splash") {
@@ -1587,6 +1390,7 @@ const handleTouchMove = (e) => {
                   onClick={() => {
                     // Return to category screen with original view mode
                     setCurrentScreen("category")
+                    setCurrentCategory(favoriteFromContext)
                     setViewMode(favoriteFromViewMode)
                     setFavoriteFromContext(null)
                     setActiveTab("view")
@@ -1615,7 +1419,7 @@ const handleTouchMove = (e) => {
         </div>
 
         {/* Content */}
-        <div className="px-4 py-4">
+        <div className="px-4 py-4 pb-20">
           {favoritesList.length === 0 ? (
             <div className="flex flex-col items-center justify-center py-12">
               <Star className="w-12 h-12 text-gray-400 mb-4" />
@@ -1766,7 +1570,7 @@ const handleTouchMove = (e) => {
     const Icon = showFavorites ? Star : mockMapData[currentCategory]?.icon || BookIcon
 
     return (
-      <div className="min-h-screen bg-gray-50" style={{ paddingBottom: isSystemNavVisible ? '4rem' : '0' }}>
+      <div className="flex flex-col h-full bg-gray-50" style={{ paddingBottom: isSystemNavVisible ? '4rem' : '0' }}>
         {showTitlePopup && <TitlePopup title={popupTitle} onClose={() => setShowTitlePopup(false)} />}
 
         {/* Header */}
@@ -1801,7 +1605,7 @@ const handleTouchMove = (e) => {
         </div>
 
         {/* Content */}
-        <div className="px-4 py-4">       
+        <div className="px-4 py-4 pb-20">       
           {viewMode === "grid" && (
             <div className="grid grid-cols-2 gap-4">
               {maps.map((map, index) => {
@@ -1810,7 +1614,7 @@ const handleTouchMove = (e) => {
                 return (
                   <div
                     key={map.id}
-                    onClick={() => openMapViewer(map.category, mockMapData[map.category].maps.findIndex(m => m.id === map.id))}
+                    onClick={() => openMapViewer(map.category || currentCategory, mockMapData[map.category || currentCategory].maps.findIndex(m => m.id === map.id))}
                     className={`bg-white rounded-lg shadow-sm overflow-hidden cursor-pointer hover:shadow-md transition-all duration-300 ${
                       shouldHighlight ? 'ring-4 ring-blue-500 ring-opacity-75 shadow-lg scale-105' : ''
                     }`}
@@ -1850,7 +1654,7 @@ const handleTouchMove = (e) => {
                 return (
                   <div
                     key={map.id}
-                    onClick={() => openMapViewer(map.category, mockMapData[map.category].maps.findIndex(m => m.id === map.id))}
+                    onClick={() => openMapViewer(map.category || currentCategory, mockMapData[map.category || currentCategory].maps.findIndex(m => m.id === map.id))}
                     className={`flex items-center p-4 border-b border-gray-100 last:border-b-0 cursor-pointer hover:bg-gray-50 transition-all duration-300 ${
                       shouldHighlight ? 'bg-blue-50 ring-2 ring-blue-500 ring-inset' : ''
                     }`}
@@ -1880,7 +1684,6 @@ const handleTouchMove = (e) => {
             </div>
           )}
 
-
           {viewMode === "largeList" && (
             <div className="space-y-6">
               {/* Map Title List */}
@@ -1903,42 +1706,42 @@ const handleTouchMove = (e) => {
                   return (
                     <div key={map.id} className={index > 0 ? "mt-4" : ""}>
                       <div
-                        onClick={() => openMapViewer(map.category, mockMapData[map.category].maps.findIndex(m => m.id === map.id))}
+                        onClick={() => openMapViewer(map.category || currentCategory, mockMapData[map.category || currentCategory].maps.findIndex(m => m.id === map.id))}
                         className={`bg-white rounded-lg shadow-sm overflow-hidden cursor-pointer hover:opacity-90 transition-all duration-300 ${
                           shouldHighlight ? 'ring-4 ring-blue-500 ring-opacity-75 shadow-lg' : ''
                         }`}
                       >
-                      <div className="relative">
-                        <img
-                          src={map.thumbnail || "/placeholder.svg"}
-                          alt={map.title}
-                          className="w-full h-auto object-contain"
-                          style={{ maxHeight: "none" }}
-                        />
-                        <button
-                          onClick={(e) => {
-                            e.stopPropagation()
-                            toggleFavorite(map.id)
-                          }}
-                          className="absolute top-2 right-2"
-                        >
-                          <Star
-                            className={`w-4 h-4 ${favorites.has(map.id) ? "text-yellow-500 fill-current" : "text-gray-400"}`}
+                        <div className="relative">
+                          <img
+                            src={map.thumbnail || "/placeholder.svg"}
+                            alt={map.title}
+                            className="w-full h-auto object-contain"
+                            style={{ maxHeight: "none" }}
                           />
-                        </button>
-                      </div>
-                      <div className="p-3">
-                        <div className="flex justify-between items-center">
-                          <p className="text-sm font-medium text-black truncate flex-1">{map.title}</p>
-                          <div className="bg-blue-500 text-white text-xs px-2 py-1 rounded-full ml-2">#{index + 1}</div>
+                          <button
+                            onClick={(e) => {
+                              e.stopPropagation()
+                              toggleFavorite(map.id)
+                            }}
+                            className="absolute top-2 right-2"
+                          >
+                            <Star
+                              className={`w-4 h-4 ${favorites.has(map.id) ? "text-yellow-500 fill-current" : "text-gray-400"}`}
+                            />
+                          </button>
+                        </div>
+                        <div className="p-3">
+                          <div className="flex justify-between items-center">
+                            <p className="text-sm font-medium text-black truncate flex-1">{map.title}</p>
+                            <div className="bg-blue-500 text-white text-xs px-2 py-1 rounded-full ml-2">#{index + 1}</div>
+                          </div>
                         </div>
                       </div>
                     </div>
-                  </div>
-                 )
-               })}
-             </div>
-           </div>
+                  )
+                })}
+              </div>
+            </div>
           )}
         </div>
 
@@ -2080,9 +1883,6 @@ const handleTouchMove = (e) => {
             <Home className="w-5 h-5 text-gray-800" />
           </button>
         </div>
-
-        {/* Hide controls after timeout */}
-        {showControls && setTimeout(() => setShowControls(false), 3000)}
 
         {/* System Navigation Overlay */}
         {isSystemNavVisible && (
