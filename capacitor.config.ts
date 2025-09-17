@@ -1,7 +1,9 @@
+import { CapacitorConfig } from '@capacitor/cli';
+
 const config: CapacitorConfig = {
   appId: 'com.abi.biblemaps',
   appName: 'Bible Maps',
-  webDir: 'out',
+  webDir: 'out', // <-- must match Next.js "output" folder
   plugins: {
     StatusBar: {
       style: 'DEFAULT',
@@ -12,13 +14,13 @@ const config: CapacitorConfig = {
       windowFlags: {
         android: [
           'FLAG_HIDE_NAVIGATION',
-          'FLAG_IMMERSIVE_STICKY'
-        ]
-      }
+          'FLAG_IMMERSIVE_STICKY',
+        ],
+      },
     },
     Keyboard: {
       resize: 'none',
-    }
+    },
   },
   android: {
     allowMixedContent: true,
@@ -26,11 +28,13 @@ const config: CapacitorConfig = {
     appendUserAgent: 'BibleMapsApp',
     windowFlags: [
       'FLAG_HIDE_NAVIGATION',
-      'FLAG_IMMERSIVE_STICKY'
-    ]
+      'FLAG_IMMERSIVE_STICKY',
+    ],
   },
   ios: {
     contentInset: 'automatic',
-    scrollEnabled: false
-  }
+    scrollEnabled: false,
+  },
 };
+
+export default config;
