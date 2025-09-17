@@ -179,61 +179,61 @@ const mockMapData = {
     maps: [
       {
         id: "ot_ot_01_the_holy_land_relief",
-        title: "Ot 01 The Holy Land Relief",
+        title: "The Holy Land Relief",
         thumbnail: "/maps/ot/ot_01_the_holy_land_relief.jpeg",
         fullImage: "/maps/ot/ot_01_the_holy_land_relief.jpeg",
       },
       {
         id: "ot_ot_02_the_world_of_patriarchs",
-        title: "Ot 02 The World Of Patriarchs",
+        title: "The World Of Patriarchs",
         thumbnail: "/maps/ot/ot_02_the_world_of_patriarchs.jpeg",
         fullImage: "/maps/ot/ot_02_the_world_of_patriarchs.jpeg",
       },
       {
         id: "ot_ot_03_the_exodus_and_conquest_of_canaan",
-        title: "Ot 03 The Exodus And Conquest Of Canaan",
+        title: "The Exodus And Conquest Of Canaan",
         thumbnail: "/maps/ot/ot_03_the_exodus_and_conquest_of_canaan.jpeg",
         fullImage: "/maps/ot/ot_03_the_exodus_and_conquest_of_canaan.jpeg",
       },
       {
         id: "ot_ot_04_the_twelve_tribes_of_israel",
-        title: "Ot 04 The Twelve Tribes Of Israel",
+        title: "The Twelve Tribes Of Israel",
         thumbnail: "/maps/ot/ot_04_the_twelve_tribes_of_israel.jpeg",
         fullImage: "/maps/ot/ot_04_the_twelve_tribes_of_israel.jpeg",
       },
       {
         id: "ot_ot_05_the_kingdoms_of_saul_david_and_solomon",
-        title: "Ot 05 The Kingdoms Of Saul David And Solomon",
+        title: "The Kingdoms Of Saul David And Solomon",
         thumbnail: "/maps/ot/ot_05_the_kingdoms_of_saul_david_and_solomon.jpeg",
         fullImage: "/maps/ot/ot_05_the_kingdoms_of_saul_david_and_solomon.jpeg",
       },
       {
         id: "ot_ot_06_the_kingdoms_of_israel_and_judah",
-        title: "Ot 06 The Kingdoms Of Israel And Judah",
+        title: "The Kingdoms Of Israel And Judah",
         thumbnail: "/maps/ot/ot_06_the_kingdoms_of_israel_and_judah.jpeg",
         fullImage: "/maps/ot/ot_06_the_kingdoms_of_israel_and_judah.jpeg",
       },
       {
         id: "ot_ot_07_the_prophets_of_judah_and_israel",
-        title: "Ot 07 The Prophets Of Judah And Israel",
+        title: "The Prophets Of Judah And Israel",
         thumbnail: "/maps/ot/ot_07_the_prophets_of_judah_and_israel.jpeg",
         fullImage: "/maps/ot/ot_07_the_prophets_of_judah_and_israel.jpeg",
       },
       {
         id: "ot_ot_08_the_assyrian_empire_c_700_bc",
-        title: "Ot 08 The Assyrian Empire C 700 Bc",
+        title: "The Assyrian Empire C 700 Bc",
         thumbnail: "/maps/ot/ot_08_the_assyrian_empire_c_700_bc.jpeg",
         fullImage: "/maps/ot/ot_08_the_assyrian_empire_c_700_bc.jpeg",
       },
       {
         id: "ot_ot_09_the_babylonian_empire_c_600_bc",
-        title: "Ot 09 The Babylonian Empire C 600 Bc",
+        title: "The Babylonian Empire C 600 Bc",
         thumbnail: "/maps/ot/ot_09_the_babylonian_empire_c_600_bc.jpeg",
         fullImage: "/maps/ot/ot_09_the_babylonian_empire_c_600_bc.jpeg",
       },
       {
         id: "ot_ot_10_the_persian_empire_c_450_bc",
-        title: "Ot 10 The Persian Empire C 450 Bc",
+        title: "The Persian Empire C 450 Bc",
         thumbnail: "/maps/ot/ot_10_the_persian_empire_c_450_bc.jpeg",
         fullImage: "/maps/ot/ot_10_the_persian_empire_c_450_bc.jpeg",
       },
@@ -245,97 +245,97 @@ const mockMapData = {
     maps: [
       {
         id: "nt_nt_01_the_holy_land_in_time_of_jesus",
-        title: "Nt 01 The Holy Land In Time Of Jesus",
+        title: "The Holy Land In Time Of Jesus",
         thumbnail: "/maps/nt/nt_01_the_holy_land_in_time_of_jesus.jpeg",
         fullImage: "/maps/nt/nt_01_the_holy_land_in_time_of_jesus.jpeg",
       },
       {
         id: "nt_nt_02_the_ministry_of_jesus",
-        title: "Nt 02 The Ministry Of Jesus",
+        title: "The Ministry Of Jesus",
         thumbnail: "/maps/nt/nt_02_the_ministry_of_jesus.jpeg",
         fullImage: "/maps/nt/nt_02_the_ministry_of_jesus.jpeg",
       },
       {
         id: "nt_nt_03_jesus_final_week_in_jerusalem",
-        title: "Nt 03 Jesus Final Week In Jerusalem",
+        title: "Jesus Final Week In Jerusalem",
         thumbnail: "/maps/nt/nt_03_jesus_final_week_in_jerusalem.jpeg",
         fullImage: "/maps/nt/nt_03_jesus_final_week_in_jerusalem.jpeg",
       },
       {
         id: "nt_nt_04_the_early_spread_of_christianity",
-        title: "Nt 04 The Early Spread Of Christianity",
+        title: "The Early Spread Of Christianity",
         thumbnail: "/maps/nt/nt_04_the_early_spread_of_christianity.jpeg",
         fullImage: "/maps/nt/nt_04_the_early_spread_of_christianity.jpeg",
       },
       {
         id: "nt_nt_05_pauls_missionary_travels_and_journey_to_rome",
-        title: "Nt 05 Pauls Missionary Travels And Journey To Rome",
+        title: "Pauls Missionary Travels And Journey To Rome",
         thumbnail: "/maps/nt/nt_05_pauls_missionary_travels_and_journey_to_rome.jpeg",
         fullImage: "/maps/nt/nt_05_pauls_missionary_travels_and_journey_to_rome.jpeg",
       },
       {
         id: "nt_nt_06_the_roman_empire_and_the_early_church",
-        title: "Nt 06 The Roman Empire And The Early Church",
+        title: "The Roman Empire And The Early Church",
         thumbnail: "/maps/nt/nt_06_the_roman_empire_and_the_early_church.jpeg",
         fullImage: "/maps/nt/nt_06_the_roman_empire_and_the_early_church.jpeg",
       },
       {
         id: "nt_nt_07_rome_empire",
-        title: "Nt 07 Rome Empire",
+        title: "Rome Empire",
         thumbnail: "/maps/nt/nt_07_rome_empire.jpeg",
         fullImage: "/maps/nt/nt_07_rome_empire.jpeg",
       },
       {
         id: "nt_nt_08_division_of_levant",
-        title: "Nt 08 Division Of Levant",
+        title: "Division Of Levant",
         thumbnail: "/maps/nt/nt_08_division_of_levant.jpeg",
         fullImage: "/maps/nt/nt_08_division_of_levant.jpeg",
       },
       {
         id: "nt_nt_09_christ_in_galilee",
-        title: "Nt 09 Christ In Galilee",
+        title: "Christ In Galilee",
         thumbnail: "/maps/nt/nt_09_christ_in_galilee.jpeg",
         fullImage: "/maps/nt/nt_09_christ_in_galilee.jpeg",
       },
       {
         id: "nt_nt_10_galilee_to_jerusalem",
-        title: "Nt 10 Galilee To Jerusalem",
+        title: "Galilee To Jerusalem",
         thumbnail: "/maps/nt/nt_10_galilee_to_jerusalem.jpeg",
         fullImage: "/maps/nt/nt_10_galilee_to_jerusalem.jpeg",
       },
       {
         id: "nt_nt_11_christ_in_judea",
-        title: "Nt 11 Christ In Judea",
+        title: "Christ In Judea",
         thumbnail: "/maps/nt/nt_11_christ_in_judea.jpeg",
         fullImage: "/maps/nt/nt_11_christ_in_judea.jpeg",
       },
       {
         id: "nt_nt_12_jerusalem",
-        title: "Nt 12 Jerusalem",
+        title: "Jerusalem",
         thumbnail: "/maps/nt/nt_12_jerusalem.jpeg",
         fullImage: "/maps/nt/nt_12_jerusalem.jpeg",
       },
       {
         id: "nt_nt_13_early_christianity_east",
-        title: "Nt 13 Early Christianity East",
+        title: "Early Christianity East",
         thumbnail: "/maps/nt/nt_13_early_christianity_east.jpeg",
         fullImage: "/maps/nt/nt_13_early_christianity_east.jpeg",
       },
       {
         id: "nt_nt_14_early_christianity_west",
-        title: "Nt 14 Early Christianity West",
+        title: "Early Christianity West",
         thumbnail: "/maps/nt/nt_14_early_christianity_west.jpeg",
         fullImage: "/maps/nt/nt_14_early_christianity_west.jpeg",
       },
       {
         id: "nt_nt_15_pauls_journeys",
-        title: "Nt 15 Pauls Journeys",
+        title: "Pauls Journeys",
         thumbnail: "/maps/nt/nt_15_pauls_journeys.jpeg",
         fullImage: "/maps/nt/nt_15_pauls_journeys.jpeg",
       },
       {
         id: "nt_nt_16_epistles_overview",
-        title: "Nt 16 Epistles Overview",
+        title: "Epistles Overview",
         thumbnail: "/maps/nt/nt_16_epistles_overview.jpeg",
         fullImage: "/maps/nt/nt_16_epistles_overview.jpeg",
       },
@@ -347,325 +347,325 @@ const mockMapData = {
     maps: [
       {
         id: "nt_books_ntb_001_rome_empire",
-        title: "Ntb 001 Rome Empire",
+        title: "Rome Empire",
         thumbnail: "/maps/nt_books/ntb_001_rome_empire.jpeg",
         fullImage: "/maps/nt_books/ntb_001_rome_empire.jpeg",
       },
       {
         id: "nt_books_ntb_002_division_of_levant",
-        title: "Ntb 002 Division Of Levant",
+        title: "Division Of Levant",
         thumbnail: "/maps/nt_books/ntb_002_division_of_levant.jpeg",
         fullImage: "/maps/nt_books/ntb_002_division_of_levant.jpeg",
       },
       {
         id: "nt_books_ntb_003_christ_in_galilee",
-        title: "Ntb 003 Christ In Galilee",
+        title: "Christ In Galilee",
         thumbnail: "/maps/nt_books/ntb_003_christ_in_galilee.jpeg",
         fullImage: "/maps/nt_books/ntb_003_christ_in_galilee.jpeg",
       },
       {
         id: "nt_books_ntb_004_galilee_to_jerusalem",
-        title: "Ntb 004 Galilee To Jerusalem",
+        title: "Galilee To Jerusalem",
         thumbnail: "/maps/nt_books/ntb_004_galilee_to_jerusalem.jpeg",
         fullImage: "/maps/nt_books/ntb_004_galilee_to_jerusalem.jpeg",
       },
       {
         id: "nt_books_ntb_005_christ_in_judea",
-        title: "Ntb 005 Christ In Judea",
+        title: "Christ In Judea",
         thumbnail: "/maps/nt_books/ntb_005_christ_in_judea.jpeg",
         fullImage: "/maps/nt_books/ntb_005_christ_in_judea.jpeg",
       },
       {
         id: "nt_books_ntb_006_jerusalem",
-        title: "Ntb 006 Jerusalem",
+        title: "Jerusalem",
         thumbnail: "/maps/nt_books/ntb_006_jerusalem.jpeg",
         fullImage: "/maps/nt_books/ntb_006_jerusalem.jpeg",
       },
       {
         id: "nt_books_ntb_007_matthew_2",
-        title: "Ntb 007 Matthew 2",
+        title: "Matthew 2",
         thumbnail: "/maps/nt_books/ntb_007_matthew_2.png",
         fullImage: "/maps/nt_books/ntb_007_matthew_2.png",
       },
       {
         id: "nt_books_ntb_008_luke_2",
-        title: "Ntb 008 Luke 2",
+        title: "Luke 2",
         thumbnail: "/maps/nt_books/ntb_008_luke_2.png",
         fullImage: "/maps/nt_books/ntb_008_luke_2.png",
       },
       {
         id: "nt_books_ntb_009_luke_24",
-        title: "Ntb 009 Luke 24",
+        title: "Luke 24",
         thumbnail: "/maps/nt_books/ntb_009_luke_24.png",
         fullImage: "/maps/nt_books/ntb_009_luke_24.png",
       },
       {
         id: "nt_books_ntb_010_john_1",
-        title: "Ntb 010 John 1",
+        title: "John 1",
         thumbnail: "/maps/nt_books/ntb_010_john_1.png",
         fullImage: "/maps/nt_books/ntb_010_john_1.png",
       },
       {
         id: "nt_books_ntb_011_john_2-3",
-        title: "Ntb 011 John 2 3",
+        title: "John 2 3",
         thumbnail: "/maps/nt_books/ntb_011_john_2-3.png",
         fullImage: "/maps/nt_books/ntb_011_john_2-3.png",
       },
       {
         id: "nt_books_ntb_012_john_4",
-        title: "Ntb 012 John 4",
+        title: "John 4",
         thumbnail: "/maps/nt_books/ntb_012_john_4.png",
         fullImage: "/maps/nt_books/ntb_012_john_4.png",
       },
       {
         id: "nt_books_ntb_013_john_6",
-        title: "Ntb 013 John 6",
+        title: "John 6",
         thumbnail: "/maps/nt_books/ntb_013_john_6.png",
         fullImage: "/maps/nt_books/ntb_013_john_6.png",
       },
       {
         id: "nt_books_ntb_014_john_7-10",
-        title: "Ntb 014 John 7 10",
+        title: "John 7 10",
         thumbnail: "/maps/nt_books/ntb_014_john_7-10.png",
         fullImage: "/maps/nt_books/ntb_014_john_7-10.png",
       },
       {
         id: "nt_books_ntb_015_john_11-12",
-        title: "Ntb 015 John 11 12",
+        title: "John 11 12",
         thumbnail: "/maps/nt_books/ntb_015_john_11-12.png",
         fullImage: "/maps/nt_books/ntb_015_john_11-12.png",
       },
       {
         id: "nt_books_ntb_016_early_christianity_east",
-        title: "Ntb 016 Early Christianity East",
+        title: "Early Christianity East",
         thumbnail: "/maps/nt_books/ntb_016_early_christianity_east.png",
         fullImage: "/maps/nt_books/ntb_016_early_christianity_east.png",
       },
       {
         id: "nt_books_ntb_017_early_christianity_west",
-        title: "Ntb 017 Early Christianity West",
+        title: "Early Christianity West",
         thumbnail: "/maps/nt_books/ntb_017_early_christianity_west.png",
         fullImage: "/maps/nt_books/ntb_017_early_christianity_west.png",
       },
       {
         id: "nt_books_ntb_018_pauls_journeys",
-        title: "Ntb 018 Pauls Journeys",
+        title: "Pauls Journeys",
         thumbnail: "/maps/nt_books/ntb_018_pauls_journeys.png",
         fullImage: "/maps/nt_books/ntb_018_pauls_journeys.png",
       },
       {
         id: "nt_books_ntb_019_antioch",
-        title: "Ntb 019 Antioch",
+        title: "Antioch",
         thumbnail: "/maps/nt_books/ntb_019_antioch.jpeg",
         fullImage: "/maps/nt_books/ntb_019_antioch.jpeg",
       },
       {
         id: "nt_books_ntb_020_athens",
-        title: "Ntb 020 Athens",
+        title: "Athens",
         thumbnail: "/maps/nt_books/ntb_020_athens.jpeg",
         fullImage: "/maps/nt_books/ntb_020_athens.jpeg",
       },
       {
         id: "nt_books_ntb_021_corinth",
-        title: "Ntb 021 Corinth",
+        title: "Corinth",
         thumbnail: "/maps/nt_books/ntb_021_corinth.jpeg",
         fullImage: "/maps/nt_books/ntb_021_corinth.jpeg",
       },
       {
         id: "nt_books_ntb_022_ephesus",
-        title: "Ntb 022 Ephesus",
+        title: "Ephesus",
         thumbnail: "/maps/nt_books/ntb_022_ephesus.jpeg",
         fullImage: "/maps/nt_books/ntb_022_ephesus.jpeg",
       },
       {
         id: "nt_books_ntb_023_caesarea",
-        title: "Ntb 023 Caesarea",
+        title: "Caesarea",
         thumbnail: "/maps/nt_books/ntb_023_caesarea.jpeg",
         fullImage: "/maps/nt_books/ntb_023_caesarea.jpeg",
       },
       {
         id: "nt_books_ntb_024_rome",
-        title: "Ntb 024 Rome",
+        title: "Rome",
         thumbnail: "/maps/nt_books/ntb_024_rome.jpeg",
         fullImage: "/maps/nt_books/ntb_024_rome.jpeg",
       },
       {
         id: "nt_books_ntb_025_acts_2",
-        title: "Ntb 025 Acts 2",
+        title: "Acts 2",
         thumbnail: "/maps/nt_books/ntb_025_acts_2.jpeg",
         fullImage: "/maps/nt_books/ntb_025_acts_2.jpeg",
       },
       {
         id: "nt_books_ntb_026_acts_6",
-        title: "Ntb 026 Acts 6",
+        title: "Acts 6",
         thumbnail: "/maps/nt_books/ntb_026_acts_6.jpeg",
         fullImage: "/maps/nt_books/ntb_026_acts_6.jpeg",
       },
       {
         id: "nt_books_ntb_027_acts_7",
-        title: "Ntb 027 Acts 7",
+        title: "Acts 7",
         thumbnail: "/maps/nt_books/ntb_027_acts_7.jpeg",
         fullImage: "/maps/nt_books/ntb_027_acts_7.jpeg",
       },
       {
         id: "nt_books_ntb_028_acts_8",
-        title: "Ntb 028 Acts 8",
+        title: "Acts 8",
         thumbnail: "/maps/nt_books/ntb_028_acts_8.jpeg",
         fullImage: "/maps/nt_books/ntb_028_acts_8.jpeg",
       },
       {
         id: "nt_books_ntb_029_acts_9",
-        title: "Ntb 029 Acts 9",
+        title: "Acts 9",
         thumbnail: "/maps/nt_books/ntb_029_acts_9.jpeg",
         fullImage: "/maps/nt_books/ntb_029_acts_9.jpeg",
       },
       {
         id: "nt_books_ntb_030_acts_9-11",
-        title: "Ntb 030 Acts 9 11",
+        title: "Acts 9 11",
         thumbnail: "/maps/nt_books/ntb_030_acts_9-11.jpeg",
         fullImage: "/maps/nt_books/ntb_030_acts_9-11.jpeg",
       },
       {
         id: "nt_books_ntb_031_acts_11",
-        title: "Ntb 031 Acts 11",
+        title: "Acts 11",
         thumbnail: "/maps/nt_books/ntb_031_acts_11.jpeg",
         fullImage: "/maps/nt_books/ntb_031_acts_11.jpeg",
       },
       {
         id: "nt_books_ntb_032_acts_12",
-        title: "Ntb 032 Acts 12",
+        title: "Acts 12",
         thumbnail: "/maps/nt_books/ntb_032_acts_12.jpeg",
         fullImage: "/maps/nt_books/ntb_032_acts_12.jpeg",
       },
       {
         id: "nt_books_ntb_033_acts_13",
-        title: "Ntb 033 Acts 13",
+        title: "Acts 13",
         thumbnail: "/maps/nt_books/ntb_033_acts_13.jpeg",
         fullImage: "/maps/nt_books/ntb_033_acts_13.jpeg",
       },
       {
         id: "nt_books_ntb_034_acts_14",
-        title: "Ntb 034 Acts 14",
+        title: "Acts 14",
         thumbnail: "/maps/nt_books/ntb_034_acts_14.jpeg",
         fullImage: "/maps/nt_books/ntb_034_acts_14.jpeg",
       },
       {
         id: "nt_books_ntb_035_acts_15",
-        title: "Ntb 035 Acts 15",
+        title: "Acts 15",
         thumbnail: "/maps/nt_books/ntb_035_acts_15.jpeg",
         fullImage: "/maps/nt_books/ntb_035_acts_15.jpeg",
       },
       {
         id: "nt_books_ntb_036_acts_16am",
-        title: "Ntb 036 Acts 16Am",
+        title: "Acts 16Am",
         thumbnail: "/maps/nt_books/ntb_036_acts_16am.jpeg",
         fullImage: "/maps/nt_books/ntb_036_acts_16am.jpeg",
       },
       {
         id: "nt_books_ntb_037_acts_16-18",
-        title: "Ntb 037 Acts 16 18",
+        title: "Acts 16 18",
         thumbnail: "/maps/nt_books/ntb_037_acts_16-18.jpeg",
         fullImage: "/maps/nt_books/ntb_037_acts_16-18.jpeg",
       },
       {
         id: "nt_books_ntb_038_acts_18",
-        title: "Ntb 038 Acts 18",
+        title: "Acts 18",
         thumbnail: "/maps/nt_books/ntb_038_acts_18.jpeg",
         fullImage: "/maps/nt_books/ntb_038_acts_18.jpeg",
       },
       {
         id: "nt_books_ntb_039_acts_19-20",
-        title: "Ntb 039 Acts 19 20",
+        title: "Acts 19 20",
         thumbnail: "/maps/nt_books/ntb_039_acts_19-20.jpeg",
         fullImage: "/maps/nt_books/ntb_039_acts_19-20.jpeg",
       },
       {
         id: "nt_books_ntb_040_acts_21",
-        title: "Ntb 040 Acts 21",
+        title: "Acts 21",
         thumbnail: "/maps/nt_books/ntb_040_acts_21.jpeg",
         fullImage: "/maps/nt_books/ntb_040_acts_21.jpeg",
       },
       {
         id: "nt_books_ntb_041_acts_23",
-        title: "Ntb 041 Acts 23",
+        title: "Acts 23",
         thumbnail: "/maps/nt_books/ntb_041_acts_23.jpeg",
         fullImage: "/maps/nt_books/ntb_041_acts_23.jpeg",
       },
       {
         id: "nt_books_ntb_042_acts_27",
-        title: "Ntb 042 Acts 27",
+        title: "Acts 27",
         thumbnail: "/maps/nt_books/ntb_042_acts_27.jpeg",
         fullImage: "/maps/nt_books/ntb_042_acts_27.jpeg",
       },
       {
         id: "nt_books_ntb_043_acts_28",
-        title: "Ntb 043 Acts 28",
+        title: "Acts 28",
         thumbnail: "/maps/nt_books/ntb_043_acts_28.jpeg",
         fullImage: "/maps/nt_books/ntb_043_acts_28.jpeg",
       },
       {
         id: "nt_books_ntb_044_epistles_overview",
-        title: "Ntb 044 Epistles Overview",
+        title: "Epistles Overview",
         thumbnail: "/maps/nt_books/ntb_044_epistles_overview.jpeg",
         fullImage: "/maps/nt_books/ntb_044_epistles_overview.jpeg",
       },
       {
         id: "nt_books_ntb_045_romans",
-        title: "Ntb 045 Romans",
+        title: "Romans",
         thumbnail: "/maps/nt_books/ntb_045_romans.jpeg",
         fullImage: "/maps/nt_books/ntb_045_romans.jpeg",
       },
       {
         id: "nt_books_ntb_046_corinthians",
-        title: "Ntb 046 Corinthians",
+        title: "Corinthians",
         thumbnail: "/maps/nt_books/ntb_046_corinthians.jpeg",
         fullImage: "/maps/nt_books/ntb_046_corinthians.jpeg",
       },
       {
         id: "nt_books_ntb_047_galatians",
-        title: "Ntb 047 Galatians",
+        title: "Galatians",
         thumbnail: "/maps/nt_books/ntb_047_galatians.jpeg",
         fullImage: "/maps/nt_books/ntb_047_galatians.jpeg",
       },
       {
         id: "nt_books_ntb_048_philippians",
-        title: "Ntb 048 Philippians",
+        title: "Philippians",
         thumbnail: "/maps/nt_books/ntb_048_philippians.jpeg",
         fullImage: "/maps/nt_books/ntb_048_philippians.jpeg",
       },
       {
         id: "nt_books_ntb_049_colossians",
-        title: "Ntb 049 Colossians",
+        title: "Colossians",
         thumbnail: "/maps/nt_books/ntb_049_colossians.jpeg",
         fullImage: "/maps/nt_books/ntb_049_colossians.jpeg",
       },
       {
         id: "nt_books_ntb_050_thessalonians",
-        title: "Ntb 050 Thessalonians",
+        title: "Thessalonians",
         thumbnail: "/maps/nt_books/ntb_050_thessalonians.jpeg",
         fullImage: "/maps/nt_books/ntb_050_thessalonians.jpeg",
       },
       {
         id: "nt_books_ntb_051_timothy",
-        title: "Ntb 051 Timothy",
+        title: "Timothy",
         thumbnail: "/maps/nt_books/ntb_051_timothy.jpeg",
         fullImage: "/maps/nt_books/ntb_051_timothy.jpeg",
       },
       {
         id: "nt_books_ntb_052_titus",
-        title: "Ntb 052 Titus",
+        title: "Titus",
         thumbnail: "/maps/nt_books/ntb_052_titus.jpeg",
         fullImage: "/maps/nt_books/ntb_052_titus.jpeg",
       },
       {
         id: "nt_books_ntb_053_peter",
-        title: "Ntb 053 Peter",
+        title: "Peter",
         thumbnail: "/maps/nt_books/ntb_053_peter.jpeg",
         fullImage: "/maps/nt_books/ntb_053_peter.jpeg",
       },
       {
         id: "nt_books_ntb_054_revelation",
-        title: "Ntb 054 Revelation",
+        title: "Revelation",
         thumbnail: "/maps/nt_books/ntb_054_revelation.png",
         fullImage: "/maps/nt_books/ntb_054_revelation.png",
       },
@@ -739,18 +739,35 @@ const BibleMapsApp = () => {
   
   const handleDoubleClick = (e) => {
     if (mapScale > 1) {
+      // Reset to fit-to-screen scale
       setMapScale(1)
       setMapPosition({ x: 0, y: 0 })
     } else {
-      const rect = e.currentTarget.getBoundingClientRect()
-      const clickX = e.clientX - rect.left
-      const clickY = e.clientY - rect.top
-      const newScale = 2
-      setMapScale(newScale)
-      setMapPosition({
-        x: (rect.width / 2 - clickX) * (newScale - 1),
-        y: (rect.height / 2 - clickY) * (newScale - 1)
-      })
+      // Zoom to natural size while keeping center
+      const mapImg = mapRef.current
+      const container = containerRef.current
+      if (mapImg && container) {
+        // Wait for image to be fully loaded
+        if (mapImg.complete && mapImg.naturalWidth > 0) {
+          const containerRect = container.getBoundingClientRect()
+          const containerWidth = containerRect.width
+          const containerHeight = containerRect.height
+        
+          // Calculate current displayed size
+          const currentDisplayWidth = mapImg.offsetWidth
+          const currentDisplayHeight = mapImg.offsetHeight
+        
+          // Calculate scale to show image at natural size
+          const naturalScale = Math.max(
+            mapImg.naturalWidth / currentDisplayWidth,
+            mapImg.naturalHeight / currentDisplayHeight
+          )
+        
+          setMapScale(naturalScale)
+          // Keep centered
+          setMapPosition({ x: 0, y: 0 })
+        }
+      }
     }
   }
   
