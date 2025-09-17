@@ -1,12 +1,11 @@
-// If you need to register additional plugins:
-import com.getcapacitor.community.statusbar.StatusBar;
+package com.abi.biblemaps;
+
+import android.os.Bundle;
+import com.getcapacitor.BridgeActivity;
 
 public class MainActivity extends BridgeActivity {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        
-        // Add any plugins that aren't auto-registered
-        registerPlugin(StatusBar.class);
     }
 }
