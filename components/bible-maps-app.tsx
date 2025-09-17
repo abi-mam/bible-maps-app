@@ -1801,26 +1801,30 @@ const BibleMapsApp = () => {
         <div
           className={`absolute inset-0 pointer-events-none transition-opacity duration-300 ${showControls ? "opacity-100" : "opacity-0"}`}
         >
-          {/* Top Controls */}
-          <div className="absolute top-4 left-4 flex flex-col pointer-events-auto">
-            <button
-              onClick={() => {
-                setHighlightActiveMap(true)
-                setCurrentScreen("category")
-                setShowControls(false)
-                // Clear highlight after 2 seconds
-                setTimeout(() => setHighlightActiveMap(false), 2000)
-              }}
-              className="mb-1 p-1 bg-white bg-opacity-90 rounded-full pointer-events-auto shadow-sm text-gray-800"
-            >
-              <ArrowLeft className="w-5 h-5" />
-            </button>
-            <p className="text-gray-800 text-xs bg-white bg-opacity-90 px-3 py-2 rounded shadow-sm max-w-xs">
-              {activeMap.title}
-            </p>
-          </div>
+        {/* Arrow Button */}
+        <div className="absolute top-4 left-4 pointer-events-auto">
+          <button
+            onClick={() => {
+              setHighlightActiveMap(true)
+              setCurrentScreen("category")
+              setShowControls(false)
+              // Clear highlight after 2 seconds
+              setTimeout(() => setHighlightActiveMap(false), 2000)
+            }}
+            className="p-2 bg-white bg-opacity-90 rounded-full pointer-events-auto shadow-sm text-gray-800"
+          >
+            <ArrowLeft className="w-5 h-5" />
+          </button>
+        </div>
 
-          {/* Favorite Toggle */}
+        {/* Title */}
+        <div className="absolute top-20 left-4 pointer-events-auto">
+          <p className="text-gray-800 text-xs bg-white bg-opacity-90 px-3 py-2 rounded shadow-sm max-w-xs">
+            {activeMap.title}
+          </p>
+        </div>
+         
+        {/* Favorite Toggle */}
           <button
             onClick={() => toggleFavorite(activeMap.id)}
             className="absolute top-4 right-4 p-2 bg-white bg-opacity-90 rounded-lg pointer-events-auto shadow-sm"
