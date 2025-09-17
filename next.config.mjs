@@ -7,7 +7,7 @@ const nextConfig = {
   images: {
     unoptimized: true, // required for static export
   },
-  output: "export", // needed for Capacitor / static hosting
+  output: "export", // replaces deprecated next export
   eslint: {
     ignoreDuringBuilds: true,
   },
@@ -17,10 +17,10 @@ const nextConfig = {
 };
 
 export default withPWA({
-  dest: "public", // service worker & precache manifest go here
+  dest: "public", // service worker & precache manifest
   register: true,
   skipWaiting: true,
-  disable: process.env.NODE_ENV === "development", // disable SW in dev mode
+  disable: process.env.NODE_ENV === "development", // disable SW in dev
   runtimeCaching: [
     {
       urlPattern: /^https:\/\/fonts\.(?:googleapis|gstatic)\.com\/.*/i,
@@ -44,7 +44,7 @@ export default withPWA({
       options: { cacheName: "static-resources" },
     },
     {
-      urlPattern: /^https?.*/, // 👈 catch-all for HTML pages
+      urlPattern: /^https?.*/, // catch-all for HTML pages
       handler: "NetworkFirst",
       options: {
         cacheName: "html-cache",
