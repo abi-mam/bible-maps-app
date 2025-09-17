@@ -1,4 +1,27 @@
 workflows:
+  # ----------------------
+  # 1. Codemagic Web Workflow (Next.js PWA)
+  # ----------------------
+  web-workflow:
+    name: Web (Next.js PWA)
+    max_build_duration: 20
+    environment:
+      node: 20.11.1
+    cache:
+      cache_paths:
+        - $FCI_BUILD_DIR/node_modules
+        - $HOME/.npm
+    scripts:
+      - name: Install dependencies
+        script: yarn install --frozen-lockfile
+      - name: Build Web
+        script: yarn build:web   # uses package.json script: "next build && next export"
+    artifacts:
+      - out/**
+
+  # ----------------------
+  # 2. Codemagic Android Workflow
+  # ----------------------
   android-workflow:
     name: Android Debug + Release
     max_build_duration: 60
@@ -7,7 +30,6 @@ workflows:
         PACKAGE_NAME: "com.abi.biblemaps"
       node: 20.11.1
       java: 17
-      xcode: latest
     cache:
       cache_paths:
         - $FCI_BUILD_DIR/node_modules
@@ -15,31 +37,16 @@ workflows:
         - $HOME/.gradle/caches
     scripts:
       - name: Install dependencies
-        script: yarn install
-      - name: Build PWA
-        script: yarn build
-      - name: Clean Capacitor assets
-        script: |
-          rm -rf android/app/src/main/assets/*
-          rm -rf ios/App/App/public/* || true
-      - name: Copy PWA into Capacitor (Android)
-        script: npx cap sync android
-      - name: Build Debug APK
-        script: |
-          cd android
-          ./gradlew assembleDebug
-      - name: Build Release APK (unsigned)
-        script: |
-          cd android
-          ./gradlew assembleRelease
-      - name: Build Release AAB (unsigned)
-        script: |
-          cd android
-          ./gradlew bundleRelease
+        script: yarn install --frozen-lockfile
+      - name: Build Android Debug + Release
+        script: yarn ci:android:release   # runs through package.json helper
     artifacts:
       - android/app/build/outputs/**/*.apk
       - android/app/build/outputs/**/*.aab
 
+  # ----------------------
+  # 3. Codemagic iOS Workflow
+  # ----------------------
   ios-workflow:
     name: iOS Debug + Release
     max_build_duration: 60
@@ -55,16 +62,16 @@ workflows:
         - $HOME/Library/Caches/CocoaPods
     scripts:
       - name: Install dependencies
-        script: yarn install
+        script: yarn install --frozen-lockfile
       - name: Build PWA
-        script: yarn build
+        script: yarn build:web
       - name: Clean Capacitor assets
         script: |
           rm -rf android/app/src/main/assets/* || true
           rm -rf ios/App/App/public/*
       - name: Copy PWA into Capacitor (iOS)
         script: npx cap sync ios
-      - name: Build iOS Debug
+      - name: Build iOS Debug + Release
         script: |
           cd ios
           xcodebuild \
@@ -73,9 +80,6 @@ workflows:
             -configuration Debug \
             -sdk iphonesimulator \
             -derivedDataPath build
-      - name: Build iOS Release (unsigned)
-        script: |
-          cd ios
           xcodebuild \
             -workspace App.xcworkspace \
             -scheme App \
@@ -86,6 +90,9 @@ workflows:
       - ios/build/**/*.app
       - ios/build/**/*.ipa
 
+  # ----------------------
+  # 4. Combined Workflow (optional)
+  # ----------------------
   android-ios-workflow:
     name: Android & iOS Debug + Release
     max_build_duration: 60
@@ -103,9 +110,9 @@ workflows:
         - $HOME/Library/Caches/CocoaPods
     scripts:
       - name: Install dependencies
-        script: yarn install
-      - name: Build PWA
-        script: yarn build
+        script: yarn install --frozen-lockfile
+      - name: Build Web
+        script: yarn build:web
       - name: Clean Capacitor assets
         script: |
           rm -rf android/app/src/main/assets/*
