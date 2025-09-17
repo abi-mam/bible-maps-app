@@ -7,15 +7,25 @@ workflows:
     max_build_duration: 20
     environment:
       node: 20.11.1
+      vars:
+        PACKAGE_MANAGER: yarn
     cache:
       cache_paths:
         - $FCI_BUILD_DIR/node_modules
         - $HOME/.npm
     scripts:
+      - name: Setup Yarn
+        script: corepack enable
+      - name: Validate Yarn
+        script: |
+          echo "=== validation: yarn & node versions ==="
+          yarn --version || (echo "yarn not found" && exit 1)
+          node --version || (echo "node not found" && exit 1)
+          if [ -f yarn.lock ]; then echo "yarn.lock: present"; else echo "yarn.lock: not present"; fi
       - name: Install dependencies
         script: yarn install --frozen-lockfile
       - name: Build Web
-        script: yarn build:web   # uses package.json script: "next build && next export"
+        script: yarn build:web
     artifacts:
       - out/**
 
@@ -28,6 +38,7 @@ workflows:
     environment:
       vars:
         PACKAGE_NAME: "com.abi.biblemaps"
+        PACKAGE_MANAGER: yarn
       node: 20.11.1
       java: 17
     cache:
@@ -36,10 +47,18 @@ workflows:
         - $HOME/.npm
         - $HOME/.gradle/caches
     scripts:
+      - name: Setup Yarn
+        script: corepack enable
+      - name: Validate Yarn
+        script: |
+          echo "=== validation: yarn & node versions ==="
+          yarn --version || (echo "yarn not found" && exit 1)
+          node --version || (echo "node not found" && exit 1)
+          if [ -f yarn.lock ]; then echo "yarn.lock: present"; else echo "yarn.lock: not present"; fi
       - name: Install dependencies
         script: yarn install --frozen-lockfile
       - name: Build Android Debug + Release
-        script: yarn ci:android:release   # runs through package.json helper
+        script: yarn ci:android:release
     artifacts:
       - android/app/build/outputs/**/*.apk
       - android/app/build/outputs/**/*.aab
@@ -53,6 +72,7 @@ workflows:
     environment:
       vars:
         PACKAGE_NAME: "com.abi.biblemaps"
+        PACKAGE_MANAGER: yarn
       node: 20.11.1
       java: 17
       xcode: latest
@@ -61,6 +81,14 @@ workflows:
         - $FCI_BUILD_DIR/node_modules
         - $HOME/Library/Caches/CocoaPods
     scripts:
+      - name: Setup Yarn
+        script: corepack enable
+      - name: Validate Yarn
+        script: |
+          echo "=== validation: yarn & node versions ==="
+          yarn --version || (echo "yarn not found" && exit 1)
+          node --version || (echo "node not found" && exit 1)
+          if [ -f yarn.lock ]; then echo "yarn.lock: present"; else echo "yarn.lock: not present"; fi
       - name: Install dependencies
         script: yarn install --frozen-lockfile
       - name: Build PWA
@@ -99,6 +127,7 @@ workflows:
     environment:
       vars:
         PACKAGE_NAME: "com.abi.biblemaps"
+        PACKAGE_MANAGER: yarn
       node: 20.11.1
       java: 17
       xcode: latest
@@ -109,6 +138,14 @@ workflows:
         - $HOME/.gradle/caches
         - $HOME/Library/Caches/CocoaPods
     scripts:
+      - name: Setup Yarn
+        script: corepack enable
+      - name: Validate Yarn
+        script: |
+          echo "=== validation: yarn & node versions ==="
+          yarn --version || (echo "yarn not found" && exit 1)
+          node --version || (echo "node not found" && exit 1)
+          if [ -f yarn.lock ]; then echo "yarn.lock: present"; else echo "yarn.lock: not present"; fi
       - name: Install dependencies
         script: yarn install --frozen-lockfile
       - name: Build Web

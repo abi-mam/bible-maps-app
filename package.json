@@ -11,13 +11,10 @@
     "start": "next start",
     "start:web": "npx serve out",
     "lint": "next lint",
-
     "build:android": "yarn build:web && npx cap sync android && cd android && ./gradlew assembleDebug",
     "build:android:release": "yarn build:web && npx cap sync android && cd android && ./gradlew assembleRelease && ./gradlew bundleRelease",
-
     "build:ios": "yarn build:web && npx cap sync ios && cd ios && xcodebuild -workspace App.xcworkspace -scheme App -configuration Debug -sdk iphonesimulator -derivedDataPath build",
     "build:ios:release": "yarn build:web && npx cap sync ios && cd ios && xcodebuild -workspace App.xcworkspace -scheme App -configuration Release -sdk iphoneos -derivedDataPath build",
-
     "ci:web": "yarn build:web",
     "ci:android:release": "yarn build:web && npx cap sync android && cd android && ./gradlew assembleDebug && ./gradlew assembleRelease && ./gradlew bundleRelease",
     "ci:ios:release": "yarn build:web && npx cap sync ios && cd ios && xcodebuild -workspace App.xcworkspace -scheme App -configuration Debug -sdk iphonesimulator -derivedDataPath build && xcodebuild -workspace App.xcworkspace -scheme App -configuration Release -sdk iphoneos -derivedDataPath build"
