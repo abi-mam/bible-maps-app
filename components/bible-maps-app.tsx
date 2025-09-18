@@ -1610,16 +1610,17 @@ if (currentScreen === "mapViewer" && activeMap) {
       <TransformWrapper
         initialScale={1}
         minScale={0.5}
-        maxScale={4}
+        maxScale={3}
         limitToBounds={true}
+        doubleClick={{ disabled: true }}
         onTransformed={(ref, state) => {
           if (state && typeof state.scale === 'number') {
             setIsAtFitToPage(state.scale <= 1.1)
             setIsSystemNavVisible(state.scale > 1.2)
           }
           setShowControls(true)
-        }}
-      >
+         }}
+       >        
         {({ zoomIn, zoomOut, resetTransform }) => (
           <>
             <TransformComponent>
