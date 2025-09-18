@@ -692,7 +692,7 @@ const BibleMapsApp = () => {
   }, [currentScreen, hasOpenedBefore, activeMap])
 
   // Handle controls timeout  
-useEffect(() => {
+  useEffect(() => {
   if (showControls && currentScreen === "mapViewer") {
     const timer = setTimeout(() => setShowControls(false), 4000)
     return () => clearTimeout(timer)
