@@ -827,7 +827,7 @@ const handleTouchMove = (e) => {
 }
 
 const handleTouchEnd = (e) => {
-  // Handle swipe navigation only at fit-to-page scale or below
+  // [existing swipe navigation code remains the same]
   if (touchRef.current.isSwipe && e.changedTouches.length === 1) {
     const touch = e.changedTouches[0]
     const deltaX = touch.clientX - touchRef.current.swipeStartX
@@ -836,33 +836,43 @@ const handleTouchEnd = (e) => {
     
     const fitScale = calculateFitToPageScale()
     
-    // Only process swipes at or below fit-to-page scale
-    if (mapScale <= fitScale && deltaTime < 300) { // Quick swipe within 300ms
+    if (mapScale <= fitScale && deltaTime < 300) {
       const minSwipeDistance = 50
       
-      // Horizontal swipe (left-to-right or right-to-left)
       if (Math.abs(deltaX) > minSwipeDistance && Math.abs(deltaX) > Math.abs(deltaY)) {
         if (deltaX > 0 && currentMapIndex > 0) {
-          // Swipe right - go to previous map
           const newIndex = currentMapIndex - 1
           setCurrentMapIndex(newIndex)
           setActiveMap(mockMapData[currentCategory].maps[newIndex])
-          setMapScale(mapScale) // Keep same scale
+          setMapScale(mapScale)
           setMapPosition({ x: 0, y: 0 })
         } else if (deltaX < 0 && currentMapIndex < mockMapData[currentCategory].maps.length - 1) {
-          // Swipe left - go to next map
           const newIndex = currentMapIndex + 1
           setCurrentMapIndex(newIndex)
           setActiveMap(mockMapData[currentCategory].maps[newIndex])
-          setMapScale(mapScale) // Keep same scale
+          setMapScale(mapScale)
           setMapPosition({ x: 0, y: 0 })
         }
       }
     }
   }
   
-  // Reset swipe tracking
   touchRef.current.isSwipe = false
+  
+  // Auto-hide system UI after interaction ends
+  if (currentScreen === "mapViewer") {
+    setTimeout(() => {
+      // Trigger native hide
+      if (window.Android && window.Android.setImmersiveMode) {
+        window.Android.setImmersiveMode(true)
+      }
+      
+      const event = new CustomEvent('immersiveMode', { 
+        detail: { enable: true, sticky: true } 
+      })
+      window.dispatchEvent(event)
+    }, 2000) // Hide after 2 seconds of inactivity
+  }
 }
   
   const handleDoubleClick = (e) => {
@@ -930,6 +940,95 @@ const handleTouchEnd = (e) => {
       return () => clearTimeout(timer)
     }
   }, [showControls, currentScreen])
+  
+  // Handle system UI auto-hide for standalone Capacitor app
+
+useEffect(() => {
+  if (currentScreen === "mapViewer") {
+    setIsFullscreen(true)
+    
+    // Native Android immersive mode via WebView interface
+    const enableImmersiveMode = () => {
+      // Try native Android WebView interface
+      if (window.Android && window.Android.setImmersiveMode) {
+        window.Android.setImmersiveMode(true)
+      }
+      
+      // Alternative: Direct JavaScript to native bridge
+      if (window.webkit && window.webkit.messageHandlers && window.webkit.messageHandlers.immersive) {
+        window.webkit.messageHandlers.immersive.postMessage({ hide: true })
+      }
+      
+      // CSS for WebView
+      document.documentElement.style.height = '100vh'
+      document.body.style.height = '100vh'
+      document.body.style.overflow = 'hidden'
+      document.body.style.margin = '0'
+      document.body.style.padding = '0'
+      
+      // Force layout recalculation
+      document.body.offsetHeight
+    }
+    
+    // Auto-hide system UI periodically
+    const autoHide = () => {
+      enableImmersiveMode()
+      
+      // Use window flags approach
+      if (window.StatusBar) {
+        window.StatusBar.hide()
+      }
+      
+      // Request immersive sticky mode
+      const event = new CustomEvent('immersiveMode', { 
+        detail: { enable: true, sticky: true } 
+      })
+      window.dispatchEvent(event)
+    }
+    
+    // Initial hide
+    setTimeout(autoHide, 300)
+    
+    // Re-hide every 3 seconds and on interaction end
+    const autoHideInterval = setInterval(autoHide, 3000)
+    
+    return () => {
+      clearInterval(autoHideInterval)
+    }
+    
+  } else {
+    setIsFullscreen(false)
+    
+    // Restore system UI
+    if (window.Android && window.Android.setImmersiveMode) {
+      window.Android.setImmersiveMode(false)
+    }
+    
+    if (window.webkit && window.webkit.messageHandlers && window.webkit.messageHandlers.immersive) {
+      window.webkit.messageHandlers.immersive.postMessage({ hide: false })
+    }
+    
+    if (window.StatusBar) {
+      window.StatusBar.show()
+    }
+    
+    // Restore CSS
+    document.body.style.overflow = 'auto'
+    document.body.style.height = 'auto'
+    document.documentElement.style.height = 'auto'
+    
+    const event = new CustomEvent('immersiveMode', { 
+      detail: { enable: false } 
+    })
+    window.dispatchEvent(event)
+  }
+
+  return () => {
+    // Cleanup
+    document.body.style.overflow = 'auto'
+    document.body.style.height = 'auto'
+  }
+}, [currentScreen])
   
   const toggleFavorite = (mapId) => {
     const newFavorites = new Set(favorites)
