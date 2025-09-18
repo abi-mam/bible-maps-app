@@ -697,14 +697,31 @@ const BibleMapsApp = () => {
 
 // Map viewer states
 const [showControls, setShowControls] = useState(false)
+const [isAtFitToPage, setIsAtFitToPage] = useState(true)
+const [gestureState, setGestureState] = useState({
+  startX: 0,
+  startY: 0,
+  startTime: 0,
+  isSwipeDetected: false
+})
+
+const transformRef = useRef(null)
   
-// Helper functions for map viewer
-const getTouchDistance = (touches) => {
-  const dx = touches[0].clientX - touches[1].clientX
-  const dy = touches[0].clientY - touches[1].clientY
-  return Math.sqrt(dx * dx + dy * dy)
+// Handle swipe navigation when at fit-to-page scale
+const handleSwipeNavigation = (deltaX) => {
+  if (deltaX > 50 && currentMapIndex < mockMapData[currentCategory].maps.length - 1) {
+    // Left-to-right swipe - next map
+    const newIndex = currentMapIndex + 1
+    setCurrentMapIndex(newIndex)
+    setActiveMap(mockMapData[currentCategory].maps[newIndex])
+  } else if (deltaX < -50 && currentMapIndex > 0) {
+    // Right-to-left swipe - previous map
+    const newIndex = currentMapIndex - 1
+    setCurrentMapIndex(newIndex)
+    setActiveMap(mockMapData[currentCategory].maps[newIndex])
+  }
 }
- 
+
   const handleLongPress = (title) => {
     setPopupTitle(title)
     setShowTitlePopup(true)
@@ -752,8 +769,6 @@ const getTouchDistance = (touches) => {
     setCurrentMapIndex(mapIndex)
     setActiveMap(mockMapData[category].maps[mapIndex])
     setCurrentScreen("mapViewer")
-    setMapScale(1) // Start at fit-to-page scale
-    setMapPosition({ x: 0, y: 0 }) // Center the image)
     setHasOpenedBefore(true)
   }
 
@@ -1647,32 +1662,81 @@ if (currentScreen === "mapViewer" && activeMap) {
     <div className="fixed inset-0 bg-white overflow-hidden" style={{ 
       paddingBottom: isSystemNavVisible ? '4rem' : '0'
     }}>
-      {/* TransformWrapper handles all pan/zoom logic */}
+      {/* TransformWrapper handles zoom/pan, we add gesture detection on top */}
       <TransformWrapper
+        ref={transformRef}
         initialScale={1}
-        minScale={0.1}
-        maxScale={5}
         limitToBounds={true}
         centerOnInit={true}
-        wheel={{ disabled: true }} // Disable mouse wheel since this is mobile
-        doubleClick={{ 
-          disabled: false,
-          mode: "toggle", // Toggle between fit and zoom
-          step: 2 // Zoom to 2x on double tap
-        }}
-        pan={{
-          disabled: false,
-          lockAxisX: false,
-          lockAxisY: false,
-          velocityDisabled: true
-        }}
-        pinch={{
-          disabled: false,
-          step: 5
-        }}
         onTransformed={(ref, state) => {
-          // You can access zoom state here if needed
-          // console.log("Scale:", state.scale, "Position:", state.positionX, state.positionY)
+          const atFitToPage = state.scale <= 1.1
+          setIsAtFitToPage(atFitToPage)
+          
+          // Auto-center when at or below fit-to-page scale
+          if (atFitToPage && (state.positionX !== 0 || state.positionY !== 0)) {
+            ref.setTransform(0, 0, state.scale, 200)
+          }
+        }}
+        onPanningStart={(ref, event) => {
+          setShowControls(true)
+          
+          // Only track gestures when at fit-to-page for swipe detection
+          if (isAtFitToPage && event.touches?.length === 1) {
+            const touch = event.touches[0]
+            setGestureState({
+              startX: touch.clientX,
+              startY: touch.clientY,
+              startTime: Date.now(),
+              isSwipeDetected: false
+            })
+          }
+        }}
+        onPanning={(ref, event) => {
+          // Prevent panning at fit-to-page scale and detect swipes
+          if (isAtFitToPage) {
+            // Reset position to prevent unwanted panning at fit-to-page
+            ref.setTransform(0, 0, ref.state.scale, 0)
+            
+            // Detect horizontal swipe gestures
+            if (event.touches?.length === 1 && gestureState.startTime) {
+              const touch = event.touches[0]
+              const deltaX = touch.clientX - gestureState.startX
+              const deltaY = touch.clientY - gestureState.startY
+              const deltaTime = Date.now() - gestureState.startTime
+              const distance = Math.sqrt(deltaX * deltaX + deltaY * deltaY)
+              const isHorizontalSwipe = Math.abs(deltaX) > Math.abs(deltaY) * 1.5
+              
+              if (distance > 50 && isHorizontalSwipe && deltaTime < 500) {
+                setGestureState(prev => ({ ...prev, isSwipeDetected: true }))
+              }
+            }
+          }
+        }}
+        onPanningStop={(ref, event) => {
+          // Handle swipe navigation at fit-to-page scale
+          if (isAtFitToPage) {
+            // Always ensure centered position
+            ref.setTransform(0, 0, ref.state.scale, 200)
+            
+            // Execute swipe navigation if detected
+            if (gestureState.isSwipeDetected && event.changedTouches?.length) {
+              const deltaX = event.changedTouches[0].clientX - gestureState.startX
+              handleSwipeNavigation(deltaX)
+            }
+          }
+          
+          // Reset gesture state
+          setGestureState(prev => ({ ...prev, isSwipeDetected: false, startTime: 0 }))
+        }}
+        onDoubleClick={(ref, event) => {
+          // Toggle between fit-to-page (scale 1) and natural size (scale 2)
+          if (isAtFitToPage) {
+            ref.setTransform(0, 0, 2, 300) // Zoom to 2x (natural size)
+            setIsAtFitToPage(false)
+          } else {
+            ref.resetTransform(300) // Return to fit-to-page
+            setIsAtFitToPage(true)
+          }
         }}
       >
         {({ zoomIn, zoomOut, resetTransform, zoomToElement, state, ...rest }) => (
@@ -1683,8 +1747,8 @@ if (currentScreen === "mapViewer" && activeMap) {
                 alt={activeMap.title}
                 className="max-w-full max-h-full object-contain"
                 onLoad={() => {
-                  // Reset to fit-to-page when new image loads
-                  resetTransform()
+                  resetTransform() // Start at fit-to-page
+                  setIsAtFitToPage(true)
                 }}
               />
             </TransformComponent>
@@ -1694,7 +1758,7 @@ if (currentScreen === "mapViewer" && activeMap) {
               className={`absolute inset-0 pointer-events-none transition-opacity duration-300 ${
                 showControls ? "opacity-100" : "opacity-0"
               }`}
-              onClick={() => setShowControls(true)} // Show controls on tap
+              onClick={() => setShowControls(true)}
             >
               {/* Top Controls Row */}
               <div className="absolute top-4 left-4 flex items-center gap-3 pointer-events-auto">
@@ -1727,13 +1791,14 @@ if (currentScreen === "mapViewer" && activeMap) {
                 />
               </button>
 
-              {/* Navigation Arrows */}
-              {currentMapIndex > 0 && (
+              {/* Navigation Arrows - only show when at fit-to-page scale for clarity */}
+              {isAtFitToPage && currentMapIndex > 0 && (
                 <button
                   onClick={() => {
                     const newIndex = currentMapIndex - 1
                     setCurrentMapIndex(newIndex)
                     setActiveMap(mockMapData[currentCategory].maps[newIndex])
+                    resetTransform() // Reset to fit-to-page
                   }}
                   className="absolute left-4 top-1/2 transform -translate-y-1/2 p-2 bg-white bg-opacity-90 rounded-lg pointer-events-auto shadow-sm"
                 >
@@ -1741,12 +1806,13 @@ if (currentScreen === "mapViewer" && activeMap) {
                 </button>
               )}
 
-              {currentMapIndex < mockMapData[currentCategory].maps.length - 1 && (
+              {isAtFitToPage && currentMapIndex < mockMapData[currentCategory].maps.length - 1 && (
                 <button
                   onClick={() => {
                     const newIndex = currentMapIndex + 1
                     setCurrentMapIndex(newIndex)
                     setActiveMap(mockMapData[currentCategory].maps[newIndex])
+                    resetTransform() // Reset to fit-to-page
                   }}
                   className="absolute right-4 top-1/2 transform -translate-y-1/2 p-2 bg-white bg-opacity-90 rounded-lg pointer-events-auto shadow-sm"
                 >
@@ -1764,6 +1830,13 @@ if (currentScreen === "mapViewer" && activeMap) {
               >
                 <Home className="w-5 h-5 text-gray-800" />
               </button>
+
+              {/* Debug info - remove in production */}
+              <div className="absolute top-20 right-4 bg-black bg-opacity-75 text-white text-xs p-2 rounded pointer-events-auto">
+                <div>Scale: {state.scale.toFixed(2)}</div>
+                <div>At Fit: {isAtFitToPage ? 'Yes' : 'No'}</div>
+                <div>Map: {currentMapIndex + 1}/{mockMapData[currentCategory]?.maps?.length || 0}</div>
+              </div>
             </div>
           </div>
         )}
