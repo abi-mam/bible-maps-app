@@ -666,6 +666,7 @@ const BibleMapsApp = () => {
   const [favoriteFromViewMode, setFavoriteFromViewMode] = useState("smallList")
   const [isSystemNavVisible, setIsSystemNavVisible] = useState(false)
   const [highlightActiveMap, setHighlightActiveMap] = useState(false)
+  const [showControls, setShowControls] = useState(false);
 
   const handleLongPress = (title) => {
     setPopupTitle(title)
