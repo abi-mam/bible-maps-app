@@ -1606,11 +1606,11 @@ const BibleMapsApp = () => {
 // Map Viewer
 if (currentScreen === "mapViewer" && activeMap) {
   return (
-    <div className="fixed inset-0 bg-white">
+    <div className="fixed inset-0 bg-white overflow-hidden">
       <TransformWrapper
         initialScale={1}
         minScale={0.5}
-        maxScale={3}
+        maxScale={4}
         limitToBounds={true}
         onTransformed={(ref, state) => {
           if (state && typeof state.scale === 'number') {
@@ -1634,6 +1634,13 @@ if (currentScreen === "mapViewer" && activeMap) {
                   src={activeMap.fullImage || "/placeholder.svg"}
                   alt={activeMap.title}
                   onClick={() => setShowControls(true)}
+                  onDoubleClick={() => {
+                    if (isAtFitToPage) {
+                      zoomIn(2)
+                    } else {
+                      resetTransform()
+                    }
+                  }}
                   onError={(e) => { e.target.src = "/placeholder.svg" }}
                   style={{
                     maxWidth: '100%',
