@@ -1604,6 +1604,7 @@ const BibleMapsApp = () => {
   }
 
 // Map Viewer
+// Map Viewer
 if (currentScreen === "mapViewer" && activeMap) {
   return (
     <div className="fixed inset-0 bg-white overflow-hidden">
@@ -1614,65 +1615,68 @@ if (currentScreen === "mapViewer" && activeMap) {
         limitToBounds={true}
         doubleClick={{ disabled: true }}
         onTransformed={(ref, state) => {
-          if (state && typeof state.scale === 'number') {
+          if (state && typeof state.scale === "number") {
             setIsAtFitToPage(state.scale <= 1.1)
             setIsSystemNavVisible(state.scale > 1.2)
           }
           setShowControls(true)
-         }}
-       >        
-       {({ zoomIn, zoomOut, resetTransform, state }) => {
-          const handleImageClick = (e) => {
-            e.preventDefault();
-            const currentTime = Date.now();
-            
+        }}
+      >
+        {({ zoomIn, zoomOut, resetTransform, state }) => {
+          const handleImageClick = (e: React.MouseEvent) => {
+            e.preventDefault()
+            const currentTime = Date.now()
+
             // Check for double click
-            if (currentTime - (window.lastImageClick || 0) < 300) {
+            if (currentTime - (window as any).lastImageClick < 300) {
               // Double click detected - toggle zoom
-              console.log('Double click detected, current scale:', state.scale);
-              
               if (state.scale <= 1.1) {
-                // Currently at fit-to-page, zoom in
-                setTimeout(() => zoomIn(2), 10);
+                setTimeout(() => zoomIn(2), 10)
               } else {
-                // Currently zoomed, reset to fit-to-page
-                setTimeout(() => resetTransform(), 10);
+                setTimeout(() => resetTransform(), 10)
               }
             }
-            
-            window.lastImageClick = currentTime;
-            setShowControls(true);
-          };
+
+            ;(window as any).lastImageClick = currentTime
+            setShowControls(true)
+          }
 
           return (
-            <>
-              <TransformComponent>
-                <div style={{ 
-                  width: '100vw', 
-                  height: '100vh', 
-                  display: 'flex', 
-                  alignItems: 'center', 
-                  justifyContent: 'center' 
-                }}>
-                  <img
-                    src={activeMap.fullImage || "/placeholder.svg"}
-                    alt={activeMap.title}
-                    onClick={handleImageClick}
-                    onError={(e) => { e.target.src = "/placeholder.svg" }}
-                    style={{
-                      maxWidth: '100%',
-                      maxHeight: '100%',
-                      objectFit: 'contain',
-                      display: 'block',
-                      cursor: 'pointer',
-                      userSelect: 'none'
-                    }}
-                  />
-                </div>
-              </TransformWrapper>
-            </div>
+            <TransformComponent>
+              <div
+                style={{
+                  width: "100vw",
+                  height: "100vh",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                }}
+              >
+                <img
+                  src={activeMap.fullImage || "/placeholder.svg"}
+                  alt={activeMap.title}
+                  onClick={handleImageClick}
+                  onError={(e) => {
+                    const target = e.target as HTMLImageElement
+                    target.src = "/placeholder.svg"
+                  }}
+                  style={{
+                    maxWidth: "100%",
+                    maxHeight: "100%",
+                    objectFit: "contain",
+                    display: "block",
+                    cursor: "pointer",
+                    userSelect: "none",
+                  }}
+                />
+              </div>
+            </TransformComponent>
           )
-        }
+        }}
+      </TransformWrapper>
+    </div>
+  )
+}
             {/* Controls Overlay */}
             <div className={`absolute inset-0 pointer-events-none transition-opacity duration-500 ${
               showControls ? "opacity-100" : "opacity-20"
