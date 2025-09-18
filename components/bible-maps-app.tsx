@@ -699,6 +699,7 @@ const [mapScale, setMapScale] = useState(1)
 const [mapPosition, setMapPosition] = useState({ x: 0, y: 0 })
 const [showControls, setShowControls] = useState(false)
 const [fitToPageScale, setFitToPageScale] = useState(1)
+const [isImageLoaded, setIsImageLoaded] = useState(false)
 const mapRef = useRef(null)
 const touchRef = useRef({ 
   startX: 0, 
@@ -706,10 +707,12 @@ const touchRef = useRef({
   lastScale: 1, 
   lastDistance: 0,
   startDistance: 0,
-  isSwipe: false,
+  isSwipeGesture: false,
   swipeStartX: 0,
   swipeStartY: 0,
-  swipeStartTime: 0
+  swipeStartTime: 0,
+  isPanning: false,
+  touchCount: 0
 })
 const containerRef = useRef(null)
 
@@ -738,7 +741,7 @@ const calculateFitToPageScale = () => {
 const clampMapPosition = (newX, newY, scale) => {
   const mapImg = mapRef.current
   const container = containerRef.current
-  if (!mapImg || !container) return { x: newX, y: newY }
+  if (!mapImg || !container || !isImageLoaded) return { x: newX, y: newY }
 
   const containerRect = container.getBoundingClientRect()
   const containerWidth = containerRect.width
@@ -750,33 +753,44 @@ const clampMapPosition = (newX, newY, scale) => {
   let clampedX = newX
   let clampedY = newY
   
-  // Horizontal clamping - no empty space allowed
+  // Horizontal clamping
   if (scaledWidth <= containerWidth) {
-    // Image width fits or is smaller, center it and no panning
+    // Image fits horizontally, center it and don't allow movement
     clampedX = 0
   } else {
-    // Image is wider than viewport
-    const rightLimit = (scaledWidth - containerWidth) / 2  // Pan right limit
-    const leftLimit = -(scaledWidth - containerWidth) / 2  // Pan left limit
-    clampedX = Math.max(leftLimit, Math.min(rightLimit, newX))
+    // Image is wider than viewport, clamp to prevent empty space
+    // When image is centered, left edge is at -scaledWidth/2, right edge at +scaledWidth/2
+    // Container spans from -containerWidth/2 to +containerWidth/2
+    // To prevent empty space: container left edge must not exceed image left edge
+    // and container right edge must not exceed image right edge
+    const maxLeftPan = (scaledWidth - containerWidth) / 2  // Maximum pan to the left
+    const maxRightPan = -(scaledWidth - containerWidth) / 2  // Maximum pan to the right
+    clampedX = Math.max(maxRightPan, Math.min(maxLeftPan, newX))
   }
   
-  // Vertical clamping - no empty space allowed  
+  // Vertical clamping  
   if (scaledHeight <= containerHeight) {
-    // Image height fits or is smaller, center it and no panning
+    // Image fits vertically, center it and don't allow movement
     clampedY = 0
   } else {
-    // Image is taller than viewport
-    const downLimit = (scaledHeight - containerHeight) / 2   // Pan down limit
-    const upLimit = -(scaledHeight - containerHeight) / 2    // Pan up limit  
-    clampedY = Math.max(upLimit, Math.min(downLimit, newY))
+    // Image is taller than viewport, clamp to prevent empty space
+    const maxUpPan = (scaledHeight - containerHeight) / 2  // Maximum pan up
+    const maxDownPan = -(scaledHeight - containerHeight) / 2  // Maximum pan down
+    clampedY = Math.max(maxDownPan, Math.min(maxUpPan, newY))
   }
   
   return { x: clampedX, y: clampedY }
 }
 
+const isAtOrBelowFitToPageScale = () => {
+  return mapScale <= 1.01 // Scale 1 is fit-to-page in your implementation
+}
+
 const handleTouchStart = (e) => {
   setShowControls(true)
+  
+  touchRef.current.touchCount = e.touches.length
+  
   if (e.touches.length === 1) {
     const touch = e.touches[0]
     touchRef.current.startX = touch.clientX - mapPosition.x
@@ -784,39 +798,49 @@ const handleTouchStart = (e) => {
     touchRef.current.swipeStartX = touch.clientX
     touchRef.current.swipeStartY = touch.clientY
     touchRef.current.swipeStartTime = Date.now()
-    touchRef.current.isSwipe = true
+    touchRef.current.isSwipeGesture = true
+    touchRef.current.isPanning = false
   } else if (e.touches.length === 2) {
-    touchRef.current.lastDistance = getTouchDistance(e.touches)
-    touchRef.current.startDistance = touchRef.current.lastDistance
-    touchRef.current.isSwipe = false
+    const distance = getTouchDistance(e.touches)
+    touchRef.current.lastDistance = distance
+    touchRef.current.startDistance = distance
+    touchRef.current.isSwipeGesture = false
+    touchRef.current.isPanning = false
   }
 }
 
 const handleTouchMove = (e) => {
   e.preventDefault()
   
-  if (e.touches.length === 1) {
+  if (e.touches.length === 1 && touchRef.current.touchCount === 1) {
     const touch = e.touches[0]
     const deltaX = touch.clientX - touchRef.current.swipeStartX
     const deltaY = touch.clientY - touchRef.current.swipeStartY
+    const moveThreshold = 10
     
-    // Check if movement is significant enough to be considered not a swipe
-    if (Math.abs(deltaX) > 10 || Math.abs(deltaY) > 10) {
-      touchRef.current.isSwipe = false
+    // Check if this is still a potential swipe gesture
+    if (touchRef.current.isSwipeGesture && 
+        (Math.abs(deltaX) > moveThreshold || Math.abs(deltaY) > moveThreshold)) {
+      touchRef.current.isSwipeGesture = false
+      touchRef.current.isPanning = true
     }
     
     // Only allow panning if zoom level > fit-to-page
-    const fitScale = calculateFitToPageScale()
-    if (mapScale > fitScale) {
+    if (touchRef.current.isPanning && !isAtOrBelowFitToPageScale()) {
       const newX = touch.clientX - touchRef.current.startX
       const newY = touch.clientY - touchRef.current.startY
       const clampedPosition = clampMapPosition(newX, newY, mapScale)
       setMapPosition(clampedPosition)
     }
-  } else if (e.touches.length === 2) {
+  } else if (e.touches.length === 2 && touchRef.current.touchCount === 2) {
     const distance = getTouchDistance(e.touches)
     const scaleChange = distance / touchRef.current.lastDistance
-    const newScale = Math.max(0.1, Math.min(mapScale * scaleChange, 5))
+    
+    // Apply smoother scaling with smaller increments
+    const dampingFactor = 0.5 // Reduce the scaling speed
+    const adjustedScaleChange = 1 + (scaleChange - 1) * dampingFactor
+    const newScale = Math.max(0.1, Math.min(mapScale * adjustedScaleChange, 5))
+    
     setMapScale(newScale)
     touchRef.current.lastDistance = distance
     
@@ -827,42 +851,45 @@ const handleTouchMove = (e) => {
 }
 
 const handleTouchEnd = (e) => {
-  // Handle swipe navigation only at fit-to-page scale or below
-  if (touchRef.current.isSwipe && e.changedTouches.length === 1) {
+  // Handle swipe navigation only at fit-to-page scale
+  if (touchRef.current.isSwipeGesture && 
+      touchRef.current.touchCount === 1 && 
+      e.changedTouches.length === 1) {
+    
     const touch = e.changedTouches[0]
     const deltaX = touch.clientX - touchRef.current.swipeStartX
     const deltaY = touch.clientY - touchRef.current.swipeStartY
     const deltaTime = Date.now() - touchRef.current.swipeStartTime
     
-    const fitScale = calculateFitToPageScale()
-    
-    // Only process swipes at or below fit-to-page scale
-    if (mapScale <= fitScale && deltaTime < 300) { // Quick swipe within 300ms
+    // Only process swipes at fit-to-page scale or below
+    if (isAtOrBelowFitToPageScale() && deltaTime < 300) {
       const minSwipeDistance = 50
       
-      // Horizontal swipe (left-to-right or right-to-left)
+      // Horizontal swipe (and more horizontal than vertical)
       if (Math.abs(deltaX) > minSwipeDistance && Math.abs(deltaX) > Math.abs(deltaY)) {
         if (deltaX > 0 && currentMapIndex > 0) {
           // Swipe right - go to previous map
           const newIndex = currentMapIndex - 1
           setCurrentMapIndex(newIndex)
           setActiveMap(mockMapData[currentCategory].maps[newIndex])
-          setMapScale(mapScale) // Keep same scale
+          // Keep the same scale when navigating
           setMapPosition({ x: 0, y: 0 })
         } else if (deltaX < 0 && currentMapIndex < mockMapData[currentCategory].maps.length - 1) {
           // Swipe left - go to next map
           const newIndex = currentMapIndex + 1
           setCurrentMapIndex(newIndex)
           setActiveMap(mockMapData[currentCategory].maps[newIndex])
-          setMapScale(mapScale) // Keep same scale
+          // Keep the same scale when navigating
           setMapPosition({ x: 0, y: 0 })
         }
       }
     }
   }
   
-  // Reset swipe tracking
-  touchRef.current.isSwipe = false
+  // Reset touch state
+  touchRef.current.isSwipeGesture = false
+  touchRef.current.isPanning = false
+  touchRef.current.touchCount = 0
 }
   
   const handleDoubleClick = (e) => {
