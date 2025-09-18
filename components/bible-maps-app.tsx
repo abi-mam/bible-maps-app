@@ -31,35 +31,7 @@ const SimpleBookIcon = ({ className }) => (
     <img src="/open-book-icon.png" alt="Open Book" className="w-full h-full" />
   </div>
 )
-
-const useLongPress = (callback, ms = 500) => {
-  const [startLongPress, setStartLongPress] = useState(false)
-  const timerRef = useRef()
-
-  useEffect(() => {
-    if (startLongPress) {
-      timerRef.current = setTimeout(callback, ms)
-    } else {
-      clearTimeout(timerRef.current)
-    }
-
-    return () => {
-      clearTimeout(timerRef.current)
-    }
-  }, [callback, ms, startLongPress])
-
-  const start = () => setStartLongPress(true)
-  const stop = () => setStartLongPress(false)
-
-  return {
-    onMouseDown: start,
-    onMouseUp: stop,
-    onMouseLeave: stop,
-    onTouchStart: start,
-    onTouchEnd: stop,
-  }
-}
-
+  
 const TitlePopup = ({ title, onClose }) => (
   <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50" onClick={onClose}>
     <div className="bg-white rounded-lg p-6 m-4 max-w-sm">
@@ -695,33 +667,6 @@ const BibleMapsApp = () => {
   const [isSystemNavVisible, setIsSystemNavVisible] = useState(false)
   const [highlightActiveMap, setHighlightActiveMap] = useState(false)
 
-// Map viewer states
-const [showControls, setShowControls] = useState(false)
-const [isAtFitToPage, setIsAtFitToPage] = useState(true)
-const [gestureState, setGestureState] = useState({
-  startX: 0,
-  startY: 0,
-  startTime: 0,
-  isSwipeDetected: false
-})
-
-const transformRef = useRef(null)
-  
-// Handle swipe navigation when at fit-to-page scale
-const handleSwipeNavigation = (deltaX) => {
-  if (deltaX > 50 && currentMapIndex < mockMapData[currentCategory].maps.length - 1) {
-    // Left-to-right swipe - next map
-    const newIndex = currentMapIndex + 1
-    setCurrentMapIndex(newIndex)
-    setActiveMap(mockMapData[currentCategory].maps[newIndex])
-  } else if (deltaX < -50 && currentMapIndex > 0) {
-    // Right-to-left swipe - previous map
-    const newIndex = currentMapIndex - 1
-    setCurrentMapIndex(newIndex)
-    setActiveMap(mockMapData[currentCategory].maps[newIndex])
-  }
-}
-
   const handleLongPress = (title) => {
     setPopupTitle(title)
     setShowTitlePopup(true)
@@ -746,13 +691,13 @@ const handleSwipeNavigation = (deltaX) => {
     }
   }, [currentScreen, hasOpenedBefore, activeMap])
 
-  // Handle controls timeout
-  useEffect(() => {
-    if (showControls && currentScreen === "mapViewer") {
-      const timer = setTimeout(() => setShowControls(false), 3000)
-      return () => clearTimeout(timer)
-    }
-  }, [showControls, currentScreen])
+  // Handle controls timeout  
+useEffect(() => {
+  if (showControls && currentScreen === "mapViewer") {
+    const timer = setTimeout(() => setShowControls(false), 4000)
+    return () => clearTimeout(timer)
+  }
+}, [showControls, currentScreen])
    
   const toggleFavorite = (mapId) => {
     const newFavorites = new Set(favorites)
@@ -1659,199 +1604,111 @@ const handleSwipeNavigation = (deltaX) => {
 // Map Viewer
 if (currentScreen === "mapViewer" && activeMap) {
   return (
-    <div className="fixed inset-0 bg-white overflow-hidden" style={{ 
-      paddingBottom: isSystemNavVisible ? '4rem' : '0'
-    }}>
-      {/* TransformWrapper handles zoom/pan, we add gesture detection on top */}
+    <div className="fixed inset-0 bg-white overflow-hidden">
       <TransformWrapper
-        ref={transformRef}
         initialScale={1}
+        minScale={0.5}
+        maxScale={4}
         limitToBounds={true}
         centerOnInit={true}
         onTransformed={(ref, state) => {
-          const atFitToPage = state.scale <= 1.1
-          setIsAtFitToPage(atFitToPage)
-          
-          // Auto-center when at or below fit-to-page scale
-          if (atFitToPage && (state.positionX !== 0 || state.positionY !== 0)) {
-            ref.setTransform(0, 0, state.scale, 200)
-          }
-        }}
-        onPanningStart={(ref, event) => {
+          // Only track scale changes - no conflicts
+          setIsAtFitToPage(state.scale <= 1.1)
           setShowControls(true)
-          
-          // Only track gestures when at fit-to-page for swipe detection
-          if (isAtFitToPage && event.touches?.length === 1) {
-            const touch = event.touches[0]
-            setGestureState({
-              startX: touch.clientX,
-              startY: touch.clientY,
-              startTime: Date.now(),
-              isSwipeDetected: false
-            })
-          }
-        }}
-        onPanning={(ref, event) => {
-          // Prevent panning at fit-to-page scale and detect swipes
-          if (isAtFitToPage) {
-            // Reset position to prevent unwanted panning at fit-to-page
-            ref.setTransform(0, 0, ref.state.scale, 0)
-            
-            // Detect horizontal swipe gestures
-            if (event.touches?.length === 1 && gestureState.startTime) {
-              const touch = event.touches[0]
-              const deltaX = touch.clientX - gestureState.startX
-              const deltaY = touch.clientY - gestureState.startY
-              const deltaTime = Date.now() - gestureState.startTime
-              const distance = Math.sqrt(deltaX * deltaX + deltaY * deltaY)
-              const isHorizontalSwipe = Math.abs(deltaX) > Math.abs(deltaY) * 1.5
-              
-              if (distance > 50 && isHorizontalSwipe && deltaTime < 500) {
-                setGestureState(prev => ({ ...prev, isSwipeDetected: true }))
-              }
-            }
-          }
-        }}
-        onPanningStop={(ref, event) => {
-          // Handle swipe navigation at fit-to-page scale
-          if (isAtFitToPage) {
-            // Always ensure centered position
-            ref.setTransform(0, 0, ref.state.scale, 200)
-            
-            // Execute swipe navigation if detected
-            if (gestureState.isSwipeDetected && event.changedTouches?.length) {
-              const deltaX = event.changedTouches[0].clientX - gestureState.startX
-              handleSwipeNavigation(deltaX)
-            }
-          }
-          
-          // Reset gesture state
-          setGestureState(prev => ({ ...prev, isSwipeDetected: false, startTime: 0 }))
-        }}
-        onDoubleClick={(ref, event) => {
-          // Toggle between fit-to-page (scale 1) and natural size (scale 2)
-          if (isAtFitToPage) {
-            ref.setTransform(0, 0, 2, 300) // Zoom to 2x (natural size)
-            setIsAtFitToPage(false)
-          } else {
-            ref.resetTransform(300) // Return to fit-to-page
-            setIsAtFitToPage(true)
-          }
         }}
       >
-        {({ zoomIn, zoomOut, resetTransform, zoomToElement, state, ...rest }) => (
+        {({ zoomIn, zoomOut, resetTransform }) => (
           <div className="w-full h-full">
             <TransformComponent>
               <img
                 src={activeMap.fullImage || "/placeholder.svg"}
                 alt={activeMap.title}
                 className="max-w-full max-h-full object-contain"
-                onLoad={() => {
-                  resetTransform() // Start at fit-to-page
-                  setIsAtFitToPage(true)
-                }}
+                onClick={() => setShowControls(true)}
+                onError={(e) => { e.target.src = "/placeholder.svg" }}
               />
             </TransformComponent>
 
-            {/* Controls Overlay - Show on touch/interaction */}
-            <div
-              className={`absolute inset-0 pointer-events-none transition-opacity duration-300 ${
-                showControls ? "opacity-100" : "opacity-0"
-              }`}
-              onClick={() => setShowControls(true)}
-            >
-              {/* Top Controls Row */}
+            {/* Controls Overlay */}
+            <div className={`absolute inset-0 pointer-events-none transition-opacity duration-500 ${
+              showControls ? "opacity-100" : "opacity-20"
+            }`}>
+              
+              {/* Top Left Controls */}
               <div className="absolute top-4 left-4 flex items-center gap-3 pointer-events-auto">
                 <button
                   onClick={() => {
                     setHighlightActiveMap(true)
                     setCurrentScreen("category")
-                    setShowControls(false)
                     setTimeout(() => setHighlightActiveMap(false), 2000)
                   }}
-                  className="p-2 bg-white bg-opacity-90 rounded-lg shadow-sm text-gray-800"
+                  className="p-2 bg-white/90 backdrop-blur-sm rounded-lg shadow-lg"
                 >
                   <ArrowLeft className="w-5 h-5" />
                 </button>
-                <p 
-                  className="text-gray-800 text-xs bg-white bg-opacity-90 px-2 py-1 rounded shadow-sm max-w-xs truncate cursor-pointer"
+                <div 
                   onClick={() => handleLongPress(activeMap.title)}
+                  className="text-sm bg-white/90 backdrop-blur-sm px-3 py-2 rounded-lg shadow-lg cursor-pointer"
                 >
-                  {activeMap.title}
-                </p>
+                  <p className="truncate font-medium">{activeMap.title}</p>
+                </div>
               </div>
 
-              {/* Favorite Toggle */}
+              {/* Top Right - Favorite */}
               <button
                 onClick={() => toggleFavorite(activeMap.id)}
-                className="absolute top-4 right-4 p-2 bg-white bg-opacity-90 rounded-lg pointer-events-auto shadow-sm"
+                className="absolute top-4 right-4 p-2 bg-white/90 backdrop-blur-sm rounded-lg shadow-lg pointer-events-auto"
               >
-                <Star
-                  className={`w-5 h-5 ${favorites.has(activeMap.id) ? "text-yellow-500 fill-current" : "text-gray-600"}`}
-                />
+                <Star className={`w-5 h-5 ${favorites.has(activeMap.id) ? "text-yellow-500 fill-current" : "text-gray-600"}`} />
               </button>
 
-              {/* Navigation Arrows - only show when at fit-to-page scale for clarity */}
-              {isAtFitToPage && currentMapIndex > 0 && (
-                <button
-                  onClick={() => {
-                    const newIndex = currentMapIndex - 1
-                    setCurrentMapIndex(newIndex)
-                    setActiveMap(mockMapData[currentCategory].maps[newIndex])
-                    resetTransform() // Reset to fit-to-page
-                  }}
-                  className="absolute left-4 top-1/2 transform -translate-y-1/2 p-2 bg-white bg-opacity-90 rounded-lg pointer-events-auto shadow-sm"
-                >
-                  <ChevronLeft className="w-5 h-5 text-gray-800" />
-                </button>
-              )}
+              {/* Navigation Arrows - Manual Only */}
+              {isAtFitToPage && (
+                <>
+                  {currentMapIndex > 0 && (
+                    <button
+                      onClick={() => {
+                        const newIndex = currentMapIndex - 1
+                        setCurrentMapIndex(newIndex)
+                        setActiveMap(mockMapData[currentCategory].maps[newIndex])
+                        resetTransform()
+                      }}
+                      className="absolute left-4 top-1/2 transform -translate-y-1/2 p-3 bg-white/90 backdrop-blur-sm rounded-lg shadow-lg pointer-events-auto"
+                    >
+                      <ChevronLeft className="w-6 h-6 text-gray-800" />
+                    </button>
+                  )}
 
-              {isAtFitToPage && currentMapIndex < mockMapData[currentCategory].maps.length - 1 && (
-                <button
-                  onClick={() => {
-                    const newIndex = currentMapIndex + 1
-                    setCurrentMapIndex(newIndex)
-                    setActiveMap(mockMapData[currentCategory].maps[newIndex])
-                    resetTransform() // Reset to fit-to-page
-                  }}
-                  className="absolute right-4 top-1/2 transform -translate-y-1/2 p-2 bg-white bg-opacity-90 rounded-lg pointer-events-auto shadow-sm"
-                >
-                  <ChevronRight className="w-5 h-5 text-gray-800" />
-                </button>
+                  {currentMapIndex < mockMapData[currentCategory].maps.length - 1 && (
+                    <button
+                      onClick={() => {
+                        const newIndex = currentMapIndex + 1
+                        setCurrentMapIndex(newIndex)
+                        setActiveMap(mockMapData[currentCategory].maps[newIndex])
+                        resetTransform()
+                      }}
+                      className="absolute right-4 top-1/2 transform -translate-y-1/2 p-3 bg-white/90 backdrop-blur-sm rounded-lg shadow-lg pointer-events-auto"
+                    >
+                      <ChevronRight className="w-6 h-6 text-gray-800" />
+                    </button>
+                  )}
+                </>
               )}
 
               {/* Home Button */}
               <button
-                onClick={() => {
-                  setCurrentScreen("home")
-                  setShowControls(false)
-                }}
-                className="absolute bottom-4 left-1/2 transform -translate-x-1/2 p-2 bg-white bg-opacity-90 rounded-lg pointer-events-auto shadow-sm"
+                onClick={() => setCurrentScreen("home")}
+                className="absolute bottom-6 left-1/2 transform -translate-x-1/2 p-3 bg-white/90 backdrop-blur-sm rounded-lg shadow-lg pointer-events-auto"
               >
                 <Home className="w-5 h-5 text-gray-800" />
               </button>
-
-              {/* Debug info - remove in production */}
-              <div className="absolute top-20 right-4 bg-black bg-opacity-75 text-white text-xs p-2 rounded pointer-events-auto">
-                <div>Scale: {state.scale.toFixed(2)}</div>
-                <div>At Fit: {isAtFitToPage ? 'Yes' : 'No'}</div>
-                <div>Map: {currentMapIndex + 1}/{mockMapData[currentCategory]?.maps?.length || 0}</div>
-              </div>
             </div>
           </div>
         )}
       </TransformWrapper>
-
-      {/* System Navigation Overlay */}
-      {isSystemNavVisible && (
-        <div className="fixed inset-x-0 bottom-0 h-16 bg-black bg-opacity-50 z-[9999] pointer-events-none">
-          {/* This represents the system navigation area */}
-        </div>
-      )}
     </div>
   )
 }
-
   return null
 }
 
