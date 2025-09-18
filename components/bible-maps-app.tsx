@@ -1669,8 +1669,10 @@ if (currentScreen === "mapViewer" && activeMap) {
                     }}
                   />
                 </div>
-              </TransformComponent>
-
+              </TransformWrapper>
+            </div>
+          )
+        }
             {/* Controls Overlay */}
             <div className={`absolute inset-0 pointer-events-none transition-opacity duration-500 ${
               showControls ? "opacity-100" : "opacity-20"
