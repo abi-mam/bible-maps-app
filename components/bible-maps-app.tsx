@@ -1743,6 +1743,10 @@ if (currentScreen === "mapViewer" && activeMap) {
             </>
           )
         }}
+      </TransformWrapper>
+    </div>
+  )
+}
 
   return null
 }
