@@ -667,6 +667,7 @@ const BibleMapsApp = () => {
   const [isSystemNavVisible, setIsSystemNavVisible] = useState(false)
   const [highlightActiveMap, setHighlightActiveMap] = useState(false)
   const [showControls, setShowControls] = useState(false);
+  const [isAtFitToPage, setIsAtFitToPage] = useState(true);
 
   const handleLongPress = (title) => {
     setPopupTitle(title)
@@ -1613,21 +1614,24 @@ if (currentScreen === "mapViewer" && activeMap) {
         limitToBounds={true}
         centerOnInit={true}
         onTransformed={(ref, state) => {
-          // Only track scale changes - no conflicts
-          setIsAtFitToPage(state.scale <= 1.1)
-          setShowControls(true)
-        }}
+  if (state && typeof state.scale === 'number') {
+    setIsAtFitToPage(state.scale <= 1.1)
+    setIsSystemNavVisible(state.scale > 1)
+  }
+  setShowControls(true)
+}}
       >
         {({ zoomIn, zoomOut, resetTransform }) => (
           <div className="w-full h-full">
             <TransformComponent>
               <img
-                src={activeMap.fullImage || "/placeholder.svg"}
-                alt={activeMap.title}
-                className="max-w-full max-h-full object-contain"
-                onClick={() => setShowControls(true)}
-                onError={(e) => { e.target.src = "/placeholder.svg" }}
-              />
+  src={activeMap.fullImage || "/placeholder.svg"}
+  alt={activeMap.title}
+  className="block"
+  style={{ maxWidth: 'none', maxHeight: 'none', width: 'auto', height: 'auto' }}
+  onClick={() => setShowControls(true)}
+  onError={(e) => { e.target.src = "/placeholder.svg" }}
+/>
             </TransformComponent>
 
             {/* Controls Overlay */}
@@ -1663,36 +1667,34 @@ if (currentScreen === "mapViewer" && activeMap) {
                 <Star className={`w-5 h-5 ${favorites.has(activeMap.id) ? "text-yellow-500 fill-current" : "text-gray-600"}`} />
               </button>
 
-              {/* Navigation Arrows - Manual Only */}
-              {isAtFitToPage && (
-                <>
-                  {currentMapIndex > 0 && (
-                    <button
-                      onClick={() => {
-                        const newIndex = currentMapIndex - 1
-                        setCurrentMapIndex(newIndex)
-                        setActiveMap(mockMapData[currentCategory].maps[newIndex])
-                        resetTransform()
-                      }}
-                      className="absolute left-4 top-1/2 transform -translate-y-1/2 p-3 bg-white/90 backdrop-blur-sm rounded-lg shadow-lg pointer-events-auto"
-                    >
-                      <ChevronLeft className="w-6 h-6 text-gray-800" />
-                    </button>
-                  )}
+              {/* Navigation Arrows */}
+{currentMapIndex > 0 && (
+  <button
+    onClick={() => {
+      const newIndex = currentMapIndex - 1
+      setCurrentMapIndex(newIndex)
+      setActiveMap(mockMapData[currentCategory].maps[newIndex])
+      setShowControls(true)
+    }}
+    className="absolute left-4 top-1/2 transform -translate-y-1/2 p-3 bg-white/90 backdrop-blur-sm rounded-lg shadow-lg pointer-events-auto"
+  >
+    <ChevronLeft className="w-6 h-6 text-gray-800" />
+  </button>
+)}
 
-                  {currentMapIndex < mockMapData[currentCategory].maps.length - 1 && (
-                    <button
-                      onClick={() => {
-                        const newIndex = currentMapIndex + 1
-                        setCurrentMapIndex(newIndex)
-                        setActiveMap(mockMapData[currentCategory].maps[newIndex])
-                        resetTransform()
-                      }}
-                      className="absolute right-4 top-1/2 transform -translate-y-1/2 p-3 bg-white/90 backdrop-blur-sm rounded-lg shadow-lg pointer-events-auto"
-                    >
-                      <ChevronRight className="w-6 h-6 text-gray-800" />
-                    </button>
-                  )}
+{currentMapIndex < mockMapData[currentCategory].maps.length - 1 && (
+  <button
+    onClick={() => {
+      const newIndex = currentMapIndex + 1
+      setCurrentMapIndex(newIndex)
+      setActiveMap(mockMapData[currentCategory].maps[newIndex])
+      setShowControls(true)
+    }}
+    className="absolute right-4 top-1/2 transform -translate-y-1/2 p-3 bg-white/90 backdrop-blur-sm rounded-lg shadow-lg pointer-events-auto"
+  >
+    <ChevronRight className="w-6 h-6 text-gray-800" />
+  </button>
+)}
                 </>
               )}
 
