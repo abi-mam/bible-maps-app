@@ -1612,6 +1612,7 @@ if (currentScreen === "mapViewer" && activeMap) {
         minScale={0.5}
         maxScale={3}
         limitToBounds={true}
+        doubleClick={{ disabled: true }}
         onTransformed={(ref, state) => {
           if (state && typeof state.scale === 'number') {
             setIsAtFitToPage(state.scale <= 1.1)
