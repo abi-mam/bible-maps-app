@@ -776,82 +776,9 @@ const BibleMapsApp = () => {
     setShowTitlePopup(true)
   }
 
-  // Handle system navigation visibility for Capacitor
+  // Simple screen change logging - no system manipulation
   useEffect(() => {
-    const setupNativeUI = async () => {
-      // Only enter immersive / hide body scrolling for the full-screen map viewer
-      if (currentScreen === "mapViewer") {
-        try {
-          // Import StatusBar plugin dynamically
-          const { StatusBar } = await import('@capacitor/status-bar')
-          await StatusBar.hide()
-        } catch (error) {
-          console.log('StatusBar plugin not available')
-        }
-
-        // Set immersive mode using native Android calls
-        if (typeof window !== 'undefined' && window.AndroidFullScreen) {
-          try {
-            await window.AndroidFullScreen.immersiveMode()
-          } catch (error) {
-            console.log('AndroidFullScreen not available')
-          }
-        }
-
-        // CSS fallback: prevent scrolling only in map viewer
-        document.body.style.overflow = 'hidden'
-        document.documentElement.style.height = '100vh'
-        document.body.style.height = '100vh'
-      } else {
-        try {
-          // Show status bar for non-map screens
-          const { StatusBar } = await import('@capacitor/status-bar')
-          await StatusBar.show()
-        } catch (error) {
-          console.log('StatusBar plugin not available')
-        }
-
-        if (typeof window !== 'undefined' && window.AndroidFullScreen) {
-          try {
-            await window.AndroidFullScreen.showSystemUI()
-          } catch (error) {
-            console.log('AndroidFullScreen not available')
-          }
-        }
-
-        // Restore normal scrolling for all other screens
-        document.body.style.overflow = 'auto'
-        document.documentElement.style.height = 'auto'
-        document.body.style.height = 'auto'
-      }
-    }
-
-    setupNativeUI()
-
-    return () => {
-      // Cleanup on unmount or screen change
-      const cleanup = async () => {
-        try {
-          const { StatusBar } = await import('@capacitor/status-bar')
-          await StatusBar.show()
-        } catch (error) {
-          console.log('StatusBar cleanup error')
-        }
-
-        if (typeof window !== 'undefined' && window.AndroidFullScreen) {
-          try {
-            await window.AndroidFullScreen.showSystemUI()
-          } catch (error) {
-            console.log('AndroidFullScreen cleanup error')
-          }
-        }
-
-        document.body.style.overflow = 'auto'
-        document.documentElement.style.height = 'auto'
-        document.body.style.height = 'auto'
-      }
-      cleanup()
-    }
+    console.log('Screen changed to:', currentScreen)
   }, [currentScreen])
 
   useEffect(() => {
