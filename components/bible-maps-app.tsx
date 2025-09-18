@@ -1612,7 +1612,6 @@ if (currentScreen === "mapViewer" && activeMap) {
         minScale={0.5}
         maxScale={4}
         limitToBounds={true}
-        centerOnInit={true}
         onTransformed={(ref, state) => {
   if (state && typeof state.scale === 'number') {
     setIsAtFitToPage(state.scale <= 1.1)
@@ -1624,14 +1623,16 @@ if (currentScreen === "mapViewer" && activeMap) {
         {({ zoomIn, zoomOut, resetTransform }) => (
           <div className="w-full h-full">
             <TransformComponent>
-              <img
+              <div className="w-full h-full flex items-center justify-center min-h-screen">
+                <img
   src={activeMap.fullImage || "/placeholder.svg"}
   alt={activeMap.title}
-  className="block"
-  style={{ maxWidth: 'none', maxHeight: 'none', width: 'auto', height: 'auto' }}
+  className="block max-w-full max-h-full"
+  style={{ objectFit: 'contain' }}
   onClick={() => setShowControls(true)}
   onError={(e) => { e.target.src = "/placeholder.svg" }}
 />
+              </div>
             </TransformComponent>
 
             {/* Controls Overlay */}
