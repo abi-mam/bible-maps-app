@@ -1,5 +1,6 @@
 "use client"
 
+import { TransformWrapper, TransformComponent } from "react-zoom-pan-pinch";
 import React, { useState, useEffect, useRef } from "react"
 import { Search, Star, Grid3X3, List, ChevronLeft, ChevronRight, ArrowLeft, Home } from "lucide-react"
 
@@ -695,13 +696,7 @@ const BibleMapsApp = () => {
   const [highlightActiveMap, setHighlightActiveMap] = useState(false)
 
 // Map viewer states
-const [mapScale, setMapScale] = useState(1)
-const [mapPosition, setMapPosition] = useState({ x: 0, y: 0 })
 const [showControls, setShowControls] = useState(false)
-const [fitToPageScale, setFitToPageScale] = useState(1)
-const [isImageLoaded, setIsImageLoaded] = useState(false)
-const mapRef = useRef(null)
-const touchRef = useRef({ 
   startX: 0, 
   startY: 0, 
   lastScale: 1, 
@@ -714,7 +709,6 @@ const touchRef = useRef({
   isPanning: false,
   touchCount: 0
 })
-const containerRef = useRef(null)
 
 // Helper functions for map viewer
 const getTouchDistance = (touches) => {
@@ -722,210 +716,7 @@ const getTouchDistance = (touches) => {
   const dy = touches[0].clientY - touches[1].clientY
   return Math.sqrt(dx * dx + dy * dy)
 }
-
-const calculateFitToPageScale = () => {
-  const mapImg = mapRef.current
-  const container = containerRef.current
-  if (!mapImg || !container || !mapImg.complete || mapImg.naturalWidth === 0) return 1
-
-  const containerRect = container.getBoundingClientRect()
-  const containerWidth = containerRect.width
-  const containerHeight = containerRect.height
-  
-  const scaleX = containerWidth / mapImg.naturalWidth
-  const scaleY = containerHeight / mapImg.naturalHeight
-  
-  return Math.min(scaleX, scaleY) // Fit longer side to viewport
-}
-
-const clampMapPosition = (newX, newY, scale) => {
-  const mapImg = mapRef.current
-  const container = containerRef.current
-  if (!mapImg || !container || !isImageLoaded) return { x: newX, y: newY }
-
-  const containerRect = container.getBoundingClientRect()
-  const containerWidth = containerRect.width
-  const containerHeight = containerRect.height
-  
-  const scaledWidth = mapImg.naturalWidth * scale
-  const scaledHeight = mapImg.naturalHeight * scale
-  
-  let clampedX = newX
-  let clampedY = newY
-  
-  // Horizontal clamping
-  if (scaledWidth <= containerWidth) {
-    // Image fits horizontally, center it and don't allow movement
-    clampedX = 0
-  } else {
-    // Image is wider than viewport, clamp to prevent empty space
-    // When image is centered, left edge is at -scaledWidth/2, right edge at +scaledWidth/2
-    // Container spans from -containerWidth/2 to +containerWidth/2
-    // To prevent empty space: container left edge must not exceed image left edge
-    // and container right edge must not exceed image right edge
-    const maxLeftPan = (scaledWidth - containerWidth) / 2  // Maximum pan to the left
-    const maxRightPan = -(scaledWidth - containerWidth) / 2  // Maximum pan to the right
-    clampedX = Math.max(maxRightPan, Math.min(maxLeftPan, newX))
-  }
-  
-  // Vertical clamping  
-  if (scaledHeight <= containerHeight) {
-    // Image fits vertically, center it and don't allow movement
-    clampedY = 0
-  } else {
-    // Image is taller than viewport, clamp to prevent empty space
-    const maxUpPan = (scaledHeight - containerHeight) / 2  // Maximum pan up
-    const maxDownPan = -(scaledHeight - containerHeight) / 2  // Maximum pan down
-    clampedY = Math.max(maxDownPan, Math.min(maxUpPan, newY))
-  }
-  
-  return { x: clampedX, y: clampedY }
-}
-
-const isAtOrBelowFitToPageScale = () => {
-  return mapScale <= 1.01 // Scale 1 is fit-to-page in your implementation
-}
-
-const handleTouchStart = (e) => {
-  setShowControls(true)
-  
-  touchRef.current.touchCount = e.touches.length
-  
-  if (e.touches.length === 1) {
-    const touch = e.touches[0]
-    touchRef.current.startX = touch.clientX - mapPosition.x
-    touchRef.current.startY = touch.clientY - mapPosition.y
-    touchRef.current.swipeStartX = touch.clientX
-    touchRef.current.swipeStartY = touch.clientY
-    touchRef.current.swipeStartTime = Date.now()
-    touchRef.current.isSwipeGesture = true
-    touchRef.current.isPanning = false
-  } else if (e.touches.length === 2) {
-    const distance = getTouchDistance(e.touches)
-    touchRef.current.lastDistance = distance
-    touchRef.current.startDistance = distance
-    touchRef.current.isSwipeGesture = false
-    touchRef.current.isPanning = false
-  }
-}
-
-const handleTouchMove = (e) => {
-  e.preventDefault()
-  
-  if (e.touches.length === 1 && touchRef.current.touchCount === 1) {
-    const touch = e.touches[0]
-    const deltaX = touch.clientX - touchRef.current.swipeStartX
-    const deltaY = touch.clientY - touchRef.current.swipeStartY
-    const moveThreshold = 10
-    
-    // Check if this is still a potential swipe gesture
-    if (touchRef.current.isSwipeGesture && 
-        (Math.abs(deltaX) > moveThreshold || Math.abs(deltaY) > moveThreshold)) {
-      touchRef.current.isSwipeGesture = false
-      touchRef.current.isPanning = true
-    }
-    
-    // Only allow panning if zoom level > fit-to-page
-    if (touchRef.current.isPanning && !isAtOrBelowFitToPageScale()) {
-      const newX = touch.clientX - touchRef.current.startX
-      const newY = touch.clientY - touchRef.current.startY
-      const clampedPosition = clampMapPosition(newX, newY, mapScale)
-      setMapPosition(clampedPosition)
-    }
-  } else if (e.touches.length === 2 && touchRef.current.touchCount === 2) {
-    const distance = getTouchDistance(e.touches)
-    const scaleChange = distance / touchRef.current.lastDistance
-    
-    // Apply smoother scaling with smaller increments
-    const dampingFactor = 0.5 // Reduce the scaling speed
-    const adjustedScaleChange = 1 + (scaleChange - 1) * dampingFactor
-    const newScale = Math.max(0.1, Math.min(mapScale * adjustedScaleChange, 5))
-    
-    setMapScale(newScale)
-    touchRef.current.lastDistance = distance
-    
-    // Clamp position after scaling
-    const clampedPosition = clampMapPosition(mapPosition.x, mapPosition.y, newScale)
-    setMapPosition(clampedPosition)
-  }
-}
-
-const handleTouchEnd = (e) => {
-  // Handle swipe navigation only at fit-to-page scale
-  if (touchRef.current.isSwipeGesture && 
-      touchRef.current.touchCount === 1 && 
-      e.changedTouches.length === 1) {
-    
-    const touch = e.changedTouches[0]
-    const deltaX = touch.clientX - touchRef.current.swipeStartX
-    const deltaY = touch.clientY - touchRef.current.swipeStartY
-    const deltaTime = Date.now() - touchRef.current.swipeStartTime
-    
-    // Only process swipes at fit-to-page scale or below
-    if (isAtOrBelowFitToPageScale() && deltaTime < 300) {
-      const minSwipeDistance = 50
-      
-      // Horizontal swipe (and more horizontal than vertical)
-      if (Math.abs(deltaX) > minSwipeDistance && Math.abs(deltaX) > Math.abs(deltaY)) {
-        if (deltaX > 0 && currentMapIndex > 0) {
-          // Swipe right - go to previous map
-          const newIndex = currentMapIndex - 1
-          setCurrentMapIndex(newIndex)
-          setActiveMap(mockMapData[currentCategory].maps[newIndex])
-          // Keep the same scale when navigating
-          setMapPosition({ x: 0, y: 0 })
-        } else if (deltaX < 0 && currentMapIndex < mockMapData[currentCategory].maps.length - 1) {
-          // Swipe left - go to next map
-          const newIndex = currentMapIndex + 1
-          setCurrentMapIndex(newIndex)
-          setActiveMap(mockMapData[currentCategory].maps[newIndex])
-          // Keep the same scale when navigating
-          setMapPosition({ x: 0, y: 0 })
-        }
-      }
-    }
-  }
-  
-  // Reset touch state
-  touchRef.current.isSwipeGesture = false
-  touchRef.current.isPanning = false
-  touchRef.current.touchCount = 0
-}
-  
-  const handleDoubleClick = (e) => {
-    if (mapScale > 1) {
-      // Reset to fit-to-screen scale
-      setMapScale(1)
-      setMapPosition({ x: 0, y: 0 })
-    } else {
-      // Zoom to natural size while keeping center
-      const mapImg = mapRef.current
-      const container = containerRef.current
-      if (mapImg && container) {
-        // Wait for image to be fully loaded
-        if (mapImg.complete && mapImg.naturalWidth > 0) {
-          const containerRect = container.getBoundingClientRect()
-          const containerWidth = containerRect.width
-          const containerHeight = containerRect.height
-        
-          // Calculate current displayed size
-          const currentDisplayWidth = mapImg.offsetWidth
-          const currentDisplayHeight = mapImg.offsetHeight
-        
-          // Calculate scale to show image at natural size
-          const naturalScale = Math.max(
-            mapImg.naturalWidth / currentDisplayWidth,
-            mapImg.naturalHeight / currentDisplayHeight
-          )
-        
-          setMapScale(naturalScale)
-          // Keep centered
-          setMapPosition({ x: 0, y: 0 })
-        }
-      }
-    }
-  }
-  
+ 
   const handleLongPress = (title) => {
     setPopupTitle(title)
     setShowTitlePopup(true)
@@ -1862,133 +1653,143 @@ const handleTouchEnd = (e) => {
     )
   }
 
-  // Map Viewer
-  if (currentScreen === "mapViewer" && activeMap) {
-    return (
-      <div
-        ref={containerRef}
-        className="fixed inset-0 bg-white overflow-hidden"
-        onTouchStart={handleTouchStart}
-        onTouchMove={handleTouchMove}
-        onTouchEnd={handleTouchEnd}
-        onMouseMove={() => setShowControls(true)}
-        style={{ 
-          touchAction: "none",
-          paddingBottom: isSystemNavVisible ? '4rem' : '0'
+// Map Viewer
+if (currentScreen === "mapViewer" && activeMap) {
+  return (
+    <div className="fixed inset-0 bg-white overflow-hidden" style={{ 
+      paddingBottom: isSystemNavVisible ? '4rem' : '0'
+    }}>
+      {/* TransformWrapper handles all pan/zoom logic */}
+      <TransformWrapper
+        initialScale={1}
+        minScale={0.1}
+        maxScale={5}
+        limitToBounds={true}
+        centerOnInit={true}
+        wheel={{ disabled: true }} // Disable mouse wheel since this is mobile
+        doubleClick={{ 
+          disabled: false,
+          mode: "toggle", // Toggle between fit and zoom
+          step: 2 // Zoom to 2x on double tap
+        }}
+        pan={{
+          disabled: false,
+          lockAxisX: false,
+          lockAxisY: false,
+          velocityDisabled: true
+        }}
+        pinch={{
+          disabled: false,
+          step: 5
+        }}
+        onTransformed={(ref, state) => {
+          // You can access zoom state here if needed
+          // console.log("Scale:", state.scale, "Position:", state.positionX, state.positionY)
         }}
       >
-        {/* Map Image */}
-        <div className="w-full h-full flex items-center justify-center">
-          <img
-            ref={mapRef}
-            src={activeMap.fullImage || "/placeholder.svg"}
-            alt={activeMap.title}
-            className="max-w-full max-h-full object-contain transition-transform duration-200"
-            style={{
-              transform: `scale(${mapScale}) translate(${mapPosition.x}px, ${mapPosition.y}px)`,
-            }}
-            onDoubleClick={handleDoubleClick}
-            
-            onLoad={() => {
-            // Initialize at fit-to-page scale (scale 1) and center
-              const fitScale = calculateFitToPageScale()
-              setFitToPageScale(fitScale)
-              setMapScale(1) // Start at fit-to-page
-              setMapPosition({ x: 0, y: 0 }) // Center the image
-            }}
-          />
-        </div>
+        {({ zoomIn, zoomOut, resetTransform, zoomToElement, state, ...rest }) => (
+          <div className="w-full h-full">
+            <TransformComponent>
+              <img
+                src={activeMap.fullImage || "/placeholder.svg"}
+                alt={activeMap.title}
+                className="max-w-full max-h-full object-contain"
+                onLoad={() => {
+                  // Reset to fit-to-page when new image loads
+                  resetTransform()
+                }}
+              />
+            </TransformComponent>
 
-        {/* Controls Overlay */}
-        <div
-          className={`absolute inset-0 pointer-events-none transition-opacity duration-300 ${showControls ? "opacity-100" : "opacity-0"}`}
-        >
-
-        {/* Top Controls Row */}
-        <div className="absolute top-4 left-4 flex items-center gap-3 pointer-events-auto">
-          <button
-            onClick={() => {
-              setHighlightActiveMap(true)
-              setCurrentScreen("category")
-              setShowControls(false)
-              // Clear highlight after 2 seconds
-              setTimeout(() => setHighlightActiveMap(false), 2000)
-            }}
-            className="p-2 bg-white bg-opacity-90 rounded-lg pointer-events-auto shadow-sm text-gray-800"
-          >
-            <ArrowLeft className="w-5 h-5" />
-          </button>
-          <p 
-            className="text-gray-800 text-xs bg-white bg-opacity-90 px-2 py-1 rounded shadow-sm max-w-xs truncate cursor-pointer"
-            onClick={() => handleLongPress(activeMap.title)}
-          >
-            {activeMap.title}
-          </p>
-        </div>
-
-         
-        {/* Favorite Toggle */}
-          <button
-            onClick={() => toggleFavorite(activeMap.id)}
-            className="absolute top-4 right-4 p-2 bg-white bg-opacity-90 rounded-lg pointer-events-auto shadow-sm"
-          >
-            <Star
-              className={`w-5 h-5 ${favorites.has(activeMap.id) ? "text-yellow-500 fill-current" : "text-gray-600"}`}
-            />
-          </button>
-        
-          {/* Navigation Arrows */}
-          {currentMapIndex > 0 && (
-            <button
-              onClick={() => {
-                const newIndex = currentMapIndex - 1
-                setCurrentMapIndex(newIndex)
-                setActiveMap(mockMapData[currentCategory].maps[newIndex])
-                // Keep same scale when navigating
-                setMapPosition({ x: 0, y: 0 })
-              }}
-              className="absolute left-4 top-1/2 transform -translate-y-1/2 p-2 bg-white bg-opacity-90 rounded-lg pointer-events-auto shadow-sm"
+            {/* Controls Overlay - Show on touch/interaction */}
+            <div
+              className={`absolute inset-0 pointer-events-none transition-opacity duration-300 ${
+                showControls ? "opacity-100" : "opacity-0"
+              }`}
+              onClick={() => setShowControls(true)} // Show controls on tap
             >
-              <ChevronLeft className="w-5 h-5 text-gray-800" />
-            </button>
-          )}
+              {/* Top Controls Row */}
+              <div className="absolute top-4 left-4 flex items-center gap-3 pointer-events-auto">
+                <button
+                  onClick={() => {
+                    setHighlightActiveMap(true)
+                    setCurrentScreen("category")
+                    setShowControls(false)
+                    setTimeout(() => setHighlightActiveMap(false), 2000)
+                  }}
+                  className="p-2 bg-white bg-opacity-90 rounded-lg shadow-sm text-gray-800"
+                >
+                  <ArrowLeft className="w-5 h-5" />
+                </button>
+                <p 
+                  className="text-gray-800 text-xs bg-white bg-opacity-90 px-2 py-1 rounded shadow-sm max-w-xs truncate cursor-pointer"
+                  onClick={() => handleLongPress(activeMap.title)}
+                >
+                  {activeMap.title}
+                </p>
+              </div>
 
-          {currentMapIndex < mockMapData[currentCategory].maps.length - 1 && (
-            <button
-              onClick={() => {
-                const newIndex = currentMapIndex + 1
-                setCurrentMapIndex(newIndex)
-                setActiveMap(mockMapData[currentCategory].maps[newIndex])
-                setMapScale(1)
-                setMapPosition({ x: 0, y: 0 })
-              }}
-              className="absolute right-4 top-1/2 transform -translate-y-1/2 p-2 bg-white bg-opacity-90 rounded-lg pointer-events-auto shadow-sm"
-            >
-              <ChevronRight className="w-5 h-5 text-gray-800" />
-            </button>
-          )}
+              {/* Favorite Toggle */}
+              <button
+                onClick={() => toggleFavorite(activeMap.id)}
+                className="absolute top-4 right-4 p-2 bg-white bg-opacity-90 rounded-lg pointer-events-auto shadow-sm"
+              >
+                <Star
+                  className={`w-5 h-5 ${favorites.has(activeMap.id) ? "text-yellow-500 fill-current" : "text-gray-600"}`}
+                />
+              </button>
 
-          {/* Home Button */}
-          <button
-            onClick={() => {
-              setCurrentScreen("home")
-              setShowControls(false)
-            }}
-            className="absolute bottom-4 left-1/2 transform -translate-x-1/2 p-2 bg-white bg-opacity-90 rounded-lg pointer-events-auto shadow-sm"
-          >
-            <Home className="w-5 h-5 text-gray-800" />
-          </button>
-        </div>
+              {/* Navigation Arrows */}
+              {currentMapIndex > 0 && (
+                <button
+                  onClick={() => {
+                    const newIndex = currentMapIndex - 1
+                    setCurrentMapIndex(newIndex)
+                    setActiveMap(mockMapData[currentCategory].maps[newIndex])
+                  }}
+                  className="absolute left-4 top-1/2 transform -translate-y-1/2 p-2 bg-white bg-opacity-90 rounded-lg pointer-events-auto shadow-sm"
+                >
+                  <ChevronLeft className="w-5 h-5 text-gray-800" />
+                </button>
+              )}
 
-        {/* System Navigation Overlay */}
-        {isSystemNavVisible && (
-          <div className="fixed inset-x-0 bottom-0 h-16 bg-black bg-opacity-50 z-[9999] pointer-events-none">
-            {/* This represents the system navigation area */}
+              {currentMapIndex < mockMapData[currentCategory].maps.length - 1 && (
+                <button
+                  onClick={() => {
+                    const newIndex = currentMapIndex + 1
+                    setCurrentMapIndex(newIndex)
+                    setActiveMap(mockMapData[currentCategory].maps[newIndex])
+                  }}
+                  className="absolute right-4 top-1/2 transform -translate-y-1/2 p-2 bg-white bg-opacity-90 rounded-lg pointer-events-auto shadow-sm"
+                >
+                  <ChevronRight className="w-5 h-5 text-gray-800" />
+                </button>
+              )}
+
+              {/* Home Button */}
+              <button
+                onClick={() => {
+                  setCurrentScreen("home")
+                  setShowControls(false)
+                }}
+                className="absolute bottom-4 left-1/2 transform -translate-x-1/2 p-2 bg-white bg-opacity-90 rounded-lg pointer-events-auto shadow-sm"
+              >
+                <Home className="w-5 h-5 text-gray-800" />
+              </button>
+            </div>
           </div>
         )}
-      </div>
-    )
-  }
+      </TransformWrapper>
+
+      {/* System Navigation Overlay */}
+      {isSystemNavVisible && (
+        <div className="fixed inset-x-0 bottom-0 h-16 bg-black bg-opacity-50 z-[9999] pointer-events-none">
+          {/* This represents the system navigation area */}
+        </div>
+      )}
+    </div>
+  )
+}
 
   return null
 }
