@@ -694,48 +694,176 @@ const BibleMapsApp = () => {
   const [isSystemNavVisible, setIsSystemNavVisible] = useState(false)
   const [highlightActiveMap, setHighlightActiveMap] = useState(false)
 
-  // Map viewer states
-  const [mapScale, setMapScale] = useState(1)
-  const [mapPosition, setMapPosition] = useState({ x: 0, y: 0 })
-  const [showControls, setShowControls] = useState(false)
-  const mapRef = useRef(null)
-  const touchRef = useRef({ startX: 0, startY: 0, lastScale: 1 })
-  const containerRef = useRef(null)
+// Map viewer states
+const [mapScale, setMapScale] = useState(1)
+const [mapPosition, setMapPosition] = useState({ x: 0, y: 0 })
+const [showControls, setShowControls] = useState(false)
+const [fitToPageScale, setFitToPageScale] = useState(1)
+const mapRef = useRef(null)
+const touchRef = useRef({ 
+  startX: 0, 
+  startY: 0, 
+  lastScale: 1, 
+  lastDistance: 0,
+  startDistance: 0,
+  isSwipe: false,
+  swipeStartX: 0,
+  swipeStartY: 0,
+  swipeStartTime: 0
+})
+const containerRef = useRef(null)
 
-  // Touch handlers for map viewer
-  const getTouchDistance = (touches) => {
+// Helper functions for map viewer
+const getTouchDistance = (touches) => {
   const dx = touches[0].clientX - touches[1].clientX
   const dy = touches[0].clientY - touches[1].clientY
   return Math.sqrt(dx * dx + dy * dy)
-  }
+}
 
-  const handleTouchStart = (e) => {
-    setShowControls(true)
-    if (e.touches.length === 1) {
-      touchRef.current.startX = e.touches[0].clientX - mapPosition.x
-      touchRef.current.startY = e.touches[0].clientY - mapPosition.y
-    } else if (e.touches.length === 2) {
-      touchRef.current.lastDistance = getTouchDistance(e.touches)
+const calculateFitToPageScale = () => {
+  const mapImg = mapRef.current
+  const container = containerRef.current
+  if (!mapImg || !container || !mapImg.complete || mapImg.naturalWidth === 0) return 1
+
+  const containerRect = container.getBoundingClientRect()
+  const containerWidth = containerRect.width
+  const containerHeight = containerRect.height
+  
+  const scaleX = containerWidth / mapImg.naturalWidth
+  const scaleY = containerHeight / mapImg.naturalHeight
+  
+  return Math.min(scaleX, scaleY) // Fit longer side to viewport
+}
+
+const clampMapPosition = (newX, newY, scale) => {
+  const mapImg = mapRef.current
+  const container = containerRef.current
+  if (!mapImg || !container) return { x: newX, y: newY }
+
+  const containerRect = container.getBoundingClientRect()
+  const containerWidth = containerRect.width
+  const containerHeight = containerRect.height
+  
+  const scaledWidth = mapImg.naturalWidth * scale
+  const scaledHeight = mapImg.naturalHeight * scale
+  
+  let clampedX = newX
+  let clampedY = newY
+  
+  // Horizontal clamping - no empty space allowed
+  if (scaledWidth <= containerWidth) {
+    // Image width fits or is smaller, center it and no panning
+    clampedX = 0
+  } else {
+    // Image is wider than viewport
+    const rightLimit = (scaledWidth - containerWidth) / 2  // Pan right limit
+    const leftLimit = -(scaledWidth - containerWidth) / 2  // Pan left limit
+    clampedX = Math.max(leftLimit, Math.min(rightLimit, newX))
+  }
+  
+  // Vertical clamping - no empty space allowed  
+  if (scaledHeight <= containerHeight) {
+    // Image height fits or is smaller, center it and no panning
+    clampedY = 0
+  } else {
+    // Image is taller than viewport
+    const downLimit = (scaledHeight - containerHeight) / 2   // Pan down limit
+    const upLimit = -(scaledHeight - containerHeight) / 2    // Pan up limit  
+    clampedY = Math.max(upLimit, Math.min(downLimit, newY))
+  }
+  
+  return { x: clampedX, y: clampedY }
+}
+
+const handleTouchStart = (e) => {
+  setShowControls(true)
+  if (e.touches.length === 1) {
+    const touch = e.touches[0]
+    touchRef.current.startX = touch.clientX - mapPosition.x
+    touchRef.current.startY = touch.clientY - mapPosition.y
+    touchRef.current.swipeStartX = touch.clientX
+    touchRef.current.swipeStartY = touch.clientY
+    touchRef.current.swipeStartTime = Date.now()
+    touchRef.current.isSwipe = true
+  } else if (e.touches.length === 2) {
+    touchRef.current.lastDistance = getTouchDistance(e.touches)
+    touchRef.current.startDistance = touchRef.current.lastDistance
+    touchRef.current.isSwipe = false
+  }
+}
+
+const handleTouchMove = (e) => {
+  e.preventDefault()
+  
+  if (e.touches.length === 1) {
+    const touch = e.touches[0]
+    const deltaX = touch.clientX - touchRef.current.swipeStartX
+    const deltaY = touch.clientY - touchRef.current.swipeStartY
+    
+    // Check if movement is significant enough to be considered not a swipe
+    if (Math.abs(deltaX) > 10 || Math.abs(deltaY) > 10) {
+      touchRef.current.isSwipe = false
+    }
+    
+    // Only allow panning if zoom level > fit-to-page
+    const fitScale = calculateFitToPageScale()
+    if (mapScale > fitScale) {
+      const newX = touch.clientX - touchRef.current.startX
+      const newY = touch.clientY - touchRef.current.startY
+      const clampedPosition = clampMapPosition(newX, newY, mapScale)
+      setMapPosition(clampedPosition)
+    }
+  } else if (e.touches.length === 2) {
+    const distance = getTouchDistance(e.touches)
+    const scaleChange = distance / touchRef.current.lastDistance
+    const newScale = Math.max(0.1, Math.min(mapScale * scaleChange, 5))
+    setMapScale(newScale)
+    touchRef.current.lastDistance = distance
+    
+    // Clamp position after scaling
+    const clampedPosition = clampMapPosition(mapPosition.x, mapPosition.y, newScale)
+    setMapPosition(clampedPosition)
+  }
+}
+
+const handleTouchEnd = (e) => {
+  // Handle swipe navigation only at fit-to-page scale or below
+  if (touchRef.current.isSwipe && e.changedTouches.length === 1) {
+    const touch = e.changedTouches[0]
+    const deltaX = touch.clientX - touchRef.current.swipeStartX
+    const deltaY = touch.clientY - touchRef.current.swipeStartY
+    const deltaTime = Date.now() - touchRef.current.swipeStartTime
+    
+    const fitScale = calculateFitToPageScale()
+    
+    // Only process swipes at or below fit-to-page scale
+    if (mapScale <= fitScale && deltaTime < 300) { // Quick swipe within 300ms
+      const minSwipeDistance = 50
+      
+      // Horizontal swipe (left-to-right or right-to-left)
+      if (Math.abs(deltaX) > minSwipeDistance && Math.abs(deltaX) > Math.abs(deltaY)) {
+        if (deltaX > 0 && currentMapIndex > 0) {
+          // Swipe right - go to previous map
+          const newIndex = currentMapIndex - 1
+          setCurrentMapIndex(newIndex)
+          setActiveMap(mockMapData[currentCategory].maps[newIndex])
+          setMapScale(mapScale) // Keep same scale
+          setMapPosition({ x: 0, y: 0 })
+        } else if (deltaX < 0 && currentMapIndex < mockMapData[currentCategory].maps.length - 1) {
+          // Swipe left - go to next map
+          const newIndex = currentMapIndex + 1
+          setCurrentMapIndex(newIndex)
+          setActiveMap(mockMapData[currentCategory].maps[newIndex])
+          setMapScale(mapScale) // Keep same scale
+          setMapPosition({ x: 0, y: 0 })
+        }
+      }
     }
   }
-  const handleTouchMove = (e) => {
-    e.preventDefault()
-    if (e.touches.length === 1) {
-      const newX = e.touches[0].clientX - touchRef.current.startX
-      const newY = e.touches[0].clientY - touchRef.current.startY
-      setMapPosition({ x: newX, y: newY })
-    } else if (e.touches.length === 2) {
-      const distance = getTouchDistance(e.touches)
-      const scaleChange = distance / touchRef.current.lastDistance
-      const newScale = Math.max(0.5, Math.min(mapScale * scaleChange, 5))
-      setMapScale(newScale)
-      touchRef.current.lastDistance = distance
-    }
-  }
-
-  const handleTouchEnd = (e) => {
-    // Touch ended
-  }
+  
+  // Reset swipe tracking
+  touchRef.current.isSwipe = false
+}
   
   const handleDoubleClick = (e) => {
     if (mapScale > 1) {
@@ -818,8 +946,8 @@ const BibleMapsApp = () => {
     setCurrentMapIndex(mapIndex)
     setActiveMap(mockMapData[category].maps[mapIndex])
     setCurrentScreen("mapViewer")
-    setMapScale(1)
-    setMapPosition({ x: 0, y: 0 })
+    setMapScale(1) // Start at fit-to-page scale
+    setMapPosition({ x: 0, y: 0 }) // Center the image)
     setHasOpenedBefore(true)
   }
 
@@ -1735,8 +1863,11 @@ const BibleMapsApp = () => {
             onDoubleClick={handleDoubleClick}
             
             onLoad={() => {
-              setMapScale(1)
-              setMapPosition({ x: 0, y: 0 })
+            // Initialize at fit-to-page scale (scale 1) and center
+              const fitScale = calculateFitToPageScale()
+              setFitToPageScale(fitScale)
+              setMapScale(1) // Start at fit-to-page
+              setMapPosition({ x: 0, y: 0 }) // Center the image
             }}
           />
         </div>
@@ -1786,7 +1917,7 @@ const BibleMapsApp = () => {
                 const newIndex = currentMapIndex - 1
                 setCurrentMapIndex(newIndex)
                 setActiveMap(mockMapData[currentCategory].maps[newIndex])
-                setMapScale(1)
+                // Keep same scale when navigating
                 setMapPosition({ x: 0, y: 0 })
               }}
               className="absolute left-4 top-1/2 transform -translate-y-1/2 p-2 bg-white bg-opacity-90 rounded-lg pointer-events-auto shadow-sm"
