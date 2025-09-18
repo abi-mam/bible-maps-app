@@ -697,19 +697,7 @@ const BibleMapsApp = () => {
 
 // Map viewer states
 const [showControls, setShowControls] = useState(false)
-  startX: 0, 
-  startY: 0, 
-  lastScale: 1, 
-  lastDistance: 0,
-  startDistance: 0,
-  isSwipeGesture: false,
-  swipeStartX: 0,
-  swipeStartY: 0,
-  swipeStartTime: 0,
-  isPanning: false,
-  touchCount: 0
-})
-
+  
 // Helper functions for map viewer
 const getTouchDistance = (touches) => {
   const dx = touches[0].clientX - touches[1].clientX
