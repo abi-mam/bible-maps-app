@@ -1667,35 +1667,33 @@ if (currentScreen === "mapViewer" && activeMap) {
                 <Star className={`w-5 h-5 ${favorites.has(activeMap.id) ? "text-yellow-500 fill-current" : "text-gray-600"}`} />
               </button>
 
-              {/* Navigation Arrows */}
-{currentMapIndex > 0 && (
-  <button
-    onClick={() => {
-      const newIndex = currentMapIndex - 1
-      setCurrentMapIndex(newIndex)
-      setActiveMap(mockMapData[currentCategory].maps[newIndex])
-      setShowControls(true)
-    }}
-    className="absolute left-4 top-1/2 transform -translate-y-1/2 p-3 bg-white/90 backdrop-blur-sm rounded-lg shadow-lg pointer-events-auto"
-  >
-    <ChevronLeft className="w-6 h-6 text-gray-800" />
-  </button>
-)}
+             {/* Navigation Arrows */}
+              {currentMapIndex > 0 && (
+                <button
+                  onClick={() => {
+                    const newIndex = currentMapIndex - 1
+                    setCurrentMapIndex(newIndex)
+                    setActiveMap(mockMapData[currentCategory].maps[newIndex])
+                    setShowControls(true)
+                  }}
+                  className="absolute left-4 top-1/2 transform -translate-y-1/2 p-3 bg-white/90 backdrop-blur-sm rounded-lg shadow-lg pointer-events-auto"
+                >
+                  <ChevronLeft className="w-6 h-6 text-gray-800" />
+                </button>
+              )}
 
-{currentMapIndex < mockMapData[currentCategory].maps.length - 1 && (
-  <button
-    onClick={() => {
-      const newIndex = currentMapIndex + 1
-      setCurrentMapIndex(newIndex)
-      setActiveMap(mockMapData[currentCategory].maps[newIndex])
-      setShowControls(true)
-    }}
-    className="absolute right-4 top-1/2 transform -translate-y-1/2 p-3 bg-white/90 backdrop-blur-sm rounded-lg shadow-lg pointer-events-auto"
-  >
-    <ChevronRight className="w-6 h-6 text-gray-800" />
-  </button>
-)}
-                </>
+              {currentMapIndex < mockMapData[currentCategory].maps.length - 1 && (
+                <button
+                  onClick={() => {
+                    const newIndex = currentMapIndex + 1
+                    setCurrentMapIndex(newIndex)
+                    setActiveMap(mockMapData[currentCategory].maps[newIndex])
+                    setShowControls(true)
+                  }}
+                  className="absolute right-4 top-1/2 transform -translate-y-1/2 p-3 bg-white/90 backdrop-blur-sm rounded-lg shadow-lg pointer-events-auto"
+                >
+                  <ChevronRight className="w-6 h-6 text-gray-800" />
+                </button>
               )}
 
               {/* Home Button */}
