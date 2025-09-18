@@ -1606,32 +1606,42 @@ const BibleMapsApp = () => {
 // Map Viewer
 if (currentScreen === "mapViewer" && activeMap) {
   return (
-    <div className="fixed inset-0 bg-white overflow-hidden">
+    <div className="fixed inset-0 bg-white">
       <TransformWrapper
         initialScale={1}
         minScale={0.5}
-        maxScale={4}
+        maxScale={3}
         limitToBounds={true}
         onTransformed={(ref, state) => {
-  if (state && typeof state.scale === 'number') {
-    setIsAtFitToPage(state.scale <= 1.1)
-    setIsSystemNavVisible(state.scale > 1)
-  }
-  setShowControls(true)
-}}
+          if (state && typeof state.scale === 'number') {
+            setIsAtFitToPage(state.scale <= 1.1)
+            setIsSystemNavVisible(state.scale > 1.2)
+          }
+          setShowControls(true)
+        }}
       >
         {({ zoomIn, zoomOut, resetTransform }) => (
-          <div className="w-full h-full">
+          <>
             <TransformComponent>
-              <div className="w-full h-full flex items-center justify-center min-h-screen">
+              <div style={{ 
+                width: '100vw', 
+                height: '100vh', 
+                display: 'flex', 
+                alignItems: 'center', 
+                justifyContent: 'center' 
+              }}>
                 <img
-  src={activeMap.fullImage || "/placeholder.svg"}
-  alt={activeMap.title}
-  className="block max-w-full max-h-full"
-  style={{ objectFit: 'contain' }}
-  onClick={() => setShowControls(true)}
-  onError={(e) => { e.target.src = "/placeholder.svg" }}
-/>
+                  src={activeMap.fullImage || "/placeholder.svg"}
+                  alt={activeMap.title}
+                  onClick={() => setShowControls(true)}
+                  onError={(e) => { e.target.src = "/placeholder.svg" }}
+                  style={{
+                    maxWidth: '100%',
+                    maxHeight: '100%',
+                    objectFit: 'contain',
+                    display: 'block'
+                  }}
+                />
               </div>
             </TransformComponent>
 
@@ -1705,12 +1715,13 @@ if (currentScreen === "mapViewer" && activeMap) {
                 <Home className="w-5 h-5 text-gray-800" />
               </button>
             </div>
-          </div>
+          </>
         )}
       </TransformWrapper>
     </div>
   )
 }
+
   return null
 }
 
