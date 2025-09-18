@@ -1604,18 +1604,16 @@ const BibleMapsApp = () => {
   }
 
 // Map Viewer
-// Map Viewer
 if (currentScreen === "mapViewer" && activeMap) {
   return (
-    <div className="fixed inset-0 bg-white overflow-hidden">
+    <div className="fixed inset-0 bg-white">
       <TransformWrapper
         initialScale={1}
         minScale={0.5}
         maxScale={3}
         limitToBounds={true}
-        doubleClick={{ disabled: true }}
         onTransformed={(ref, state) => {
-          if (state && typeof state.scale === "number") {
+          if (state && typeof state.scale === 'number') {
             setIsAtFitToPage(state.scale <= 1.1)
             setIsSystemNavVisible(state.scale > 1.2)
           }
@@ -1623,136 +1621,128 @@ if (currentScreen === "mapViewer" && activeMap) {
         }}
       >
         {({ zoomIn, zoomOut, resetTransform, state }) => {
-          const handleImageClick = (e: React.MouseEvent) => {
-            e.preventDefault()
-            const currentTime = Date.now()
-
+          const handleImageClick = (e) => {
+            e.preventDefault();
+            const currentTime = Date.now();
+            
             // Check for double click
-            if (currentTime - (window as any).lastImageClick < 300) {
+            if (currentTime - (window.lastImageClick || 0) < 300) {
               // Double click detected - toggle zoom
+              console.log('Double click detected, current scale:', state.scale);
+              
               if (state.scale <= 1.1) {
-                setTimeout(() => zoomIn(2), 10)
+                // Currently at fit-to-page, zoom in
+                setTimeout(() => zoomIn(2), 10);
               } else {
-                setTimeout(() => resetTransform(), 10)
+                // Currently zoomed, reset to fit-to-page
+                setTimeout(() => resetTransform(), 10);
               }
             }
-
-            ;(window as any).lastImageClick = currentTime
-            setShowControls(true)
-          }
+            
+            window.lastImageClick = currentTime;
+            setShowControls(true);
+          };
 
           return (
-            <TransformComponent>
-              <div
-                style={{
-                  width: "100vw",
-                  height: "100vh",
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                }}
-              >
-                <img
-                  src={activeMap.fullImage || "/placeholder.svg"}
-                  alt={activeMap.title}
-                  onClick={handleImageClick}
-                  onError={(e) => {
-                    const target = e.target as HTMLImageElement
-                    target.src = "/placeholder.svg"
-                  }}
-                  style={{
-                    maxWidth: "100%",
-                    maxHeight: "100%",
-                    objectFit: "contain",
-                    display: "block",
-                    cursor: "pointer",
-                    userSelect: "none",
-                  }}
-                />
+            <>
+              <TransformComponent>
+                <div style={{ 
+                  width: '100vw', 
+                  height: '100vh', 
+                  display: 'flex', 
+                  alignItems: 'center', 
+                  justifyContent: 'center' 
+                }}>
+                  <img
+                    src={activeMap.fullImage || "/placeholder.svg"}
+                    alt={activeMap.title}
+                    onClick={handleImageClick}
+                    onError={(e) => { e.target.src = "/placeholder.svg" }}
+                    style={{
+                      maxWidth: '100%',
+                      maxHeight: '100%',
+                      objectFit: 'contain',
+                      display: 'block',
+                      cursor: 'pointer',
+                      userSelect: 'none'
+                    }}
+                  />
+                </div>
+              </TransformComponent>
+
+              {/* Controls Overlay */}
+              <div className={`absolute inset-0 pointer-events-none transition-opacity duration-500 ${
+                showControls ? "opacity-100" : "opacity-20"
+              }`}>
+                
+                {/* Top Left Controls */}
+                <div className="absolute top-4 left-4 flex items-center gap-3 pointer-events-auto">
+                  <button
+                    onClick={() => {
+                      setHighlightActiveMap(true)
+                      setCurrentScreen("category")
+                      setTimeout(() => setHighlightActiveMap(false), 2000)
+                    }}
+                    className="p-2 bg-white/90 backdrop-blur-sm rounded-lg shadow-lg"
+                  >
+                    <ArrowLeft className="w-5 h-5" />
+                  </button>
+                  <div 
+                    onClick={() => handleLongPress(activeMap.title)}
+                    className="text-sm bg-white/90 backdrop-blur-sm px-3 py-2 rounded-lg shadow-lg cursor-pointer"
+                  >
+                    <p className="truncate font-medium">{activeMap.title}</p>
+                  </div>
+                </div>
+
+                {/* Top Right - Favorite */}
+                <button
+                  onClick={() => toggleFavorite(activeMap.id)}
+                  className="absolute top-4 right-4 p-2 bg-white/90 backdrop-blur-sm rounded-lg shadow-lg pointer-events-auto"
+                >
+                  <Star className={`w-5 h-5 ${favorites.has(activeMap.id) ? "text-yellow-500 fill-current" : "text-gray-600"}`} />
+                </button>
+
+               {/* Navigation Arrows */}
+                {currentMapIndex > 0 && (
+                  <button
+                    onClick={() => {
+                      const newIndex = currentMapIndex - 1
+                      setCurrentMapIndex(newIndex)
+                      setActiveMap(mockMapData[currentCategory].maps[newIndex])
+                      setShowControls(true)
+                    }}
+                    className="absolute left-4 top-1/2 transform -translate-y-1/2 p-3 bg-white/90 backdrop-blur-sm rounded-lg shadow-lg pointer-events-auto"
+                  >
+                    <ChevronLeft className="w-6 h-6 text-gray-800" />
+                  </button>
+                )}
+
+                {currentMapIndex < mockMapData[currentCategory].maps.length - 1 && (
+                  <button
+                    onClick={() => {
+                      const newIndex = currentMapIndex + 1
+                      setCurrentMapIndex(newIndex)
+                      setActiveMap(mockMapData[currentCategory].maps[newIndex])
+                      setShowControls(true)
+                    }}
+                    className="absolute right-4 top-1/2 transform -translate-y-1/2 p-3 bg-white/90 backdrop-blur-sm rounded-lg shadow-lg pointer-events-auto"
+                  >
+                    <ChevronRight className="w-6 h-6 text-gray-800" />
+                  </button>
+                )}
+
+                {/* Home Button */}
+                <button
+                  onClick={() => setCurrentScreen("home")}
+                  className="absolute bottom-6 left-1/2 transform -translate-x-1/2 p-3 bg-white/90 backdrop-blur-sm rounded-lg shadow-lg pointer-events-auto"
+                >
+                  <Home className="w-5 h-5 text-gray-800" />
+                </button>
               </div>
-            </TransformComponent>
+            </>
           )
         }}
-      </TransformWrapper>
-    </div>
-  )
-}
-            {/* Controls Overlay */}
-            <div className={`absolute inset-0 pointer-events-none transition-opacity duration-500 ${
-              showControls ? "opacity-100" : "opacity-20"
-            }`}>
-              
-              {/* Top Left Controls */}
-              <div className="absolute top-4 left-4 flex items-center gap-3 pointer-events-auto">
-                <button
-                  onClick={() => {
-                    setHighlightActiveMap(true)
-                    setCurrentScreen("category")
-                    setTimeout(() => setHighlightActiveMap(false), 2000)
-                  }}
-                  className="p-2 bg-white/90 backdrop-blur-sm rounded-lg shadow-lg"
-                >
-                  <ArrowLeft className="w-5 h-5" />
-                </button>
-                <div 
-                  onClick={() => handleLongPress(activeMap.title)}
-                  className="text-sm bg-white/90 backdrop-blur-sm px-3 py-2 rounded-lg shadow-lg cursor-pointer"
-                >
-                  <p className="truncate font-medium">{activeMap.title}</p>
-                </div>
-              </div>
-
-              {/* Top Right - Favorite */}
-              <button
-                onClick={() => toggleFavorite(activeMap.id)}
-                className="absolute top-4 right-4 p-2 bg-white/90 backdrop-blur-sm rounded-lg shadow-lg pointer-events-auto"
-              >
-                <Star className={`w-5 h-5 ${favorites.has(activeMap.id) ? "text-yellow-500 fill-current" : "text-gray-600"}`} />
-              </button>
-
-             {/* Navigation Arrows */}
-              {currentMapIndex > 0 && (
-                <button
-                  onClick={() => {
-                    const newIndex = currentMapIndex - 1
-                    setCurrentMapIndex(newIndex)
-                    setActiveMap(mockMapData[currentCategory].maps[newIndex])
-                    setShowControls(true)
-                  }}
-                  className="absolute left-4 top-1/2 transform -translate-y-1/2 p-3 bg-white/90 backdrop-blur-sm rounded-lg shadow-lg pointer-events-auto"
-                >
-                  <ChevronLeft className="w-6 h-6 text-gray-800" />
-                </button>
-              )}
-
-              {currentMapIndex < mockMapData[currentCategory].maps.length - 1 && (
-                <button
-                  onClick={() => {
-                    const newIndex = currentMapIndex + 1
-                    setCurrentMapIndex(newIndex)
-                    setActiveMap(mockMapData[currentCategory].maps[newIndex])
-                    setShowControls(true)
-                  }}
-                  className="absolute right-4 top-1/2 transform -translate-y-1/2 p-3 bg-white/90 backdrop-blur-sm rounded-lg shadow-lg pointer-events-auto"
-                >
-                  <ChevronRight className="w-6 h-6 text-gray-800" />
-                </button>
-              )}
-
-              {/* Home Button */}
-              <button
-                onClick={() => setCurrentScreen("home")}
-                className="absolute bottom-6 left-1/2 transform -translate-x-1/2 p-3 bg-white/90 backdrop-blur-sm rounded-lg shadow-lg pointer-events-auto"
-              >
-                <Home className="w-5 h-5 text-gray-800" />
-              </button>
-            </div>
-          </>
-        )}
-      </TransformWrapper>
-    </div>
-  )
-}
 
   return null
 }
