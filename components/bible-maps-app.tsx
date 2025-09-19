@@ -8,17 +8,17 @@ import { Search, Star, Grid3X3, List, ChevronLeft, ChevronRight, ArrowLeft, Home
 const BottomBar = ({ activeTab, onTabChange }) => {
   return (
     <div
-      className="fixed inset-x-0 bottom-0 h-14 bg-white/95 backdrop-blur-md border-t border-gray-300 z-50 flex items-center justify-around pb-[env(safe-area-inset-bottom)]"
+      className="fixed inset-x-0 bottom-0 h-14 bg-white/95 backdrop-blur-md border-t border-slate-200 z-50 flex items-center justify-around pb-[env(safe-area-inset-bottom)]"
     >
       <button
         onClick={() => onTabChange("search")}
-        className={`flex flex-col items-center ${activeTab === "search" ? "text-blue-600" : "text-gray-600"}`}>
+        className={`flex flex-col items-center ${activeTab === "search" ? "text-indigo-600" : "text-slate-600"}`}>
         <Search className="h-5 w-5" />
         <span className="text-xs">Search</span>
       </button>
       <button
         onClick={() => onTabChange("favorites")}
-        className={`flex flex-col items-center ${activeTab === "favorites" ? "text-blue-600" : "text-gray-600"}`}>
+        className={`flex flex-col items-center ${activeTab === "favorites" ? "text-indigo-600" : "text-slate-600"}`}>
         <Star className="h-5 w-5" />
         <span className="text-xs">Favorites</span>
       </button>
@@ -33,10 +33,10 @@ const SimpleBookIcon = ({ className }) => (
 )
   
 const TitlePopup = ({ title, onClose }) => (
-  <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50" onClick={onClose}>
-    <div className="bg-white rounded-lg p-6 m-4 max-w-sm">
-      <p className="text-sm font-medium text-black">{title}</p>
-      <button onClick={onClose} className="mt-4 px-4 py-2 bg-blue-500 text-white rounded">
+  <div className="fixed inset-0 bg-slate-900 bg-opacity-60 backdrop-blur-sm flex items-center justify-center z-50" onClick={onClose}>
+    <div className="bg-white rounded-xl shadow-2xl p-6 m-4 max-w-sm border border-slate-200">
+      <p className="text-sm font-medium text-slate-800">{title}</p>
+      <button onClick={onClose} className="mt-4 px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg transition-colors">
         Close
       </button>
     </div>
@@ -55,20 +55,20 @@ const ScrollIcon = ({ className }) => (
   <div className={className}>
     <svg width="100%" height="100%" viewBox="0 0 104 128" xmlns="http://www.w3.org/2000/svg">
       {/* Main scroll paper */}
-      <rect x="20" y="25" width="64" height="78" fill="#6b9b7a" rx="4" ry="4" />
+      <rect x="20" y="25" width="64" height="78" fill="#4f46e5" rx="4" ry="4" />
       {/* Left wooden rod */}
-      <rect x="12" y="16" width="12" height="96" fill="#6b9b7a" rx="6" ry="6" />
-      <rect x="14" y="18" width="8" height="92" fill="#6b9b7a" rx="4" ry="4" />
+      <rect x="12" y="16" width="12" height="96" fill="#6366f1" rx="6" ry="6" />
+      <rect x="14" y="18" width="8" height="92" fill="#8b5cf6" rx="4" ry="4" />
       {/* Right wooden rod */}
-      <rect x="80" y="16" width="12" height="96" fill="#6b9b7a" rx="6" ry="6" />
-      <rect x="82" y="18" width="8" height="92" fill="#6b9b7a" rx="4" ry="4" />
+      <rect x="80" y="16" width="12" height="96" fill="#6366f1" rx="6" ry="6" />
+      <rect x="82" y="18" width="8" height="92" fill="#8b5cf6" rx="4" ry="4" />
       {/* Text lines on scroll */}
-      <line x1="28" y1="40" x2="76" y2="40" stroke="#f0f8f0" strokeWidth="2" />
-      <line x1="28" y1="50" x2="74" y2="50" stroke="#f0f8f0" strokeWidth="2" />
-      <line x1="28" y1="60" x2="76" y2="60" stroke="#f0f8f0" strokeWidth="2" />
-      <line x1="28" y1="70" x2="72" y2="70" stroke="#f0f8f0" strokeWidth="2" />
-      <line x1="28" y1="80" x2="76" y2="80" stroke="#f0f8f0" strokeWidth="2" />
-      <line x1="28" y1="90" x2="74" y2="90" stroke="#f0f8f0" strokeWidth="2" />
+      <line x1="28" y1="40" x2="76" y2="40" stroke="#f8fafc" strokeWidth="2" />
+      <line x1="28" y1="50" x2="74" y2="50" stroke="#f8fafc" strokeWidth="2" />
+      <line x1="28" y1="60" x2="76" y2="60" stroke="#f8fafc" strokeWidth="2" />
+      <line x1="28" y1="70" x2="72" y2="70" stroke="#f8fafc" strokeWidth="2" />
+      <line x1="28" y1="80" x2="76" y2="80" stroke="#f8fafc" strokeWidth="2" />
+      <line x1="28" y1="90" x2="74" y2="90" stroke="#f8fafc" strokeWidth="2" />
     </svg>
   </div>
 )
@@ -77,17 +77,17 @@ const CrossIcon = ({ className }) => (
   <div className={className}>
     <svg width="100%" height="100%" viewBox="0 0 128 128" xmlns="http://www.w3.org/2000/svg">
       {/* Vertical beam */}
-      <rect x="54" y="16" width="20" height="96" fill="#4a7c59" rx="2" ry="2" />
+      <rect x="54" y="16" width="20" height="96" fill="#059669" rx="2" ry="2" />
       {/* Horizontal beam */}
-      <rect x="32" y="38" width="64" height="20" fill="#6b9b7a" rx="2" ry="2" />
+      <rect x="32" y="38" width="64" height="20" fill="#10b981" rx="2" ry="2" />
       {/* Shadow/depth on vertical */}
-      <rect x="56" y="18" width="16" height="92" fill="#6b9b7a" rx="1" ry="1" />
+      <rect x="56" y="18" width="16" height="92" fill="#34d399" rx="1" ry="1" />
       {/* Shadow/depth on horizontal */}
-      <rect x="34" y="40" width="60" height="16" fill="#4a7c59" rx="1" ry="1" />
+      <rect x="34" y="40" width="60" height="16" fill="#059669" rx="1" ry="1" />
       {/* Highlight on vertical */}
-      <rect x="58" y="20" width="4" height="88" fill="#f0f8f0" rx="2" ry="2" />
+      <rect x="58" y="20" width="4" height="88" fill="#f0fdf4" rx="2" ry="2" />
       {/* Highlight on horizontal */}
-      <rect x="36" y="42" width="56" height="4" fill="#f0f8f0" rx="2" ry="2" />
+      <rect x="36" y="42" width="56" height="4" fill="#f0fdf4" rx="2" ry="2" />
     </svg>
   </div>
 )
@@ -96,24 +96,24 @@ const BookIcon = ({ className }) => (
   <div className={className}>
     <svg width="100%" height="100%" viewBox="0 0 128 128" xmlns="http://www.w3.org/2000/svg">
       {/* Left page with curved binding */}
-      <path d="M16 24c0-4.4 3.6-8 8-8h32c4.4 0 8 3.6 8 8v72c0 4.4-3.6 8-8 8H24c-4.4 0-8-3.6-8-8V24z" fill="#4a7c59" />
-      <path d="M20 28c0-2.2 1.8-4 4-4h28c2.2 0 4 1.8 4 4v64c0 2.2-1.8 4-4 4H24c-2.2 0-4-1.8-4-4V28z" fill="#6b9b7a" />
+      <path d="M16 24c0-4.4 3.6-8 8-8h32c4.4 0 8 3.6 8 8v72c0 4.4-3.6 8-8 8H24c-4.4 0-8-3.6-8-8V24z" fill="#dc2626" />
+      <path d="M20 28c0-2.2 1.8-4 4-4h28c2.2 0 4 1.8 4 4v64c0 2.2-1.8 4-4 4H24c-2.2 0-4-1.8-4-4V28z" fill="#ef4444" />
       {/* Right page with curved binding */}
-      <path d="M64 24c0-4.4 3.6-8 8-8h32c4.4 0 8 3.6 8 8v72c0 4.4-3.6 8-8 8H72c-4.4 0-8-3.6-8-8V24z" fill="#4a7c59" />
-      <path d="M68 28c0-2.2 1.8-4 4-4h28c2.2 0 4 1.8 4 4v64c0 2.2-1.8 4-4 4H72c-2.2 0-4-1.8-4-4V28z" fill="#6b9b7a" />
+      <path d="M64 24c0-4.4 3.6-8 8-8h32c4.4 0 8 3.6 8 8v72c0 4.4-3.6 8-8 8H72c-4.4 0-8-3.6-8-8V24z" fill="#dc2626" />
+      <path d="M68 28c0-2.2 1.8-4 4-4h28c2.2 0 4 1.8 4 4v64c0 2.2-1.8 4-4 4H72c-2.2 0-4-1.8-4-4V28z" fill="#ef4444" />
 
       {/* Curved V-shape binding in center */}
       <path
         d="M56 18 Q62 24 62 32 Q62 40 62 48 Q62 56 62 64 Q62 72 62 80 Q62 88 62 96 Q62 102 68 106"
         fill="none"
-        stroke="#f0f8f0"
+        stroke="#fef2f2"
         strokeWidth="3"
         strokeLinecap="round"
       />
       <path
         d="M56 18 Q62 24 62 32 Q62 40 62 48 Q62 56 62 64 Q62 72 62 80 Q62 88 62 96 Q62 102 68 106"
         fill="none"
-        stroke="#f0f8f0"
+        stroke="#fef2f2"
         strokeWidth="2"
         strokeLinecap="round"
       />
@@ -122,24 +122,24 @@ const BookIcon = ({ className }) => (
       <path
         d="M58 20 Q62 26 62 34 Q62 42 62 50 Q62 58 62 66 Q62 74 62 82 Q62 90 62 98 Q62 102 66 104"
         fill="none"
-        stroke="#f0f8f0"
+        stroke="#fef2f2"
         strokeWidth="1.5"
         opacity="0.6"
         strokeLinecap="round"
       />
 
       {/* Text lines left page */}
-      <line x1="26" y1="36" x2="50" y2="36" stroke="#f0f8f0" strokeWidth="1" />
-      <line x1="26" y1="42" x2="48" y2="42" stroke="#f0f8f0" strokeWidth="1" />
-      <line x1="26" y1="48" x2="50" y2="48" stroke="#f0f8f0" strokeWidth="1" />
-      <line x1="26" y1="54" x2="46" y2="54" stroke="#f0f8f0" strokeWidth="1" />
-      <line x1="26" y1="60" x2="50" y2="60" stroke="#f0f8f0" strokeWidth="1" />
+      <line x1="26" y1="36" x2="50" y2="36" stroke="#fef2f2" strokeWidth="1" />
+      <line x1="26" y1="42" x2="48" y2="42" stroke="#fef2f2" strokeWidth="1" />
+      <line x1="26" y1="48" x2="50" y2="48" stroke="#fef2f2" strokeWidth="1" />
+      <line x1="26" y1="54" x2="46" y2="54" stroke="#fef2f2" strokeWidth="1" />
+      <line x1="26" y1="60" x2="50" y2="60" stroke="#fef2f2" strokeWidth="1" />
       {/* Text lines right page */}
-      <line x1="74" y1="36" x2="98" y2="36" stroke="#f0f8f0" strokeWidth="1" />
-      <line x1="74" y1="42" x2="96" y2="42" stroke="#f0f8f0" strokeWidth="1" />
-      <line x1="74" y1="48" x2="98" y2="48" stroke="#f0f8f0" strokeWidth="1" />
-      <line x1="74" y1="54" x2="94" y2="54" stroke="#f0f8f0" strokeWidth="1" />
-      <line x1="74" y1="60" x2="98" y2="60" stroke="#f0f8f0" strokeWidth="1" />
+      <line x1="74" y1="36" x2="98" y2="36" stroke="#fef2f2" strokeWidth="1" />
+      <line x1="74" y1="42" x2="96" y2="42" stroke="#fef2f2" strokeWidth="1" />
+      <line x1="74" y1="48" x2="98" y2="48" stroke="#fef2f2" strokeWidth="1" />
+      <line x1="74" y1="54" x2="94" y2="54" stroke="#fef2f2" strokeWidth="1" />
+      <line x1="74" y1="60" x2="98" y2="60" stroke="#fef2f2" strokeWidth="1" />
     </svg>
   </div>
 )
@@ -739,10 +739,10 @@ const BibleMapsApp = () => {
   // Splash Screen
   if (currentScreen === "splash") {
     return (
-      <div className="fixed inset-0 bg-white flex items-center justify-center">
+      <div className="fixed inset-0 bg-gradient-to-br from-slate-50 to-slate-100 flex items-center justify-center">
         <div className="flex flex-col items-center">
           <img src="/bible-maps-icon.png" alt="Bible Maps" className="w-24 h-24 mb-4" />
-          <h1 className="text-2xl font-bold text-green-800">Bible Maps</h1>
+          <h1 className="text-2xl font-bold text-slate-800">Bible Maps</h1>
         </div>
       </div>
     )
@@ -766,18 +766,18 @@ const BibleMapsApp = () => {
     }
 
     return (
-      <div className={`min-h-screen ${isSearchingFromHome ? 'bg-green-50' : 'bg-gray-50'}`}>
+      <div className={`min-h-screen ${isSearchingFromHome ? 'bg-gradient-to-br from-indigo-50 to-blue-50' : 'bg-gradient-to-br from-slate-50 to-slate-100'}`}>
         {showTitlePopup && <TitlePopup title={popupTitle} onClose={() => setShowTitlePopup(false)} />}
 
         {/* Header */}
-        <div className={`${isSearchingFromHome ? 'bg-green-100' : 'bg-gray-100'} px-4 py-4`}>
-          <div className="flex items-center justify-center mb-4">
-            <SimpleBookIcon className="w-6 h-6 text-green-800 mr-2" />
-            <h1 className="text-lg font-bold text-green-800">Bible Maps</h1>
+        <div className={`${isSearchingFromHome ? 'bg-gradient-to-r from-indigo-100 to-blue-100' : 'bg-gradient-to-r from-slate-100 to-slate-200'} px-4 py-6 shadow-sm`}>
+          <div className="flex items-center justify-center mb-6">
+            <SimpleBookIcon className="w-8 h-8 text-indigo-700 mr-3" />
+            <h1 className="text-2xl font-bold text-slate-800">Bible Maps</h1>
           </div>
 
           {/* Search and Favorites Row */}
-          <div className="flex items-center justify-center gap-3">
+          <div className="flex items-center justify-center gap-4">
             <div className="flex-1 max-w-sm">
               <input
                 type="text"
@@ -798,7 +798,7 @@ const BibleMapsApp = () => {
                   setCurrentScreen("search")
                   setActiveTab("search")
                 }}
-                className="w-full px-4 py-2 bg-gray-100 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500"
+                className="w-full px-4 py-3 bg-white border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent shadow-sm transition-all"
               />
             </div>
             <button
@@ -810,52 +810,52 @@ const BibleMapsApp = () => {
                 setCurrentScreen("favorites")
                 setActiveTab("favorites")
               }}
-              className="h-10 px-3 bg-gray-100 border border-gray-300 rounded-lg"
+              className="h-12 px-4 bg-white border border-slate-200 rounded-xl hover:bg-slate-50 transition-colors shadow-sm"
             >
-              <Star className="w-3.5 h-3.5 text-gray-600" />
+              <Star className="w-5 h-5 text-slate-600" />
             </button>
           </div>
 
           {/* Show search results count when searching */}
           {isSearchingFromHome && (
             <div className="mt-4">
-              <p className="text-sm text-green-700 opacity-75">{searchResults.length} Results</p>
+              <p className="text-sm text-indigo-700 font-medium text-center">{searchResults.length} Results</p>
             </div>
           )}
         </div>
 
         {/* Content - Show search results when searching, categories otherwise */}
         {isSearchingFromHome ? (
-          <div className="px-4 py-4 space-y-6">
+          <div className="px-4 py-6 space-y-6">
             {searchResults.length === 0 ? (
-              <div className="flex flex-col items-center justify-center py-12">
-                <Search className="w-12 h-12 text-gray-400 mb-4" />
-                <p className="text-gray-500 text-center">
+              <div className="flex flex-col items-center justify-center py-16">
+                <Search className="w-16 h-16 text-slate-400 mb-6" />
+                <p className="text-slate-600 text-center text-lg">
                   No maps found matching your search
                 </p>
               </div>
             ) : (
               <>
                 {/* Map Title List */}
-                <div className="bg-white rounded-lg shadow-sm p-4">
-                  <div className="space-y-2">
+                <div className="bg-white rounded-2xl shadow-sm border border-slate-200 p-6">
+                  <div className="space-y-3">
                     {searchResults.map((map, index) => (
-                      <div key={`title-${map.id}`} className="flex">
-                        <span className="text-sm text-gray-600 w-8 flex-shrink-0 text-right">{index + 1} :</span>
-                        <span className="text-sm text-black truncate ml-2">{map.title}</span>
-                        <span className="text-xs text-gray-500 ml-auto">{map.category}</span>
+                      <div key={`title-${map.id}`} className="flex items-center">
+                        <span className="text-sm text-slate-500 w-10 flex-shrink-0 text-right font-medium">{index + 1}.</span>
+                        <span className="text-sm text-slate-800 truncate ml-3 font-medium">{map.title}</span>
+                        <span className="text-xs text-indigo-600 ml-auto bg-indigo-50 px-2 py-1 rounded-full">{map.category}</span>
                       </div>
                     ))}
                   </div>
                 </div>
 
                 {/* Large Thumbnails */}
-                <div className="bg-white rounded-lg shadow-sm p-4">
+                <div className="bg-white rounded-2xl shadow-sm border border-slate-200 p-6">
                   {searchResults.map((map, index) => (
-                    <div key={map.id} className={index > 0 ? "mt-4" : ""}>
+                    <div key={map.id} className={index > 0 ? "mt-6" : ""}>
                       <div
                         onClick={() => openMapViewer(map.category, mockMapData[map.category].maps.findIndex(m => m.id === map.id))}
-                        className="bg-white rounded-lg shadow-sm overflow-hidden cursor-pointer hover:opacity-90 transition-opacity"
+                        className="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden cursor-pointer hover:shadow-lg transition-all duration-300 hover:-translate-y-1"
                       >
                         <div className="relative">
                           <img
@@ -869,20 +869,20 @@ const BibleMapsApp = () => {
                               e.stopPropagation()
                               toggleFavorite(map.id)
                             }}
-                            className="absolute top-2 right-2"
+                            className="absolute top-3 right-3 p-2 bg-white/90 backdrop-blur-sm rounded-full shadow-lg hover:bg-white transition-all"
                           >
                             <Star
-                              className={`w-4 h-4 ${favorites.has(map.id) ? "text-yellow-500 fill-current" : "text-gray-400"}`}
+                              className={`w-5 h-5 ${favorites.has(map.id) ? "text-amber-500 fill-current" : "text-slate-400"}`}
                             />
                           </button>
                         </div>
-                        <div className="p-3">
+                        <div className="p-4">
                           <div className="flex justify-between items-center">
-                            <div>
-                              <p className="text-sm font-medium text-black truncate">{map.title}</p>
-                              <p className="text-xs text-gray-500">{map.category}</p>
+                            <div className="flex-1">
+                              <p className="text-sm font-semibold text-slate-800 truncate">{map.title}</p>
+                              <p className="text-xs text-indigo-600 mt-1">{map.category}</p>
                             </div>
-                            <div className="bg-blue-500 text-white text-xs px-2 py-1 rounded-full ml-2">#{index + 1}</div>
+                            <div className="bg-indigo-600 text-white text-xs font-medium px-3 py-1 rounded-full ml-3">#{index + 1}</div>
                           </div>
                         </div>
                       </div>
@@ -895,7 +895,7 @@ const BibleMapsApp = () => {
         ) : (
           <>
             {/* Category Cards */}
-            <div className="px-4 py-6 space-y-4 mb-16">
+            <div className="px-4 py-8 space-y-6 mb-16">
               {filteredCategories.map(([category, data]) => {
                 const Icon = data.icon
                 return (
@@ -907,29 +907,29 @@ const BibleMapsApp = () => {
                       setCurrentScreen("category")
                       setActiveTab("view")
                     }}
-                    className="bg-white rounded-xl p-6 shadow-sm border border-gray-200 cursor-pointer hover:shadow-md transition-shadow"
+                    className="bg-white rounded-2xl p-8 shadow-sm border border-slate-200 cursor-pointer hover:shadow-lg transition-all duration-300 hover:-translate-y-2"
                   >
-                    <div className="flex flex-col items-center mb-4">
-                      <Icon className="w-16 h-16 text-blue-600 mb-2" />
-                      <h3 className="text-lg font-normal text-blue-600">{category}</h3>
+                    <div className="flex flex-col items-center mb-6">
+                      <Icon className="w-20 h-20 mb-4" />
+                      <h3 className="text-xl font-bold text-slate-800">{category}</h3>
                     </div>
-                    <div className="flex justify-between items-end">
-                      <span className="text-sm text-green-700 opacity-75">{data.count} maps available</span>
-                      <span className="text-sm text-green-700 opacity-75">Explore Maps →</span>
+                    <div className="flex justify-between items-center">
+                      <span className="text-sm text-slate-600 bg-slate-100 px-3 py-1 rounded-full">{data.count} maps available</span>
+                      <span className="text-sm text-indigo-600 font-medium">Explore Maps →</span>
                     </div>
                   </div>
                 )
               })}
             </div>
 
-            {/* Dark Band Area */}
-            <div className="h-32 bg-green-800 flex flex-col items-center justify-center px-4">
-              <div className="flex items-center justify-center mb-2">
-                <SimpleBookIcon className="w-6 h-6 text-white mr-2" />
-                <h2 className="text-sm font-bold text-white">Bible Maps</h2>
+            {/* Modern Footer Section */}
+            <div className="bg-gradient-to-r from-slate-800 to-slate-900 flex flex-col items-center justify-center px-6 py-12">
+              <div className="flex items-center justify-center mb-4">
+                <SimpleBookIcon className="w-8 h-8 text-white mr-3" />
+                <h2 className="text-xl font-bold text-white">Bible Maps</h2>
               </div>
-              <p className="text-sm text-gray-300 text-center">
-                Explore the lands of the Bible with detailed historical maps
+              <p className="text-slate-300 text-center max-w-md leading-relaxed">
+                Explore the lands of the Bible with detailed historical maps and discover the rich heritage of biblical times
               </p>
             </div>
           </>
@@ -1612,7 +1612,6 @@ if (currentScreen === "mapViewer" && activeMap) {
         minScale={0.5}
         maxScale={3}
         limitToBounds={true}
-        doubleClick={{ disabled: true }}
         onTransformed={(ref, state) => {
           if (state && typeof state.scale === 'number') {
             setIsAtFitToPage(state.scale <= 1.1)
@@ -1621,129 +1620,103 @@ if (currentScreen === "mapViewer" && activeMap) {
           setShowControls(true)
         }}
       >
-        {({ zoomIn, zoomOut, resetTransform, state }) => {
-          const handleImageClick = (e) => {
-            e.preventDefault();
-            const currentTime = Date.now();
-            
-            // Check for double click
-            if (currentTime - (window.lastImageClick || 0) < 300) {
-              // Double click detected - toggle zoom
-              console.log('Double click detected, current scale:', state.scale);
-              
-              if (state.scale <= 1.1) {
-                // Currently at fit-to-page, zoom in
-                setTimeout(() => zoomIn(2), 10);
-              } else {
-                // Currently zoomed, reset to fit-to-page
-                setTimeout(() => resetTransform(), 10);
-              }
-            }
-            
-            window.lastImageClick = currentTime;
-            setShowControls(true);
-          };
-
-          return (
-            <>
-              <TransformComponent>
-                <div style={{ 
-                  width: '100vw', 
-                  height: '100vh', 
-                  display: 'flex', 
-                  alignItems: 'center', 
-                  justifyContent: 'center' 
-                }}>
-                  <img
-                    src={activeMap.fullImage || "/placeholder.svg"}
-                    alt={activeMap.title}
-                    onClick={handleImageClick}
-                    onError={(e) => { e.target.src = "/placeholder.svg" }}
-                    style={{
-                      maxWidth: '100%',
-                      maxHeight: '100%',
-                      objectFit: 'contain',
-                      display: 'block',
-                      cursor: 'pointer',
-                      userSelect: 'none'
-                    }}
-                  />
-                </div>
-              </TransformComponent>
-
-              {/* Controls Overlay */}
-              <div className={`absolute inset-0 pointer-events-none transition-opacity duration-500 ${
-                showControls ? "opacity-100" : "opacity-20"
-              }`}>
-                
-                {/* Top Left Controls */}
-                <div className="absolute top-4 left-4 flex items-center gap-3 pointer-events-auto">
-                  <button
-                    onClick={() => {
-                      setHighlightActiveMap(true)
-                      setCurrentScreen("category")
-                      setTimeout(() => setHighlightActiveMap(false), 2000)
-                    }}
-                    className="p-2 bg-white/90 backdrop-blur-sm rounded-lg shadow-lg"
-                  >
-                    <ArrowLeft className="w-5 h-5" />
-                  </button>
-                  <div 
-                    onClick={() => handleLongPress(activeMap.title)}
-                    className="text-sm bg-white/90 backdrop-blur-sm px-3 py-2 rounded-lg shadow-lg cursor-pointer"
-                  >
-                    <p className="truncate font-medium">{activeMap.title}</p>
-                  </div>
-                </div>
-
-                {/* Top Right - Favorite */}
-                <button
-                  onClick={() => toggleFavorite(activeMap.id)}
-                  className="absolute top-4 right-4 p-2 bg-white/90 backdrop-blur-sm rounded-lg shadow-lg pointer-events-auto"
-                >
-                  <Star className={`w-5 h-5 ${favorites.has(activeMap.id) ? "text-yellow-500 fill-current" : "text-gray-600"}`} />
-                </button>
-
-               {/* Navigation Arrows */}
-                {currentMapIndex > 0 && (
-                  <button
-                    onClick={() => {
-                      const newIndex = currentMapIndex - 1
-                      setCurrentMapIndex(newIndex)
-                      setActiveMap(mockMapData[currentCategory].maps[newIndex])
-                      setShowControls(true)
-                    }}
-                    className="absolute left-4 top-1/2 transform -translate-y-1/2 p-3 bg-white/90 backdrop-blur-sm rounded-lg shadow-lg pointer-events-auto"
-                  >
-                    <ChevronLeft className="w-6 h-6 text-gray-800" />
-                  </button>
-                )}
-
-                {currentMapIndex < mockMapData[currentCategory].maps.length - 1 && (
-                  <button
-                    onClick={() => {
-                      const newIndex = currentMapIndex + 1
-                      setCurrentMapIndex(newIndex)
-                      setActiveMap(mockMapData[currentCategory].maps[newIndex])
-                      setShowControls(true)
-                    }}
-                    className="absolute right-4 top-1/2 transform -translate-y-1/2 p-3 bg-white/90 backdrop-blur-sm rounded-lg shadow-lg pointer-events-auto"
-                  >
-                    <ChevronRight className="w-6 h-6 text-gray-800" />
-                  </button>
-                )}
-
-                {/* Home Button */}
-                <button
-                  onClick={() => setCurrentScreen("home")}
-                  className="absolute bottom-6 left-1/2 transform -translate-x-1/2 p-3 bg-white/90 backdrop-blur-sm rounded-lg shadow-lg pointer-events-auto"
-                >
-                  <Home className="w-5 h-5 text-gray-800" />
-                </button>
+        {({ zoomIn, zoomOut, resetTransform }) => (
+          <>
+            <TransformComponent>
+              <div style={{ 
+                width: '100vw', 
+                height: '100vh', 
+                display: 'flex', 
+                alignItems: 'center', 
+                justifyContent: 'center' 
+              }}>
+                <img
+                  src={activeMap.fullImage || "/placeholder.svg"}
+                  alt={activeMap.title}
+                  onClick={() => setShowControls(true)}
+                  onError={(e) => { e.target.src = "/placeholder.svg" }}
+                  style={{
+                    maxWidth: '100%',
+                    maxHeight: '100%',
+                    objectFit: 'contain',
+                    display: 'block'
+                  }}
+                />
               </div>
-            </>
-          )
-        }}
+            </TransformComponent>
+
+            {/* Controls Overlay */}
+            <div className={`absolute inset-0 pointer-events-none transition-opacity duration-500 ${
+              showControls ? "opacity-100" : "opacity-20"
+            }`}>
+              
+              {/* Top Left Controls */}
+              <div className="absolute top-4 left-4 flex items-center gap-3 pointer-events-auto">
+                <button
+                  onClick={() => {
+                    setHighlightActiveMap(true)
+                    setCurrentScreen("category")
+                    setTimeout(() => setHighlightActiveMap(false), 2000)
+                  }}
+                  className="p-2 bg-white/90 backdrop-blur-sm rounded-lg shadow-lg"
+                >
+                  <ArrowLeft className="w-5 h-5" />
+                </button>
+                <div 
+                  onClick={() => handleLongPress(activeMap.title)}
+                  className="text-sm bg-white/90 backdrop-blur-sm px-3 py-2 rounded-lg shadow-lg cursor-pointer"
+                >
+                  <p className="truncate font-medium">{activeMap.title}</p>
+                </div>
+              </div>
+
+              {/* Top Right - Favorite */}
+              <button
+                onClick={() => toggleFavorite(activeMap.id)}
+                className="absolute top-4 right-4 p-2 bg-white/90 backdrop-blur-sm rounded-lg shadow-lg pointer-events-auto"
+              >
+                <Star className={`w-5 h-5 ${favorites.has(activeMap.id) ? "text-yellow-500 fill-current" : "text-gray-600"}`} />
+              </button>
+
+             {/* Navigation Arrows */}
+              {currentMapIndex > 0 && (
+                <button
+                  onClick={() => {
+                    const newIndex = currentMapIndex - 1
+                    setCurrentMapIndex(newIndex)
+                    setActiveMap(mockMapData[currentCategory].maps[newIndex])
+                    setShowControls(true)
+                  }}
+                  className="absolute left-4 top-1/2 transform -translate-y-1/2 p-3 bg-white/90 backdrop-blur-sm rounded-lg shadow-lg pointer-events-auto"
+                >
+                  <ChevronLeft className="w-6 h-6 text-gray-800" />
+                </button>
+              )}
+
+              {currentMapIndex < mockMapData[currentCategory].maps.length - 1 && (
+                <button
+                  onClick={() => {
+                    const newIndex = currentMapIndex + 1
+                    setCurrentMapIndex(newIndex)
+                    setActiveMap(mockMapData[currentCategory].maps[newIndex])
+                    setShowControls(true)
+                  }}
+                  className="absolute right-4 top-1/2 transform -translate-y-1/2 p-3 bg-white/90 backdrop-blur-sm rounded-lg shadow-lg pointer-events-auto"
+                >
+                  <ChevronRight className="w-6 h-6 text-gray-800" />
+                </button>
+              )}
+
+              {/* Home Button */}
+              <button
+                onClick={() => setCurrentScreen("home")}
+                className="absolute bottom-6 left-1/2 transform -translate-x-1/2 p-3 bg-white/90 backdrop-blur-sm rounded-lg shadow-lg pointer-events-auto"
+              >
+                <Home className="w-5 h-5 text-gray-800" />
+              </button>
+            </div>
+          </>
+        )}
       </TransformWrapper>
     </div>
   )
