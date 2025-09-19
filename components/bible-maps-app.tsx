@@ -951,7 +951,7 @@ if (currentScreen === "home") {
               </div>
               <h2 className="text-lg font-semibold text-white">Bible Maps</h2>
             </div>
-            <p className="text-stone-300 text-center max-w-md leading-relaxed text-sm">
+            <p className="text-stone-300 text-center max-w-md leading-relaxed text-[0.75rem]">
               Explore biblical lands with detailed historical maps and discover the geography of ancient times
             </p>
             <div className="mt-2 h-0.5 w-16 bg-gradient-to-r from-stone-400 to-stone-500 rounded-full"></div>
