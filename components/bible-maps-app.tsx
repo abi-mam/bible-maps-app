@@ -1187,8 +1187,9 @@ if (currentScreen === "home") {
             </>
           )}
         </div>
-       )
-     }
+      </div>
+    )
+  }
 
   // Favorites Screen
   if (currentScreen === "favorites") {
@@ -1392,10 +1393,11 @@ if (currentScreen === "home") {
             </>
           )}
         </div>
-       )
-     }
+      </div>
+    )
+  }
 
-// Category Screen
+  // Category Screen
   if (currentScreen === "category") {
     const maps = getFilteredMaps()
     const displayTitle = showFavorites ? "Favorites" : currentCategory
