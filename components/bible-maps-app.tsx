@@ -748,7 +748,7 @@ const BibleMapsApp = () => {
     )
   }
 
-  // Home Screen
+// Home Screen
   if (currentScreen === "home") {
     const filteredCategories = searchQuery.trim() 
       ? Object.entries(mockMapData).filter(([category, data]) =>
@@ -766,40 +766,45 @@ const BibleMapsApp = () => {
     }
 
     return (
-      <div className={`min-h-screen ${isSearchingFromHome ? 'bg-gradient-to-br from-indigo-50 to-blue-50' : 'bg-gradient-to-br from-slate-50 to-slate-100'}`}>
+      <div className={`min-h-screen transition-all duration-500 ${isSearchingFromHome ? 'bg-gradient-to-br from-amber-50 via-orange-50 to-amber-100' : 'bg-gradient-to-br from-stone-50 via-amber-50 to-stone-100'}`}>
         {showTitlePopup && <TitlePopup title={popupTitle} onClose={() => setShowTitlePopup(false)} />}
 
         {/* Header */}
-        <div className={`${isSearchingFromHome ? 'bg-gradient-to-r from-indigo-100 to-blue-100' : 'bg-gradient-to-r from-slate-100 to-slate-200'} px-4 py-6 shadow-sm`}>
-          <div className="flex items-center justify-center mb-6">
-            <SimpleBookIcon className="w-8 h-8 text-indigo-700 mr-3" />
-            <h1 className="text-2xl font-bold text-slate-800">Bible Maps</h1>
+        <div className={`transition-all duration-500 ${isSearchingFromHome ? 'bg-gradient-to-r from-amber-100 via-orange-100 to-amber-200' : 'bg-gradient-to-r from-amber-100 via-amber-150 to-amber-200'} px-6 py-8 shadow-lg backdrop-blur-sm`}>
+          <div className="flex items-center justify-center mb-8">
+            <div className="p-2 bg-white/20 backdrop-blur-sm rounded-2xl mr-4 shadow-lg">
+              <SimpleBookIcon className="w-10 h-10 text-amber-800 drop-shadow-sm" />
+            </div>
+            <h1 className="text-3xl font-bold text-amber-900 tracking-tight drop-shadow-sm">Bible Maps</h1>
           </div>
 
           {/* Search and Favorites Row */}
-          <div className="flex items-center justify-center gap-4">
+          <div className="flex items-center justify-center gap-5">
             <div className="flex-1 max-w-sm">
-              <input
-                type="text"
-                placeholder="Search maps..."
-                value={searchQuery}
-                onChange={(e) => {
-                  setSearchQuery(e.target.value)
-                  if (e.target.value.trim()) {
-                    setIsSearchingFromHome(true)
-                  } else {
-                    setIsSearchingFromHome(false)
-                  }
-                }}
-                onFocus={() => {
-                  // Open search screen immediately when focusing on search bar
-                  setSearchFromContext("home")
-                  setSearchFromViewMode(viewMode)
-                  setCurrentScreen("search")
-                  setActiveTab("search")
-                }}
-                className="w-full px-4 py-3 bg-white border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent shadow-sm transition-all"
-              />
+              <div className="relative">
+                <input
+                  type="text"
+                  placeholder="Search maps..."
+                  value={searchQuery}
+                  onChange={(e) => {
+                    setSearchQuery(e.target.value)
+                    if (e.target.value.trim()) {
+                      setIsSearchingFromHome(true)
+                    } else {
+                      setIsSearchingFromHome(false)
+                    }
+                  }}
+                  onFocus={() => {
+                    // Open search screen immediately when focusing on search bar
+                    setSearchFromContext("home")
+                    setSearchFromViewMode(viewMode)
+                    setCurrentScreen("search")
+                    setActiveTab("search")
+                  }}
+                  className="w-full px-5 py-4 bg-white/90 backdrop-blur-sm border border-amber-200 rounded-2xl focus:outline-none focus:ring-3 focus:ring-amber-600/50 focus:border-amber-400 shadow-lg transition-all duration-300 hover:shadow-xl hover:bg-white placeholder-amber-600"
+                />
+                <Search className="absolute right-4 top-1/2 transform -translate-y-1/2 w-5 h-5 text-amber-600" />
+              </div>
             </div>
             <button
               onClick={() => {
@@ -810,84 +815,93 @@ const BibleMapsApp = () => {
                 setCurrentScreen("favorites")
                 setActiveTab("favorites")
               }}
-              className="h-12 px-4 bg-white border border-slate-200 rounded-xl hover:bg-slate-50 transition-colors shadow-sm"
+              className="h-14 px-5 bg-white/90 backdrop-blur-sm border border-amber-200 rounded-2xl hover:bg-white hover:shadow-xl transition-all duration-300 transform hover:-translate-y-0.5 shadow-lg"
             >
-              <Star className="w-5 h-5 text-slate-600" />
+              <Star className="w-6 h-6 text-amber-700" />
             </button>
           </div>
 
           {/* Show search results count when searching */}
           {isSearchingFromHome && (
-            <div className="mt-4">
-              <p className="text-sm text-indigo-700 font-medium text-center">{searchResults.length} Results</p>
+            <div className="mt-6 animate-fadeIn">
+              <div className="bg-white/80 backdrop-blur-sm rounded-2xl px-4 py-2 mx-auto w-fit shadow-lg border border-amber-200">
+                <p className="text-sm text-amber-800 font-semibold text-center">{searchResults.length} Maps Found</p>
+              </div>
             </div>
           )}
         </div>
 
         {/* Content - Show search results when searching, categories otherwise */}
         {isSearchingFromHome ? (
-          <div className="px-4 py-6 space-y-6">
+          <div className="px-6 py-8 space-y-8">
             {searchResults.length === 0 ? (
-              <div className="flex flex-col items-center justify-center py-16">
-                <Search className="w-16 h-16 text-slate-400 mb-6" />
-                <p className="text-slate-600 text-center text-lg">
+              <div className="flex flex-col items-center justify-center py-20">
+                <div className="p-6 bg-white/60 backdrop-blur-sm rounded-3xl shadow-xl mb-6">
+                  <Search className="w-20 h-20 text-amber-400" />
+                </div>
+                <p className="text-amber-700 text-center text-xl font-medium">
                   No maps found matching your search
                 </p>
               </div>
             ) : (
               <>
                 {/* Map Title List */}
-                <div className="bg-white rounded-2xl shadow-sm border border-slate-200 p-6">
-                  <div className="space-y-3">
+                <div className="bg-white/95 backdrop-blur-sm rounded-3xl shadow-xl border border-amber-200/50 p-8 transform hover:scale-[1.02] transition-all duration-300">
+                  <h3 className="text-lg font-bold text-amber-900 mb-6">Search Results</h3>
+                  <div className="space-y-4">
                     {searchResults.map((map, index) => (
-                      <div key={`title-${map.id}`} className="flex items-center">
-                        <span className="text-sm text-slate-500 w-10 flex-shrink-0 text-right font-medium">{index + 1}.</span>
-                        <span className="text-sm text-slate-800 truncate ml-3 font-medium">{map.title}</span>
-                        <span className="text-xs text-indigo-600 ml-auto bg-indigo-50 px-2 py-1 rounded-full">{map.category}</span>
+                      <div key={`title-${map.id}`} className="flex items-center p-3 rounded-xl hover:bg-amber-50/70 transition-colors">
+                        <span className="text-sm text-amber-600 w-12 flex-shrink-0 text-right font-bold bg-amber-100 rounded-full w-8 h-8 flex items-center justify-center">{index + 1}</span>
+                        <span className="text-sm text-amber-900 truncate ml-4 font-semibold">{map.title}</span>
+                        <span className="text-xs text-amber-700 ml-auto bg-gradient-to-r from-amber-100 to-orange-100 px-3 py-1 rounded-full font-medium shadow-sm">{map.category}</span>
                       </div>
                     ))}
                   </div>
                 </div>
 
                 {/* Large Thumbnails */}
-                <div className="bg-white rounded-2xl shadow-sm border border-slate-200 p-6">
-                  {searchResults.map((map, index) => (
-                    <div key={map.id} className={index > 0 ? "mt-6" : ""}>
-                      <div
-                        onClick={() => openMapViewer(map.category, mockMapData[map.category].maps.findIndex(m => m.id === map.id))}
-                        className="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden cursor-pointer hover:shadow-lg transition-all duration-300 hover:-translate-y-1"
-                      >
-                        <div className="relative">
-                          <img
-                            src={map.thumbnail || "/placeholder.svg"}
-                            alt={map.title}
-                            className="w-full h-auto object-contain"
-                            style={{ maxHeight: "none" }}
-                          />
-                          <button
-                            onClick={(e) => {
-                              e.stopPropagation()
-                              toggleFavorite(map.id)
-                            }}
-                            className="absolute top-3 right-3 p-2 bg-white/90 backdrop-blur-sm rounded-full shadow-lg hover:bg-white transition-all"
-                          >
-                            <Star
-                              className={`w-5 h-5 ${favorites.has(map.id) ? "text-amber-500 fill-current" : "text-slate-400"}`}
+                <div className="bg-white/95 backdrop-blur-sm rounded-3xl shadow-xl border border-amber-200/50 p-8">
+                  <h3 className="text-lg font-bold text-amber-900 mb-6">Map Previews</h3>
+                  <div className="space-y-8">
+                    {searchResults.map((map, index) => (
+                      <div key={map.id}>
+                        <div
+                          onClick={() => openMapViewer(map.category, mockMapData[map.category].maps.findIndex(m => m.id === map.id))}
+                          className="bg-white rounded-3xl shadow-lg border border-amber-200 overflow-hidden cursor-pointer hover:shadow-2xl transition-all duration-500 transform hover:-translate-y-2 hover:scale-[1.02]"
+                        >
+                          <div className="relative overflow-hidden">
+                            <img
+                              src={map.thumbnail || "/placeholder.svg"}
+                              alt={map.title}
+                              className="w-full h-auto object-contain transition-transform duration-500 hover:scale-105"
+                              style={{ maxHeight: "none" }}
                             />
-                          </button>
-                        </div>
-                        <div className="p-4">
-                          <div className="flex justify-between items-center">
-                            <div className="flex-1">
-                              <p className="text-sm font-semibold text-slate-800 truncate">{map.title}</p>
-                              <p className="text-xs text-indigo-600 mt-1">{map.category}</p>
+                            <div className="absolute inset-0 bg-gradient-to-t from-black/10 to-transparent"></div>
+                            <button
+                              onClick={(e) => {
+                                e.stopPropagation()
+                                toggleFavorite(map.id)
+                              }}
+                              className="absolute top-4 right-4 p-3 bg-white/95 backdrop-blur-sm rounded-full shadow-xl hover:bg-white transition-all duration-300 transform hover:scale-110"
+                            >
+                              <Star
+                                className={`w-6 h-6 transition-colors ${favorites.has(map.id) ? "text-amber-500 fill-current" : "text-amber-400"}`}
+                              />
+                            </button>
+                          </div>
+                          <div className="p-6">
+                            <div className="flex justify-between items-center">
+                              <div className="flex-1">
+                                <p className="text-base font-bold text-amber-900 truncate mb-2">{map.title}</p>
+                                <p className="text-sm text-amber-700 font-medium">{map.category}</p>
+                              </div>
+                              <div className="bg-gradient-to-r from-amber-700 to-amber-800 text-white text-sm font-bold px-4 py-2 rounded-full ml-4 shadow-lg">#{index + 1}</div>
                             </div>
-                            <div className="bg-indigo-600 text-white text-xs font-medium px-3 py-1 rounded-full ml-3">#{index + 1}</div>
                           </div>
                         </div>
                       </div>
-                    </div>
-                  ))}
+                    ))}
+                  </div>
                 </div>
               </>
             )}
@@ -895,7 +909,7 @@ const BibleMapsApp = () => {
         ) : (
           <>
             {/* Category Cards */}
-            <div className="px-4 py-8 space-y-6 mb-16">
+            <div className="px-6 py-10 space-y-8 mb-20">
               {filteredCategories.map(([category, data]) => {
                 const Icon = data.icon
                 return (
@@ -907,37 +921,47 @@ const BibleMapsApp = () => {
                       setCurrentScreen("category")
                       setActiveTab("view")
                     }}
-                    className="bg-white rounded-2xl p-8 shadow-sm border border-slate-200 cursor-pointer hover:shadow-lg transition-all duration-300 hover:-translate-y-2"
+                    className="bg-white/95 backdrop-blur-sm rounded-3xl p-10 shadow-xl border border-amber-200/50 cursor-pointer hover:shadow-2xl transition-all duration-500 transform hover:-translate-y-3 hover:scale-[1.02] group"
                   >
-                    <div className="flex flex-col items-center mb-6">
-                      <Icon className="w-20 h-20 mb-4" />
-                      <h3 className="text-xl font-bold text-slate-800">{category}</h3>
+                    <div className="flex flex-col items-center mb-8">
+                      <div className="p-4 bg-gradient-to-br from-amber-100 to-orange-100 rounded-3xl mb-6 shadow-lg group-hover:shadow-xl transition-shadow duration-300">
+                        <Icon className="w-24 h-24 transition-transform duration-300 group-hover:scale-110" />
+                      </div>
+                      <h3 className="text-2xl font-bold text-amber-900 text-center">{category}</h3>
                     </div>
                     <div className="flex justify-between items-center">
-                      <span className="text-sm text-slate-600 bg-slate-100 px-3 py-1 rounded-full">{data.count} maps available</span>
-                      <span className="text-sm text-indigo-600 font-medium">Explore Maps →</span>
+                      <span className="text-sm text-amber-700 bg-gradient-to-r from-amber-100 to-orange-100 px-4 py-2 rounded-full font-medium shadow-sm">{data.count} maps available</span>
+                      <span className="text-sm text-amber-800 font-bold group-hover:text-amber-900 transition-colors flex items-center">
+                        Explore Maps 
+                        <svg className="w-4 h-4 ml-2 transition-transform group-hover:translate-x-1" fill="currentColor" viewBox="0 0 20 20">
+                          <path fillRule="evenodd" d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z" clipRule="evenodd" />
+                        </svg>
+                      </span>
                     </div>
                   </div>
                 )
               })}
             </div>
 
-            {/* Modern Footer Section */}
-            <div className="bg-gradient-to-r from-slate-800 to-slate-900 flex flex-col items-center justify-center px-6 py-12">
-              <div className="flex items-center justify-center mb-4">
-                <SimpleBookIcon className="w-8 h-8 text-white mr-3" />
-                <h2 className="text-xl font-bold text-white">Bible Maps</h2>
+            {/* Footer Section */}
+            <div className="bg-gradient-to-r from-stone-800 via-stone-900 to-stone-800 flex flex-col items-center justify-center px-8 py-16 shadow-2xl">
+              <div className="flex items-center justify-center mb-6">
+                <div className="p-3 bg-white/10 backdrop-blur-sm rounded-2xl mr-4 shadow-lg">
+                  <SimpleBookIcon className="w-10 h-10 text-amber-400" />
+                </div>
+                <h2 className="text-2xl font-bold text-white">Bible Maps</h2>
               </div>
-              <p className="text-slate-300 text-center max-w-md leading-relaxed">
-                Explore the lands of the Bible with detailed historical maps and discover the rich heritage of biblical times
+              <p className="text-stone-300 text-center max-w-lg leading-relaxed text-lg">
+                Explore biblical lands with detailed historical maps and discover the geography of ancient times
               </p>
+              <div className="mt-6 h-1 w-24 bg-gradient-to-r from-amber-400 to-orange-400 rounded-full"></div>
             </div>
           </>
         )}
 
         {/* System Navigation Overlay */}
         {isSystemNavVisible && (
-          <div className="fixed inset-x-0 bottom-0 h-16 bg-black bg-opacity-50 z-[9999] pointer-events-none">
+          <div className="fixed inset-x-0 bottom-0 h-16 bg-stone-900/80 backdrop-blur-sm z-[9999] pointer-events-none border-t border-stone-700/50">
             {/* This represents the system navigation area */}
           </div>
         )}
