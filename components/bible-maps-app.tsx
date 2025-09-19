@@ -944,7 +944,7 @@ if (currentScreen === "home") {
           </div>
 
           {/* Footer Section */}
-          <div className="bg-gradient-to-r from-stone-700 to-stone-800 flex flex-col items-center justify-center px-6 py-8 shadow-lg">
+          <div className="bg-gradient-to-r from-stone-700 to-stone-800 flex flex-col items-center justify-center px-6 py-5 shadow-lg">
             <div className="flex items-center justify-center mb-4">
               <div className="p-2 bg-white/10 rounded-lg mr-3 shadow-sm">
                 <SimpleBookIcon className="w-6 h-6 text-white" />
@@ -954,7 +954,7 @@ if (currentScreen === "home") {
             <p className="text-stone-300 text-center max-w-md leading-relaxed text-sm">
               Explore biblical lands with detailed historical maps and discover the geography of ancient times
             </p>
-            <div className="mt-4 h-0.5 w-16 bg-gradient-to-r from-stone-400 to-stone-500 rounded-full"></div>
+            <div className="mt-2 h-0.5 w-16 bg-gradient-to-r from-stone-400 to-stone-500 rounded-full"></div>
           </div>
         </>
       )}
@@ -1581,7 +1581,7 @@ if (currentScreen === "favorites") {
         </div>
 
         {/* Bottom Bar - scrollable with content, full width */}
-        <div className="bg-stone-900 flex items-center justify-around h-14">
+        <div className="bg-gray-100 flex items-center justify-around h-10">
           <button
             onClick={() => {
               setActiveTab("search")
@@ -1589,8 +1589,8 @@ if (currentScreen === "favorites") {
               setSearchFromViewMode(viewMode)
               setCurrentScreen("search")
             }}
-            className={`flex flex-col items-center ${activeTab === "search" ? "text-white" : "text-stone-400"}`}>
-            <Search className="h-5 w-5" />
+            className={`flex flex-col items-center ${activeTab === "search" ? "text-black" : "text-black"}`}>
+            <Search className="h-4 w-4" />
             <span className="text-xs">Search</span>
           </button>
           <button
@@ -1600,8 +1600,8 @@ if (currentScreen === "favorites") {
               setFavoriteFromViewMode(viewMode)
               setCurrentScreen("favorites")
             }}
-            className={`flex flex-col items-center ${activeTab === "favorites" ? "text-white" : "text-stone-400"}`}>
-            <Star className="h-5 w-5" />
+            className={`flex flex-col items-center ${activeTab === "favorites" ? "text-black" : "text-black"}`}>
+            <Star className="h-4 w-4" />
             <span className="text-xs">Favorites</span>
           </button>
         </div>
@@ -1693,7 +1693,7 @@ if (currentScreen === "mapViewer" && activeMap) {
                     setActiveMap(mockMapData[currentCategory].maps[newIndex])
                     setShowControls(true)
                   }}
-                  className="absolute left-4 top-1/2 transform -translate-y-1/2 p-2 bg-white/90 backdrop-blur-sm rounded-lg shadow-lg pointer-events-auto"
+                  className="absolute left-4 top-1/2 transform -translate-y-1/2 p-1.5 bg-white/90 backdrop-blur-sm rounded-lg shadow-lg pointer-events-auto"
                 >
                   <ChevronLeft className="w-6 h-6 text-gray-800" />
                 </button>
@@ -1707,7 +1707,7 @@ if (currentScreen === "mapViewer" && activeMap) {
                     setActiveMap(mockMapData[currentCategory].maps[newIndex])
                     setShowControls(true)
                   }}
-                  className="absolute right-4 top-1/2 transform -translate-y-1/2 p-2 bg-white/90 backdrop-blur-sm rounded-lg shadow-lg pointer-events-auto"
+                  className="absolute right-4 top-1/2 transform -translate-y-1/2 p-1.5 bg-white/90 backdrop-blur-sm rounded-lg shadow-lg pointer-events-auto"
                 >
                   <ChevronRight className="w-6 h-6 text-gray-800" />
                 </button>
@@ -1716,7 +1716,7 @@ if (currentScreen === "mapViewer" && activeMap) {
               {/* Home Button */}
               <button
                 onClick={() => setCurrentScreen("home")}
-                className="absolute bottom-6 left-1/2 transform -translate-x-1/2 p-3 bg-white/90 backdrop-blur-sm rounded-lg shadow-lg pointer-events-auto"
+                className="absolute bottom-6 left-1/2 transform -translate-x-1/2 p-2 bg-white/90 backdrop-blur-sm rounded-lg shadow-lg pointer-events-auto"
               >
                 <Home className="w-5 h-5 text-gray-800" />
               </button>
