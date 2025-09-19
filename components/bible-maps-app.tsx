@@ -1426,7 +1426,7 @@ if (currentScreen === "home") {
     const Icon = showFavorites ? Star : mockMapData[currentCategory]?.icon || BookIcon
 
     return (
-      <div className="flex flex-col h-full bg-gray-50" style={{ paddingBottom: isSystemNavVisible ? '4rem' : '0' }}>
+      <div className="min-h-screen bg-gray-50">
         {showTitlePopup && <TitlePopup title={popupTitle} onClose={() => setShowTitlePopup(false)} />}
 
         {/* Header */}
@@ -1461,7 +1461,7 @@ if (currentScreen === "home") {
         </div>
 
         {/* Content */}
-        <div className="px-4 py-4 pb-20">       
+        <div className="px-4 py-4">       
           {viewMode === "grid" && (
             <div className="grid grid-cols-2 gap-4">
               {maps.map((map, index) => {
@@ -1601,21 +1601,33 @@ if (currentScreen === "home") {
           )}
         </div>
 
-        <BottomBar
-          activeTab={activeTab}
-          onTabChange={(tab) => {
-            setActiveTab(tab)
-            if (tab === "search") {
-              setSearchFromContext(currentCategory)
-              setSearchFromViewMode(viewMode)
-              setCurrentScreen("search")
-            } else if (tab === "favorites") {
-              setFavoriteFromContext(currentCategory)
-              setFavoriteFromViewMode(viewMode)
-              setCurrentScreen("favorites")
-            }
-          }}
-        />
+        {/* Bottom Bar - now scrollable with content */}
+        <div className="px-4 pb-4" style={{ paddingBottom: isSystemNavVisible ? '4rem' : '1rem' }}>
+          <div className="bg-white/95 backdrop-blur-md border border-slate-200 rounded-lg shadow-sm flex items-center justify-around h-14">
+            <button
+              onClick={() => {
+                setActiveTab("search")
+                setSearchFromContext(currentCategory)
+                setSearchFromViewMode(viewMode)
+                setCurrentScreen("search")
+              }}
+              className={`flex flex-col items-center ${activeTab === "search" ? "text-indigo-600" : "text-slate-600"}`}>
+              <Search className="h-5 w-5" />
+              <span className="text-xs">Search</span>
+            </button>
+            <button
+              onClick={() => {
+                setActiveTab("favorites")
+                setFavoriteFromContext(currentCategory)
+                setFavoriteFromViewMode(viewMode)
+                setCurrentScreen("favorites")
+              }}
+              className={`flex flex-col items-center ${activeTab === "favorites" ? "text-indigo-600" : "text-slate-600"}`}>
+              <Star className="h-5 w-5" />
+              <span className="text-xs">Favorites</span>
+            </button>
+          </div>
+        </div>
 
         {/* System Navigation Overlay - overlays bottom bar when visible */}
         {isSystemNavVisible && (
@@ -1682,13 +1694,13 @@ if (currentScreen === "mapViewer" && activeMap) {
                     setCurrentScreen("category")
                     setTimeout(() => setHighlightActiveMap(false), 2000)
                   }}
-                  className="p-2 bg-white/90 backdrop-blur-sm rounded-lg shadow-lg"
+                  className="p-1.5 bg-white/90 backdrop-blur-sm rounded-lg shadow-lg"
                 >
                   <ArrowLeft className="w-5 h-5" />
                 </button>
                 <div 
                   onClick={() => handleLongPress(activeMap.title)}
-                  className="text-sm bg-white/90 backdrop-blur-sm px-3 py-2 rounded-lg shadow-lg cursor-pointer"
+                  className="text-sm bg-white/90 backdrop-blur-sm px-3 py-1.5 rounded-lg shadow-lg cursor-pointer"
                 >
                   <p className="truncate font-medium">{activeMap.title}</p>
                 </div>
@@ -1697,7 +1709,7 @@ if (currentScreen === "mapViewer" && activeMap) {
               {/* Top Right - Favorite */}
               <button
                 onClick={() => toggleFavorite(activeMap.id)}
-                className="absolute top-4 right-4 p-2 bg-white/90 backdrop-blur-sm rounded-lg shadow-lg pointer-events-auto"
+                className="absolute top-4 right-4 p-1.5 bg-white/90 backdrop-blur-sm rounded-lg shadow-lg pointer-events-auto"
               >
                 <Star className={`w-5 h-5 ${favorites.has(activeMap.id) ? "text-yellow-500 fill-current" : "text-gray-600"}`} />
               </button>
@@ -1711,7 +1723,7 @@ if (currentScreen === "mapViewer" && activeMap) {
                     setActiveMap(mockMapData[currentCategory].maps[newIndex])
                     setShowControls(true)
                   }}
-                  className="absolute left-4 top-1/2 transform -translate-y-1/2 p-3 bg-white/90 backdrop-blur-sm rounded-lg shadow-lg pointer-events-auto"
+                  className="absolute left-4 top-1/2 transform -translate-y-1/2 p-2 bg-white/90 backdrop-blur-sm rounded-lg shadow-lg pointer-events-auto"
                 >
                   <ChevronLeft className="w-6 h-6 text-gray-800" />
                 </button>
@@ -1725,7 +1737,7 @@ if (currentScreen === "mapViewer" && activeMap) {
                     setActiveMap(mockMapData[currentCategory].maps[newIndex])
                     setShowControls(true)
                   }}
-                  className="absolute right-4 top-1/2 transform -translate-y-1/2 p-3 bg-white/90 backdrop-blur-sm rounded-lg shadow-lg pointer-events-auto"
+                  className="absolute right-4 top-1/2 transform -translate-y-1/2 p-2 bg-white/90 backdrop-blur-sm rounded-lg shadow-lg pointer-events-auto"
                 >
                   <ChevronRight className="w-6 h-6 text-gray-800" />
                 </button>

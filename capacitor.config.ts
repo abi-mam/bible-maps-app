@@ -21,6 +21,13 @@ const config: CapacitorConfig = {
     Keyboard: {
       resize: 'none',
     },
+    SplashScreen: {
+      launchShowDuration: 1500,        // how long splash shows (ms)
+      launchAutoHide: true,            // auto-hide when app is ready
+      backgroundColor: '#ffffff',      // matches app background
+      androidSplashResourceName: 'splash', // points to generated splash.png
+      showSpinner: false               // no spinner
+    },
   },
   android: {
     allowMixedContent: true,
