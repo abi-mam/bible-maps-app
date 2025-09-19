@@ -944,10 +944,10 @@ if (currentScreen === "home") {
           </div>
 
           {/* Footer Section */}
-          <div className="bg-gradient-to-r from-stone-700 to-stone-800 flex flex-col items-center justify-center px-6 py-12 shadow-lg">
+          <div className="bg-gradient-to-r from-stone-700 to-stone-800 flex flex-col items-center justify-center px-6 py-8 shadow-lg">
             <div className="flex items-center justify-center mb-4">
               <div className="p-2 bg-white/10 rounded-lg mr-3 shadow-sm">
-                <SimpleBookIcon className="w-6 h-6 text-stone-200" />
+                <SimpleBookIcon className="w-6 h-6 text-white" />
               </div>
               <h2 className="text-lg font-semibold text-white">Bible Maps</h2>
             </div>
@@ -958,16 +958,8 @@ if (currentScreen === "home") {
           </div>
         </>
       )}
-
-      {/* System Navigation Overlay */}
-      {isSystemNavVisible && (
-        <div className="fixed inset-x-0 bottom-0 h-16 bg-stone-900/80 backdrop-blur-sm z-[9999] pointer-events-none border-t border-stone-700/50">
-          {/* This represents the system navigation area */}
-        </div>
-      )}
-    </div>
-  )
-}
+    )
+  }
 
   // Search Screen
   if (currentScreen === "search") {
@@ -1195,16 +1187,8 @@ if (currentScreen === "home") {
             </>
           )}
         </div>
-
-        {/* System Navigation Overlay - overlays any bottom content */}
-        {isSystemNavVisible && (
-          <div className="fixed inset-x-0 bottom-0 h-16 bg-black bg-opacity-50 z-[9999] pointer-events-none">
-            {/* This represents the system navigation area */}
-          </div>
-        )}
-      </div>
-    )
-  }
+       )
+     }
 
   // Favorites Screen
   if (currentScreen === "favorites") {
@@ -1408,18 +1392,10 @@ if (currentScreen === "home") {
             </>
           )}
         </div>
+       )
+     }
 
-        {/* System Navigation Overlay */}
-        {isSystemNavVisible && (
-          <div className="fixed inset-x-0 bottom-0 h-16 bg-black bg-opacity-50 z-[9999] pointer-events-none">
-            {/* This represents the system navigation area */}
-          </div>
-        )}
-      </div>
-    )
-  }
-
-  // Category Screen
+// Category Screen
   if (currentScreen === "category") {
     const maps = getFilteredMaps()
     const displayTitle = showFavorites ? "Favorites" : currentCategory
@@ -1601,40 +1577,31 @@ if (currentScreen === "home") {
           )}
         </div>
 
-        {/* Bottom Bar - now scrollable with content */}
-        <div className="px-4 pb-4" style={{ paddingBottom: isSystemNavVisible ? '4rem' : '1rem' }}>
-          <div className="bg-white/95 backdrop-blur-md border border-slate-200 rounded-lg shadow-sm flex items-center justify-around h-14">
-            <button
-              onClick={() => {
-                setActiveTab("search")
-                setSearchFromContext(currentCategory)
-                setSearchFromViewMode(viewMode)
-                setCurrentScreen("search")
-              }}
-              className={`flex flex-col items-center ${activeTab === "search" ? "text-indigo-600" : "text-slate-600"}`}>
-              <Search className="h-5 w-5" />
-              <span className="text-xs">Search</span>
-            </button>
-            <button
-              onClick={() => {
-                setActiveTab("favorites")
-                setFavoriteFromContext(currentCategory)
-                setFavoriteFromViewMode(viewMode)
-                setCurrentScreen("favorites")
-              }}
-              className={`flex flex-col items-center ${activeTab === "favorites" ? "text-indigo-600" : "text-slate-600"}`}>
-              <Star className="h-5 w-5" />
-              <span className="text-xs">Favorites</span>
-            </button>
-          </div>
+        {/* Bottom Bar - scrollable with content, full width */}
+        <div className="bg-stone-900 flex items-center justify-around h-14">
+          <button
+            onClick={() => {
+              setActiveTab("search")
+              setSearchFromContext(currentCategory)
+              setSearchFromViewMode(viewMode)
+              setCurrentScreen("search")
+            }}
+            className={`flex flex-col items-center ${activeTab === "search" ? "text-white" : "text-stone-400"}`}>
+            <Search className="h-5 w-5" />
+            <span className="text-xs">Search</span>
+          </button>
+          <button
+            onClick={() => {
+              setActiveTab("favorites")
+              setFavoriteFromContext(currentCategory)
+              setFavoriteFromViewMode(viewMode)
+              setCurrentScreen("favorites")
+            }}
+            className={`flex flex-col items-center ${activeTab === "favorites" ? "text-white" : "text-stone-400"}`}>
+            <Star className="h-5 w-5" />
+            <span className="text-xs">Favorites</span>
+          </button>
         </div>
-
-        {/* System Navigation Overlay - overlays bottom bar when visible */}
-        {isSystemNavVisible && (
-          <div className="fixed inset-x-0 bottom-0 h-16 bg-black bg-opacity-50 z-[9999] pointer-events-none">
-            {/* This represents the system navigation area */}
-          </div>
-        )}
       </div>
     )
   }
