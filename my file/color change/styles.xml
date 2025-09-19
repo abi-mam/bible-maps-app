@@ -3,9 +3,9 @@
 
     <!-- Base application theme -->
     <style name="AppTheme" parent="Theme.Material3.DayNight.NoActionBar">
-        <!-- Apply Bible Maps green to system bars -->
-        <item name="android:statusBarColor">@color/colorBibleMapsDark</item>
-        <item name="android:navigationBarColor">@color/colorBibleMapsDark</item>
+        <!-- Optional: customize system bars -->
+        <item name="android:statusBarColor">?attr/colorSurfaceVariant</item>
+        <item name="android:navigationBarColor">?attr/colorSurface</item>
     </style>
 
     <!-- NoActionBar theme -->
