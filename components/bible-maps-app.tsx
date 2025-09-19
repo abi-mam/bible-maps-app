@@ -957,8 +957,7 @@ if (currentScreen === "home") {
             <div className="mt-4 h-0.5 w-16 bg-gradient-to-r from-stone-400 to-stone-500 rounded-full"></div>
           </div>
         </>
-      )}
-    )
+     )
   }
 
   // Search Screen
