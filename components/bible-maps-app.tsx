@@ -1073,7 +1073,7 @@ if (currentScreen === "home") {
       )}
 
       {/* Bottom Bar - Covers system navigation area on home screen only */}
-      <div className="fixed bottom-0 left-0 right-0 h-14" style={{ backgroundColor: '#f0f1f2' }}></div>
+      <div className="fixed bottom-0 left-0 right-0 h-14 shadow-sm" style={{ backgroundColor: '#f0f1f2' }}></div>
     </div>
   )
 }
@@ -1697,7 +1697,7 @@ if (currentScreen === "category") {
       </div>
 
       {/* Bottom Bar - updated layout */}
-      <div className="flex justify-between items-center h-14 px-4" style={{ backgroundColor: '#f0f1f2' }}>
+      <div className="flex justify-between items-center h-14 px-8" style={{ backgroundColor: '#f0f1f2' }}>
 
         {/* Search Button - Left Edge */}
         <button
