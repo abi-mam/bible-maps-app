@@ -1073,7 +1073,7 @@ if (currentScreen === "home") {
       )}
 
       {/* Bottom Bar - Covers system navigation area on home screen only */}
-      <div className="fixed bottom-0 left-0 right-0 h-14 shadow-sm" style={{ backgroundColor: '#f0f1f2' }}></div>
+      <div className="fixed bottom-0 left-0 right-0 h-14 shadow-sm border-t border-stone-200" style={{ backgroundColor: '#f0f1f2' }}></div>
     </div>
   )
 }
@@ -1095,7 +1095,7 @@ if (currentScreen === "search") {
       {showTitlePopup && <TitlePopup title={popupTitle} onClose={() => setShowTitlePopup(false)} />}
 
       {/* Header */}
-      <div className="bg-green-100 px-4 py-4">
+      <<div className="bg-green-100 px-4 py-4 shadow-sm border-b border-green-200">
         {/* Row 1: Category icon + Title */}
         <div className="flex items-center mb-4">
           <button 
@@ -1177,7 +1177,7 @@ if (currentScreen === "search") {
         ) : (
           <>
             {viewMode === "grid" && (
-              <div className="grid grid-cols-2 gap-4">
+             <div className="grid grid-cols-2 gap-4 p-4 bg-white rounded-lg shadow-sm border border-gray-200">
                 {searchResults.map((map, index) => (
                   <div
                     key={map.id}
@@ -1212,7 +1212,7 @@ if (currentScreen === "search") {
             )}
 
             {viewMode === "smallList" && (
-              <div className="bg-white rounded-lg shadow-sm">
+              <div className="bg-white rounded-lg shadow-sm border border-gray-200">
                 {searchResults.map((map, index) => (
                   <div
                     key={map.id}
@@ -1247,7 +1247,7 @@ if (currentScreen === "search") {
             {viewMode === "largeList" && (
               <div className="space-y-6">
                 {/* Map Title List */}
-                <div className="bg-white rounded-lg shadow-sm p-4">
+               <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-4">
                   <div className="space-y-2">
                     {searchResults.map((map, index) => (
                       <div key={`title-${map.id}`} className="flex">
@@ -1260,7 +1260,7 @@ if (currentScreen === "search") {
                 </div>
 
                 {/* Large Thumbnails */}
-                <div className="bg-white rounded-lg shadow-sm p-4">
+                <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-4">
                   {searchResults.map((map, index) => (
                     <div key={map.id} className={index > 0 ? "mt-4" : ""}>
                       <div
@@ -1317,7 +1317,7 @@ if (currentScreen === "favorites") {
       {showTitlePopup && <TitlePopup title={popupTitle} onClose={() => setShowTitlePopup(false)} />}
 
       {/* Header */}
-      <div className="bg-gray-100 px-4 py-4">
+      <div className="bg-gray-100 px-4 py-4 shadow-sm border-b border-gray-200">
         {/* Row 1: Category icon + Title */}
         <div className="flex items-center mb-4">
           <button 
@@ -1389,7 +1389,7 @@ if (currentScreen === "favorites") {
         ) : (
           <>
             {viewMode === "grid" && (
-              <div className="grid grid-cols-2 gap-4">
+              <div className="grid grid-cols-2 gap-4 p-4 bg-white rounded-lg shadow-sm border border-gray-200">
                 {favoritesList.map((map, index) => (
                   <div
                     key={map.id}
@@ -1422,7 +1422,7 @@ if (currentScreen === "favorites") {
             )}
 
             {viewMode === "smallList" && (
-              <div className="bg-white rounded-lg shadow-sm">
+             <div className="bg-white rounded-lg shadow-sm border border-gray-200">
                 {favoritesList.map((map, index) => (
                   <div
                     key={map.id}
@@ -1455,7 +1455,7 @@ if (currentScreen === "favorites") {
             {viewMode === "largeList" && (
               <div className="space-y-6">
                 {/* Map Title List */}
-                <div className="bg-white rounded-lg shadow-sm p-4">
+                <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-4">
                   <div className="space-y-2">
                     {favoritesList.map((map, index) => (
                       <div key={`title-${map.id}`} className="flex">
@@ -1468,7 +1468,7 @@ if (currentScreen === "favorites") {
                 </div>
 
                 {/* Large Thumbnails */}
-                <div className="bg-white rounded-lg shadow-sm p-4">
+                <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-4">
                   {favoritesList.map((map, index) => (
                     <div key={map.id} className={index > 0 ? "mt-4" : ""}>
                       <div
@@ -1525,7 +1525,7 @@ if (currentScreen === "category") {
       {showTitlePopup && <TitlePopup title={popupTitle} onClose={() => setShowTitlePopup(false)} />}
 
       {/* Header */}
-      <div className="bg-gray-100 px-4 py-4 flex items-center justify-between">
+      <div className="bg-gray-100 px-4 py-4 flex items-center justify-between shadow-sm border-b border-gray-200">
         <div className="flex items-center">
           <button onClick={() => setCurrentScreen("home")} className="mr-3">
             <LayeredSquaresIcon className="w-6 h-6 text-blue-600" />
@@ -1558,7 +1558,7 @@ if (currentScreen === "category") {
       {/* Content */}
       <div className="px-4 py-4">
         {viewMode === "grid" && (
-          <div className="grid grid-cols-2 gap-4">
+          <div className="grid grid-cols-2 gap-4 p-4 bg-white rounded-lg shadow-sm border border-gray-200 mx-4">
             {maps.map((map) => {
               const isActiveMap = activeMap && map.id === activeMap.id
               const shouldHighlight = highlightActiveMap && isActiveMap
@@ -1603,7 +1603,7 @@ if (currentScreen === "category") {
         )}
 
         {viewMode === "smallList" && (
-          <div className="bg-white rounded-lg shadow-sm">
+          <div className="bg-white rounded-lg shadow-sm border border-gray-200">
             {maps.map((map) => {
               const isActiveMap = activeMap && map.id === activeMap.id
               const shouldHighlight = highlightActiveMap && isActiveMap
@@ -1648,7 +1648,7 @@ if (currentScreen === "category") {
         {viewMode === "largeList" && (
           <div className="space-y-6">
             {/* Map Title List */}
-            <div className="bg-white rounded-lg shadow-sm p-4">
+            <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-4">>
               <div className="space-y-2">
                 {maps.map((map, index) => (
                   <div key={`title-${map.id}`} className="flex">
@@ -1660,7 +1660,7 @@ if (currentScreen === "category") {
             </div>
 
             {/* Large Thumbnails - Long Tile Container */}
-            <div className="bg-white rounded-lg shadow-sm p-4">
+           <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-4">
               {maps.map((map, index) => {
                 const isActiveMap = activeMap && map.id === activeMap.id
                 const shouldHighlight = highlightActiveMap && isActiveMap
@@ -1711,9 +1711,10 @@ if (currentScreen === "category") {
         )}
       </div>
 
-      {/* Bottom Bar - icons 9px from edges */}
-      <div className="flex justify-between items-center h-14" style={{ backgroundColor: '#f0f1f2' }}>
-        {/* Search Button */}
+      {/* Bottom Bar - updated layout */}
+      <div className="flex justify-between items-center h-14 px-2 shadow-sm border-t border-gray-200" style={{ backgroundColor: '#f0f1f2' }}>
+
+        {/* Search Button - Left Edge */}
         <button
           onClick={() => {
             setActiveTab("search")
@@ -1721,15 +1722,15 @@ if (currentScreen === "category") {
             setSearchFromViewMode(viewMode)
             setCurrentScreen("search")
           }}
-          className="flex flex-col items-center relative"
+          className="flex flex-col items-center ml-2"
         >
-          <Search className="h-4 w-4 absolute left-[9px]" />
+          <Search className="h-4.5 w-4.5" />
           <span className={`text-xs mt-1 ${activeTab === "search" ? "text-indigo-600" : "text-gray-600"}`}>
             Search
           </span>
         </button>
 
-        {/* Favorites Button */}
+        {/* Favorites Button - Right Edge */}
         <button
           onClick={() => {
             setActiveTab("favorites")
@@ -1737,13 +1738,14 @@ if (currentScreen === "category") {
             setFavoriteFromViewMode(viewMode)
             setCurrentScreen("favorites")
           }}
-          className="flex flex-col items-center relative"
+          className="flex flex-col items-center mr-2"
         >
-          <Star className="h-4 w-4 absolute right-[9px]" />
+          <Star className="h-4.5 w-4.5" />
           <span className={`text-xs mt-1 ${activeTab === "favorites" ? "text-indigo-600" : "text-gray-600"}`}>
             Favorites
           </span>
         </button>
+
       </div>
     </div>
   )
