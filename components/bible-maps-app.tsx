@@ -1,5 +1,7 @@
 "use client"
 
+import { App } from '@capacitor/app';
+import { StatusBar } from '@capacitor/status-bar';
 import { TransformWrapper, TransformComponent } from "react-zoom-pan-pinch";
 import React, { useState, useEffect, useRef } from "react"
 import { Search, Star, Grid3X3, List, ChevronLeft, ChevronRight, ArrowLeft, Home } from "lucide-react"
@@ -668,6 +670,7 @@ const BibleMapsApp = () => {
   const [highlightActiveMap, setHighlightActiveMap] = useState(false)
   const [showControls, setShowControls] = useState(false);
   const [isAtFitToPage, setIsAtFitToPage] = useState(true);
+  const [mapViewerTheme, setMapViewerTheme] = useState("light")
 
   const handleLongPress = (title) => {
     setPopupTitle(title)
@@ -701,6 +704,103 @@ const BibleMapsApp = () => {
   }
 }, [showControls, currentScreen])
    
+  const BibleMapsApp = () => {
+  // ... all your state variables ...
+
+  // ... existing useEffect hooks ...
+
+  // Handle controls timeout  
+  useEffect(() => {
+    if (showControls && currentScreen === "mapViewer") {
+      const timer = setTimeout(() => setShowControls(false), 4000)
+      return () => clearTimeout(timer)
+    }
+  }, [showControls, currentScreen])
+
+  // System's back button handler:
+  useEffect(() => {
+    const handleBackButton = () => {
+      if (currentScreen === "home") {
+        // Exit the app when on home screen
+        // For Capacitor: App.exitApp()
+        // For web testing: do nothing (let browser handle it)
+        return
+      } else if (currentScreen === "mapViewer") {
+        setHighlightActiveMap(true)
+        setCurrentScreen("category")
+        setTimeout(() => setHighlightActiveMap(false), 2000)
+      } else if (currentScreen === "category") {
+        setCurrentScreen("home")
+        setActiveTab("view")
+      } else if (currentScreen === "search") {
+        if (searchFromContext && searchFromContext !== "home") {
+          setCurrentScreen("category")
+          setViewMode(searchFromViewMode)
+        } else {
+          setCurrentScreen("home")
+        }
+        setSearchFromContext(null)
+        setActiveTab("view")
+      } else if (currentScreen === "favorites") {
+        if (favoriteFromContext && favoriteFromContext !== "home") {
+          setCurrentScreen("category")
+          setViewMode(favoriteFromViewMode)
+        } else {
+          setCurrentScreen("home")
+        }
+        setFavoriteFromContext(null)
+        setActiveTab("view")
+      }
+    }
+
+    const handlePopState = (event) => {
+      if (currentScreen === "home") {
+        return
+      }
+      event.preventDefault()
+      window.history.pushState(null, null, window.location.pathname)
+      handleBackButton()
+    }
+    
+    window.history.pushState(null, null, window.location.pathname)
+    window.addEventListener('popstate', handlePopState)
+    return () => window.removeEventListener('popstate', handlePopState)
+  }, [currentScreen, searchFromContext, favoriteFromContext, searchFromViewMode, favoriteFromViewMode])
+
+  
+  // Make status bar transparent and request fullscreen when entering map viewer
+  useEffect(() => {
+    if (currentScreen === "mapViewer") {
+      StatusBar.setOverlaysWebView({ overlay: true });
+      StatusBar.setBackgroundColor({ color: '#00000000' }); // Transparent
+      StatusBar.setStyle({ style: 'DARK' }); // Adjust based on your map content
+      
+      // Request fullscreen for immersive experience
+      if (document.documentElement.requestFullscreen) {
+        document.documentElement.requestFullscreen().catch(() => {
+          // Fullscreen not supported or denied
+        });
+      }
+    }
+    
+    return () => {
+      // Always restore normal status bar when leaving map viewer
+      StatusBar.setOverlaysWebView({ overlay: false });
+      StatusBar.setBackgroundColor({ color: '#4a7c59' }); // Your app's green
+      StatusBar.setStyle({ style: 'LIGHT' });
+      
+      // Exit fullscreen
+      if (document.exitFullscreen) {
+        document.exitFullscreen().catch(() => {
+          // Already exited or not supported
+        });
+      }
+    }
+  }, [currentScreen])
+  
+
+  // ... rest of your component code (toggleFavorite, openMapViewer, etc.) ...
+  
   const toggleFavorite = (mapId) => {
     const newFavorites = new Set(favorites)
     if (newFavorites.has(mapId)) {
@@ -1630,7 +1730,7 @@ if (currentScreen === "category") {
 // Map Viewer
 if (currentScreen === "mapViewer" && activeMap) {
   return (
-    <div className="fixed inset-0 bg-white">
+    <div className={`fixed inset-0 ${mapViewerTheme === "light" ? "bg-slate-50" : "bg-black"}`}>
       <TransformWrapper
         initialScale={1}
         minScale={0.5}
@@ -1682,25 +1782,60 @@ if (currentScreen === "mapViewer" && activeMap) {
                     setCurrentScreen("category")
                     setTimeout(() => setHighlightActiveMap(false), 2000)
                   }}
-                  className="p-1.5 bg-white/90 backdrop-blur-sm rounded-lg shadow-lg"
+                  className={`p-1.5 backdrop-blur-sm rounded-lg shadow-lg ${
+                    mapViewerTheme === "light" 
+                      ? "bg-white/90 text-gray-800 hover:bg-white" 
+                      : "bg-black/70 text-white hover:bg-black/80"
+                  }`}
                 >
                   <ArrowLeft className="w-5 h-5" />
                 </button>
                 <div 
                   onClick={() => handleLongPress(activeMap.title)}
-                  className="text-sm bg-white/90 backdrop-blur-sm px-3 py-1.5 rounded-lg shadow-lg cursor-pointer"
+                  className={`text-sm backdrop-blur-sm px-3 py-1.5 rounded-lg shadow-lg cursor-pointer ${
+                    mapViewerTheme === "light" 
+                      ? "bg-white/90 text-gray-800 hover:bg-white" 
+                      : "bg-black/70 text-white hover:bg-black/80"
+                  }`}
                 >
                   <p className="truncate font-medium">{activeMap.title}</p>
                 </div>
               </div>
 
-              {/* Top Right - Favorite */}
-              <button
-                onClick={() => toggleFavorite(activeMap.id)}
-                className="absolute top-4 right-4 p-1.5 bg-white/90 backdrop-blur-sm rounded-lg shadow-lg pointer-events-auto"
-              >
-                <Star className={`w-5 h-5 ${favorites.has(activeMap.id) ? "text-yellow-500 fill-current" : "text-gray-600"}`} />
-              </button>
+              {/* Top Right Controls */}
+              <div className="absolute top-4 right-4 flex items-center gap-3 pointer-events-auto">
+                {/* Theme Toggle */}
+                <button
+                  onClick={() => setMapViewerTheme(mapViewerTheme === "light" ? "dark" : "light")}
+                  className={`p-1.5 backdrop-blur-sm rounded-lg shadow-lg ${
+                    mapViewerTheme === "light" 
+                      ? "bg-white/90 text-gray-800 hover:bg-white" 
+                      : "bg-black/70 text-white hover:bg-black/80"
+                  }`}
+                >
+                  {mapViewerTheme === "light" ? (
+                    <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                      <path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z" />
+                    </svg>
+                  ) : (
+                    <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                      <path fillRule="evenodd" d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.706.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 6.464A1 1 0 106.465 5.05l-.708-.707a1 1 0 00-1.414 1.414l.707.707zm1.414 8.486l-.707.707a1 1 0 01-1.414-1.414l.707-.707a1 1 0 011.414 1.414zM4 11a1 1 0 100-2H3a1 1 0 000 2h1z" clipRule="evenodd" />
+                    </svg>
+                  )}
+                </button>
+
+                {/* Favorite Button */}
+                <button
+                  onClick={() => toggleFavorite(activeMap.id)}
+                  className={`p-1.5 backdrop-blur-sm rounded-lg shadow-lg ${
+                    mapViewerTheme === "light" 
+                      ? "bg-white/90 hover:bg-white" 
+                      : "bg-black/70 hover:bg-black/80"
+                  }`}
+                >
+                  <Star className={`w-5 h-5 ${favorites.has(activeMap.id) ? "text-yellow-500 fill-current" : mapViewerTheme === "light" ? "text-gray-600" : "text-white"}`} />
+                </button>
+              </div>
 
              {/* Navigation Arrows */}
               {currentMapIndex > 0 && (
@@ -1711,9 +1846,13 @@ if (currentScreen === "mapViewer" && activeMap) {
                     setActiveMap(mockMapData[currentCategory].maps[newIndex])
                     setShowControls(true)
                   }}
-                  className="absolute left-4 top-1/2 transform -translate-y-1/2 p-1.5 bg-white/90 backdrop-blur-sm rounded-lg shadow-lg pointer-events-auto"
+                  className={`absolute left-4 top-1/2 transform -translate-y-1/2 p-1.5 backdrop-blur-sm rounded-lg shadow-lg pointer-events-auto ${
+                    mapViewerTheme === "light" 
+                      ? "bg-white/90 text-gray-800 hover:bg-white" 
+                      : "bg-black/70 text-white hover:bg-black/80"
+                  }`}
                 >
-                  <ChevronLeft className="w-6 h-6 text-gray-800" />
+                  <ChevronLeft className="w-6 h-6" />
                 </button>
               )}
 
@@ -1725,18 +1864,26 @@ if (currentScreen === "mapViewer" && activeMap) {
                     setActiveMap(mockMapData[currentCategory].maps[newIndex])
                     setShowControls(true)
                   }}
-                  className="absolute right-4 top-1/2 transform -translate-y-1/2 p-1.5 bg-white/90 backdrop-blur-sm rounded-lg shadow-lg pointer-events-auto"
+                  className={`absolute right-4 top-1/2 transform -translate-y-1/2 p-1.5 backdrop-blur-sm rounded-lg shadow-lg pointer-events-auto ${
+                    mapViewerTheme === "light" 
+                      ? "bg-white/90 text-gray-800 hover:bg-white" 
+                      : "bg-black/70 text-white hover:bg-black/80"
+                  }`}
                 >
-                  <ChevronRight className="w-6 h-6 text-gray-800" />
+                  <ChevronRight className="w-6 h-6" />
                 </button>
               )}
 
               {/* Home Button */}
               <button
                 onClick={() => setCurrentScreen("home")}
-                className="absolute bottom-6 left-1/2 transform -translate-x-1/2 p-2 bg-white/90 backdrop-blur-sm rounded-lg shadow-lg pointer-events-auto"
+                className={`absolute bottom-6 left-1/2 transform -translate-x-1/2 p-2 backdrop-blur-sm rounded-lg shadow-lg pointer-events-auto ${
+                  mapViewerTheme === "light" 
+                    ? "bg-white/90 text-gray-800 hover:bg-white" 
+                    : "bg-black/70 text-white hover:bg-black/80"
+                }`}
               >
-                <Home className="w-5 h-5 text-gray-800" />
+                <Home className="w-5 h-5" />
               </button>
             </div>
           </>
@@ -1745,8 +1892,3 @@ if (currentScreen === "mapViewer" && activeMap) {
     </div>
   )
 }
-
-  return null
-}
-
-export default BibleMapsApp
