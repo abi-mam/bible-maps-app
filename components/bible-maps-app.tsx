@@ -1559,7 +1559,7 @@ if (currentScreen === "category") {
       <div className="px-4 py-4">       
         {viewMode === "grid" && (
           <div className="grid grid-cols-2 gap-4">
-            {maps.map((map, index) => {
+            {maps.map((map) => {
               const isActiveMap = activeMap && map.id === activeMap.id
               const shouldHighlight = highlightActiveMap && isActiveMap
               return (
@@ -1599,7 +1599,7 @@ if (currentScreen === "category") {
 
         {viewMode === "smallList" && (
           <div className="bg-white rounded-lg shadow-sm">
-            {maps.map((map, index) => {
+            {maps.map((map) => {
               const isActiveMap = activeMap && map.id === activeMap.id
               const shouldHighlight = highlightActiveMap && isActiveMap
               return (
@@ -1696,8 +1696,10 @@ if (currentScreen === "category") {
         )}
       </div>
 
-      {/* Bottom Bar - seamless with system navigation, aligned with thumbnail edges */}
+      {/* Bottom Bar - updated layout */}
       <div className="flex justify-between items-center h-14 px-4" style={{ backgroundColor: '#f0f1f2' }}>
+
+        {/* Search Button - Left Edge */}
         <button
           onClick={() => {
             setActiveTab("search")
@@ -1705,10 +1707,15 @@ if (currentScreen === "category") {
             setSearchFromViewMode(viewMode)
             setCurrentScreen("search")
           }}
-          className={`flex flex-col items-start ${activeTab === "search" ? "text-indigo-600" : "text-gray-600"}`}>
+          className="flex flex-col items-center"
+        >
           <Search className="h-5 w-5" />
-          <span className="text-xs">Search</span>
+          <span className={`text-xs mt-1 ${activeTab === "search" ? "text-indigo-600" : "text-gray-600"}`}>
+            Search
+          </span>
         </button>
+
+        {/* Favorites Button - Right Edge */}
         <button
           onClick={() => {
             setActiveTab("favorites")
@@ -1716,10 +1723,14 @@ if (currentScreen === "category") {
             setFavoriteFromViewMode(viewMode)
             setCurrentScreen("favorites")
           }}
-          className={`flex flex-col items-end ${activeTab === "favorites" ? "text-indigo-600" : "text-gray-600"}`}>
+          className="flex flex-col items-center"
+        >
           <Star className="h-5 w-5" />
-          <span className="text-xs">Favorites</span>
+          <span className={`text-xs mt-1 ${activeTab === "favorites" ? "text-indigo-600" : "text-gray-600"}`}>
+            Favorites
+          </span>
         </button>
+
       </div>
     </div>
   )
