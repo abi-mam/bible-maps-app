@@ -1095,7 +1095,7 @@ if (currentScreen === "search") {
       {showTitlePopup && <TitlePopup title={popupTitle} onClose={() => setShowTitlePopup(false)} />}
 
       {/* Header */}
-      <<div className="bg-green-100 px-4 py-4 shadow-sm border-b border-green-200">
+      <div className="bg-green-100 px-4 py-4 shadow-sm border-b border-green-200">
         {/* Row 1: Category icon + Title */}
         <div className="flex items-center mb-4">
           <button 
@@ -1648,7 +1648,7 @@ if (currentScreen === "category") {
         {viewMode === "largeList" && (
           <div className="space-y-6">
             {/* Map Title List */}
-            <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-4">>
+            <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-4">
               <div className="space-y-2">
                 {maps.map((map, index) => (
                   <div key={`title-${map.id}`} className="flex">
