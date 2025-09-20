@@ -1556,7 +1556,7 @@ if (currentScreen === "category") {
       </div>
 
       {/* Content */}
-      <div className="px-4 py-4">       
+      <div className="px-4 py-4">
         {viewMode === "grid" && (
           <div className="grid grid-cols-2 gap-4">
             {maps.map((map) => {
@@ -1565,9 +1565,14 @@ if (currentScreen === "category") {
               return (
                 <div
                   key={map.id}
-                  onClick={() => openMapViewer(map.category || currentCategory, mockMapData[map.category || currentCategory].maps.findIndex(m => m.id === map.id))}
+                  onClick={() =>
+                    openMapViewer(
+                      map.category || currentCategory,
+                      mockMapData[map.category || currentCategory].maps.findIndex((m) => m.id === map.id)
+                    )
+                  }
                   className={`bg-white rounded-lg shadow-sm overflow-hidden cursor-pointer hover:shadow-md transition-all duration-300 ${
-                    shouldHighlight ? 'ring-4 ring-blue-500 ring-opacity-75 shadow-lg scale-105' : ''
+                    shouldHighlight ? "ring-4 ring-blue-500 ring-opacity-75 shadow-lg scale-105" : ""
                   }`}
                 >
                   <div className="relative">
@@ -1605,9 +1610,14 @@ if (currentScreen === "category") {
               return (
                 <div
                   key={map.id}
-                  onClick={() => openMapViewer(map.category || currentCategory, mockMapData[map.category || currentCategory].maps.findIndex(m => m.id === map.id))}
+                  onClick={() =>
+                    openMapViewer(
+                      map.category || currentCategory,
+                      mockMapData[map.category || currentCategory].maps.findIndex((m) => m.id === map.id)
+                    )
+                  }
                   className={`flex items-center p-4 border-b border-gray-100 last:border-b-0 cursor-pointer hover:bg-gray-50 transition-all duration-300 ${
-                    shouldHighlight ? 'bg-blue-50 ring-2 ring-blue-500 ring-inset' : ''
+                    shouldHighlight ? "bg-blue-50 ring-2 ring-blue-500 ring-inset" : ""
                   }`}
                 >
                   <img
@@ -1657,9 +1667,14 @@ if (currentScreen === "category") {
                 return (
                   <div key={map.id} className={index > 0 ? "mt-4" : ""}>
                     <div
-                      onClick={() => openMapViewer(map.category || currentCategory, mockMapData[map.category || currentCategory].maps.findIndex(m => m.id === map.id))}
+                      onClick={() =>
+                        openMapViewer(
+                          map.category || currentCategory,
+                          mockMapData[map.category || currentCategory].maps.findIndex((m) => m.id === map.id)
+                        )
+                      }
                       className={`bg-white rounded-lg shadow-sm overflow-hidden cursor-pointer hover:opacity-90 transition-all duration-300 ${
-                        shouldHighlight ? 'ring-4 ring-blue-500 ring-opacity-75 shadow-lg' : ''
+                        shouldHighlight ? "ring-4 ring-blue-500 ring-opacity-75 shadow-lg" : ""
                       }`}
                     >
                       <div className="relative">
@@ -1696,10 +1711,9 @@ if (currentScreen === "category") {
         )}
       </div>
 
-      {/* Bottom Bar - updated layout */}
-      <div className="flex justify-between items-center h-14 px-8" style={{ backgroundColor: '#f0f1f2' }}>
-
-        {/* Search Button - Left Edge */}
+      {/* Bottom Bar - icons 9px from edges */}
+      <div className="flex justify-between items-center h-14" style={{ backgroundColor: '#f0f1f2' }}>
+        {/* Search Button */}
         <button
           onClick={() => {
             setActiveTab("search")
@@ -1707,15 +1721,15 @@ if (currentScreen === "category") {
             setSearchFromViewMode(viewMode)
             setCurrentScreen("search")
           }}
-          className="flex flex-col items-center"
+          className="flex flex-col items-center relative"
         >
-          <Search className="h-5 w-5" />
+          <Search className="h-4 w-4 absolute left-[9px]" />
           <span className={`text-xs mt-1 ${activeTab === "search" ? "text-indigo-600" : "text-gray-600"}`}>
             Search
           </span>
         </button>
 
-        {/* Favorites Button - Right Edge */}
+        {/* Favorites Button */}
         <button
           onClick={() => {
             setActiveTab("favorites")
@@ -1723,14 +1737,13 @@ if (currentScreen === "category") {
             setFavoriteFromViewMode(viewMode)
             setCurrentScreen("favorites")
           }}
-          className="flex flex-col items-center"
+          className="flex flex-col items-center relative"
         >
-          <Star className="h-5 w-5" />
+          <Star className="h-4 w-4 absolute right-[9px]" />
           <span className={`text-xs mt-1 ${activeTab === "favorites" ? "text-indigo-600" : "text-gray-600"}`}>
             Favorites
           </span>
         </button>
-
       </div>
     </div>
   )
