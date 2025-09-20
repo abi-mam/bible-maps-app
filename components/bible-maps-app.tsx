@@ -698,24 +698,11 @@ const BibleMapsApp = () => {
 
   // Handle controls timeout  
   useEffect(() => {
-  if (showControls && currentScreen === "mapViewer") {
-    const timer = setTimeout(() => setShowControls(false), 4000)
-    return () => clearTimeout(timer)
-  }
-}, [showControls, currentScreen])
-   
- 
-  // ... existing useEffect hooks ...
-
-  // Handle controls timeout  
-  useEffect(() => {
     if (showControls && currentScreen === "mapViewer") {
       const timer = setTimeout(() => setShowControls(false), 4000)
       return () => clearTimeout(timer)
     }
-  }, [showControls, currentScreen])
-
-  // System's back button handler:
+  }, [showControls, currentScreen])// System's back button handler:
   useEffect(() => {
     const handleBackButton = () => {
       if (currentScreen === "home") {
@@ -1723,7 +1710,7 @@ if (currentScreen === "category") {
             setCurrentScreen("search")
           }}
           className="flex flex-col items-center w-16"
-          style={{ marginLeft: '24px' }}
+          style={{ marginLeft: '32px' }}
         >
           <Search className="h-4 w-4" />
           <span className={`text-xs mt-1 ${activeTab === "search" ? "text-indigo-600" : "text-gray-400"}`}>
@@ -1743,7 +1730,7 @@ if (currentScreen === "category") {
             setCurrentScreen("favorites")
           }}
           className="flex flex-col items-center w-16"
-          style={{ marginRight: '24px' }}
+          style={{ marginRight: '32px' }}
         >
           <Star className="h-4 w-4" />
           <span className={`text-xs mt-1 ${activeTab === "favorites" ? "text-indigo-600" : "text-gray-400"}`}>
@@ -1811,7 +1798,7 @@ if (currentScreen === "mapViewer" && activeMap) {
                     setCurrentScreen("category")
                     setTimeout(() => setHighlightActiveMap(false), 2000)
                   }}
-                  className={`p-1.5 backdrop-blur-sm rounded-lg shadow-lg ${
+                  className={`p-1.5 backdrop-blur-sm rounded-lg shadow-lg w-fit ${
                     mapViewerTheme === "light" 
                       ? "bg-white/90 text-gray-800 hover:bg-white" 
                       : "bg-black/70 text-white hover:bg-black/80"
