@@ -1525,7 +1525,7 @@ if (currentScreen === "category") {
       {showTitlePopup && <TitlePopup title={popupTitle} onClose={() => setShowTitlePopup(false)} />}
 
       {/* Header */}
-      <div className="bg-gray-100 px-4 py-4 flex items-center justify-between shadow-sm border-b border-gray-200">
+      <div className="bg-gray-100 px-4 py-4 flex items-center justify-between">
         <div className="flex items-center">
           <button onClick={() => setCurrentScreen("home")} className="mr-3">
             <LayeredSquaresIcon className="w-6 h-6 text-blue-600" />
@@ -1711,10 +1711,10 @@ if (currentScreen === "category") {
         )}
       </div>
 
-      {/* Bottom Bar - updated layout */}
-      <div className="flex justify-between items-center h-14 px-2 shadow-sm border-t border-gray-200" style={{ backgroundColor: '#f0f1f2' }}>
+      {/* Bottom Bar */}
+      <div className="flex items-center h-14 shadow-sm border-t border-gray-200" style={{ backgroundColor: '#f0f1f2' }}>
 
-        {/* Search Button - Left Edge */}
+        {/* Search Button - Center aligned with thumbnail center (48px from left) */}
         <button
           onClick={() => {
             setActiveTab("search")
@@ -1722,7 +1722,8 @@ if (currentScreen === "category") {
             setSearchFromViewMode(viewMode)
             setCurrentScreen("search")
           }}
-          className="flex flex-col items-center ml-2"
+          className="flex flex-col items-center w-16"
+          style={{ marginLeft: '16px' }}
         >
           <Search className="h-4 w-4" />
           <span className={`text-xs mt-1 ${activeTab === "search" ? "text-indigo-600" : "text-gray-600"}`}>
@@ -1730,7 +1731,10 @@ if (currentScreen === "category") {
           </span>
         </button>
 
-        {/* Favorites Button - Right Edge */}
+        {/* Spacer */}
+        <div className="flex-1"></div>
+
+        {/* Favorites Button - Mirrored positioning from right edge */}
         <button
           onClick={() => {
             setActiveTab("favorites")
@@ -1738,7 +1742,8 @@ if (currentScreen === "category") {
             setFavoriteFromViewMode(viewMode)
             setCurrentScreen("favorites")
           }}
-          className="flex flex-col items-center mr-2"
+          className="flex flex-col items-center w-16"
+          style={{ marginRight: '16px' }}
         >
           <Star className="h-4 w-4" />
           <span className={`text-xs mt-1 ${activeTab === "favorites" ? "text-indigo-600" : "text-gray-600"}`}>
