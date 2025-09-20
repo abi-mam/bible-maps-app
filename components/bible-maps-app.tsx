@@ -1100,7 +1100,7 @@ if (currentScreen === "search") {
           </button>
           <div>
             <div className="flex items-center">
-              <Search className="w-4 h-4 text-blue-600 mr-1" />
+              <Search className="w-4 h-4 text-blue-400 mr-1" />
               <h2 className="text-lg font-bold text-black">Search Maps</h2>
             </div>
             <p className="text-sm text-green-700 opacity-75">{searchResults.length} Results</p>
@@ -1710,10 +1710,10 @@ if (currentScreen === "category") {
             setCurrentScreen("search")
           }}
           className="flex flex-col items-center w-16"
-          style={{ marginRight: '32px' }}
+          style={{ marginRight: '48px' }}
         >
           <Search className="h-4 w-4" />
-          <span className={`text-xs mt-1 ${activeTab === "search" ? "text-indigo-600" : "text-stone-600"}`}>
+          <span className={`text-xs mt-1 ${activeTab === "search" ? "text-indigo-600" : "text-stone-400"}`}>
             Search
           </span>
         </button>
@@ -1730,7 +1730,7 @@ if (currentScreen === "category") {
             setCurrentScreen("favorites")
           }}
           className="flex flex-col items-center w-16"
-          style={{ marginLeft: '32px' }}
+          style={{ marginLeft: '48px' }}
         >
           <Star className="h-4 w-4" />
           <span className={`text-xs mt-1 ${activeTab === "favorites" ? "text-indigo-600" : "text-stone-400"}`}>
@@ -1886,7 +1886,7 @@ if (currentScreen === "mapViewer" && activeMap) {
                       : "bg-black/70 text-white hover:bg-black/80"
                   }`}
                 >
-                  <ChevronRight className="w-6 h-6" />
+                  <ChevronRight className="w-4 h-4" />
                 </button>
               )}
 
