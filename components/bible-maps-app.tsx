@@ -1724,7 +1724,7 @@ if (currentScreen === "category") {
           }}
           className="flex flex-col items-center ml-2"
         >
-          <Search className="h-4.5 w-4.5" />
+          <Search className="h-4 w-4" />
           <span className={`text-xs mt-1 ${activeTab === "search" ? "text-indigo-600" : "text-gray-600"}`}>
             Search
           </span>
@@ -1740,7 +1740,7 @@ if (currentScreen === "category") {
           }}
           className="flex flex-col items-center mr-2"
         >
-          <Star className="h-4.5 w-4.5" />
+          <Star className="h-4 w-4" />
           <span className={`text-xs mt-1 ${activeTab === "favorites" ? "text-indigo-600" : "text-gray-600"}`}>
             Favorites
           </span>
