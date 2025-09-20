@@ -772,8 +772,8 @@ if (currentScreen === "home") {
       {/* Header */}
       <div className={`transition-all duration-300 ${isSearchingFromHome ? 'bg-stone-100' : 'bg-gradient-to-r from-slate-100 to-stone-100'} px-5 py-6 shadow-sm`}>
         <div className="flex items-center justify-center mb-6">
-          <div className="p-1.5 bg-white/80 rounded-lg mr-3 shadow-sm">
-            <SimpleBookIcon className="w-7 h-7 text-stone-700" />
+          <div className="p-2 bg-gradient-to-br from-stone-600 to-stone-700 rounded-lg mr-3 shadow-md">
+            <SimpleBookIcon className="w-6 h-6 brightness-0 invert opacity-95" />
           </div>
           <h1 className="text-xl font-semibold text-stone-800 tracking-tight">Bible Maps</h1>
         </div>
@@ -944,8 +944,8 @@ if (currentScreen === "home") {
           </div>
 
           {/* Footer Section */}
-          <div className="bg-gradient-to-r from-stone-700 to-stone-800 flex flex-col items-center justify-center px-6 py-10 shadow-lg">
-            <div className="flex items-center justify-center mb-4">
+          <div className="bg-gradient-to-r from-stone-700 to-stone-800 flex flex-col items-center justify-center px-6 py-12 shadow-lg">
+            <div className="flex items-center justify-center mb-6">
               <div className="p-2 bg-white/10 rounded-lg mr-3 shadow-sm">
                 <div className="w-6 h-6" style={{ filter: 'brightness(0) saturate(100%) invert(98%) sepia(4%) saturate(339%) hue-rotate(202deg) brightness(106%) contrast(96%)' }}>
                   <img src="/open-book-icon.png" alt="Open Book" className="w-full h-full" />
@@ -953,16 +953,29 @@ if (currentScreen === "home") {
               </div>
               <h2 className="text-lg font-semibold text-white">Bible Maps</h2>
             </div>
-            <p className="text-stone-300 text-center max-w-md leading-relaxed text-sm">
+            <p className="text-stone-300 text-center max-w-md leading-relaxed text-sm mb-6">
               Explore historical biblical maps and uncover the geography of ancient times
             </p>
-            <div className="mt-2 h-0.5 w-16 bg-gradient-to-r from-stone-400 to-stone-500 rounded-full"></div>
+            <div className="h-0.5 w-16 bg-gradient-to-r from-stone-400 to-stone-500 rounded-full mb-6"></div>
+
+            {/* Copyright */}
+            <div className="text-center border-t border-stone-600 pt-6 w-full max-w-sm">
+              <p className="text-stone-400 text-xs">
+                © 2025 Bible Maps. All rights reserved.
+              </p>
+              <p className="text-stone-500 text-xs mt-1">
+                Educational use for biblical geography study
+              </p>
+            </div>
           </div>
 
           {/* System Navigation Bar Color Pad - only visible portion */}
           <div className="h-6 w-full" style={{ backgroundColor: '#f0f1f2' }}></div>
         </>
       )}
+
+      {/* Bottom Bar - Covers system navigation area on home screen only */}
+      <div className="fixed bottom-0 left-0 right-0 h-14" style={{ backgroundColor: '#f0f1f2' }}></div>
     </div>
   )
 }
@@ -1586,7 +1599,7 @@ if (currentScreen === "category") {
       </div>
 
       {/* Bottom Bar - seamless with system navigation, aligned with thumbnail edges */}
-      <div className="flex items-center h-14 px-4" style={{ backgroundColor: '#f0f1f2' }}>
+      <div className="flex justify-between items-center h-14 px-4" style={{ backgroundColor: '#f0f1f2' }}>
         <button
           onClick={() => {
             setActiveTab("search")
@@ -1594,11 +1607,10 @@ if (currentScreen === "category") {
             setSearchFromViewMode(viewMode)
             setCurrentScreen("search")
           }}
-          className={`flex flex-col items-center ${activeTab === "search" ? "text-indigo-600" : "text-gray-600"}`}>
+          className={`flex flex-col items-start ${activeTab === "search" ? "text-indigo-600" : "text-gray-600"}`}>
           <Search className="h-5 w-5" />
           <span className="text-xs">Search</span>
         </button>
-        <div className="flex-1"></div>
         <button
           onClick={() => {
             setActiveTab("favorites")
@@ -1606,7 +1618,7 @@ if (currentScreen === "category") {
             setFavoriteFromViewMode(viewMode)
             setCurrentScreen("favorites")
           }}
-          className={`flex flex-col items-center ${activeTab === "favorites" ? "text-indigo-600" : "text-gray-600"}`}>
+          className={`flex flex-col items-end ${activeTab === "favorites" ? "text-indigo-600" : "text-gray-600"}`}>
           <Star className="h-5 w-5" />
           <span className="text-xs">Favorites</span>
         </button>

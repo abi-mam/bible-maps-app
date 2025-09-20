@@ -20,6 +20,7 @@
     <!-- Splash screen theme -->
     <style name="AppTheme.NoActionBarLaunch" parent="Theme.SplashScreen">
         <item name="android:background">@drawable/splash</item>
+        <item name="android:statusBarColor">@color/colorBibleMapsDark</item>
+        <item name="android:windowLightStatusBar">false</item>
     </style>
-
 </resources>
