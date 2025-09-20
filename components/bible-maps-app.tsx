@@ -1238,10 +1238,10 @@ if (currentScreen === "search") {
                   <div className="space-y-2">
                     {searchResults.map((map, index) => (
                       <div key={`title-${map.id}`} className="flex items-center whitespace-nowrap">
-                        <span className="text-sm text-gray-600 w-8 flex-shrink-0 text-right">{index + 1} :</span>
+                        <span className="text-sm text-gray-600 w-8 flex-shrink-0 text-right font-mono">{index + 1} :</span>
                         <span className="text-sm text-black truncate ml-2">{map.title}</span>
-                        <div className="flex-shrink-0 w-10"></div>
-                        <span className="text-xs text-gray-500 flex-shrink-0">{map.category}</span>
+                        <div className="flex-shrink-0 w-5"></div>
+                        <span className="text-xs text-gray-500 ml-auto flex-shrink-0">{map.category}</span>
                       </div>
                     ))}
                   </div>
@@ -1447,10 +1447,10 @@ if (currentScreen === "favorites") {
                   <div className="space-y-2">
                     {searchResults.map((map, index) => (
                       <div key={`title-${map.id}`} className="flex items-center whitespace-nowrap">
-                        <span className="text-sm text-gray-600 w-8 flex-shrink-0 text-right">{index + 1} :</span>
+                        <span className="text-sm text-gray-600 w-8 flex-shrink-0 text-right font-mono">{index + 1} :</span>
                         <span className="text-sm text-black truncate ml-2">{map.title}</span>
-                        <div className="flex-shrink-0 w-10"></div>
-                        <span className="text-xs text-gray-500 flex-shrink-0">{map.category}</span>
+                        <div className="flex-shrink-0 w-5"></div>
+                        <span className="text-xs text-gray-500 ml-auto flex-shrink-0">{map.category}</span>
                       </div>
                     ))}
                   </div>
@@ -1641,9 +1641,9 @@ if (currentScreen === "category") {
               <div className="space-y-2">
                 {searchResults.map((map, index) => (
                   <div key={`title-${map.id}`} className="flex items-center whitespace-nowrap">
-                    <span className="text-sm text-gray-600 w-8 flex-shrink-0 text-right">{index + 1} :</span>
+                    <span className="text-sm text-gray-600 w-8 flex-shrink-0 text-right font-mono">{index + 1} :</span>
                     <span className="text-sm text-black truncate ml-2">{map.title}</span>
-                    <div className="flex-shrink-0 w-10"></div>
+                    <div className="flex-shrink-0 w-10" aria-hidden="true">&nbsp;</div>
                   </div>
                 ))}
               </div>
@@ -1713,7 +1713,7 @@ if (currentScreen === "category") {
             setCurrentScreen("search")
           }}
           className="flex flex-col items-center w-16"
-          style={{ marginLeft: '40px' }}
+          style={{ marginRight: '40px' }}
         >
           <Search className="h-4 w-4 text-gray-600" />
           <span className={`text-xs mt-1 ${activeTab === "search" ? "text-indigo-600" : "text-gray-400"}`}>
@@ -1733,7 +1733,7 @@ if (currentScreen === "category") {
             setCurrentScreen("favorites")
           }}
           className="flex flex-col items-center w-16"
-          style={{ marginRight: '40px' }}
+          style={{ marginLeft: '40px' }}
         >
           <Star className="h-4 w-4 text-gray-600" />
           <span className={`text-xs mt-1 ${activeTab === "favorites" ? "text-indigo-600" : "text-gray-400"}`}>
