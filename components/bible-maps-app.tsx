@@ -901,7 +901,7 @@ if (currentScreen === "home") {
             }}
             className="p-2.5 bg-white border border-stone-200 rounded-lg hover:bg-stone-50 hover:shadow-md transition-all duration-200 shadow-sm"
           >
-            <Star className="w-5 h-5 text-stone-600" />
+            <Star className="w-4 h-4 text-stone-600" />
           </button>
         </div>
 
@@ -1164,7 +1164,7 @@ if (currentScreen === "search") {
         ) : (
           <>
             {viewMode === "grid" && (
-             <div className="grid grid-cols-2 gap-4 p-4 bg-white rounded-lg shadow-sm border border-gray-200">
+             <div className="grid grid-cols-2 gap-4 border border-gray-200 rounded-lg shadow-sm">
                 {searchResults.map((map, index) => (
                   <div
                     key={map.id}
@@ -1376,7 +1376,7 @@ if (currentScreen === "favorites") {
         ) : (
           <>
             {viewMode === "grid" && (
-              <div className="grid grid-cols-2 gap-4 p-4 bg-white rounded-lg shadow-sm border border-gray-200">
+              <div className="grid grid-cols-2 gap-4 border border-gray-200 rounded-lg shadow-sm">
                 {favoritesList.map((map, index) => (
                   <div
                     key={map.id}
@@ -1476,7 +1476,7 @@ if (currentScreen === "favorites") {
                             }}
                             className="absolute top-2 right-2"
                           >
-                            <Star className="w-4 h-4 text-yellow-500 fill-current" />
+                            <Star className="w-5 h-5 text-yellow-500 fill-current" />
                           </button>
                         </div>
                         <div className="p-3">
@@ -1545,7 +1545,7 @@ if (currentScreen === "category") {
       {/* Content */}
       <div className="px-4 py-4">
         {viewMode === "grid" && (
-          <div className="grid grid-cols-2 gap-4 p-4 bg-white rounded-lg shadow-sm border border-gray-200 mx-4">
+          <div className="grid grid-cols-2 gap-4 border border-gray-200 rounded-lg shadow-sm">
             {maps.map((map) => {
               const isActiveMap = activeMap && map.id === activeMap.id
               const shouldHighlight = highlightActiveMap && isActiveMap
@@ -1679,7 +1679,7 @@ if (currentScreen === "category") {
                           className="absolute top-2 right-2"
                         >
                           <Star
-                            className={`w-4 h-4 ${favorites.has(map.id) ? "text-yellow-500 fill-current" : "text-gray-400"}`}
+                            className={`w-5 h-5 ${favorites.has(map.id) ? "text-yellow-500 fill-current" : "text-gray-400"}`}
                           />
                         </button>
                       </div>
@@ -1710,10 +1710,10 @@ if (currentScreen === "category") {
             setCurrentScreen("search")
           }}
           className="flex flex-col items-center w-16"
-          style={{ marginLeft: '32px' }}
+          style={{ marginRight: '32px' }}
         >
           <Search className="h-4 w-4" />
-          <span className={`text-xs mt-1 ${activeTab === "search" ? "text-indigo-600" : "text-gray-400"}`}>
+          <span className={`text-xs mt-1 ${activeTab === "search" ? "text-indigo-600" : "text-stone-600"}`}>
             Search
           </span>
         </button>
@@ -1730,10 +1730,10 @@ if (currentScreen === "category") {
             setCurrentScreen("favorites")
           }}
           className="flex flex-col items-center w-16"
-          style={{ marginRight: '32px' }}
+          style={{ marginLeft: '32px' }}
         >
           <Star className="h-4 w-4" />
-          <span className={`text-xs mt-1 ${activeTab === "favorites" ? "text-indigo-600" : "text-gray-400"}`}>
+          <span className={`text-xs mt-1 ${activeTab === "favorites" ? "text-indigo-600" : "text-stone-400"}`}>
             Favorites
           </span>
         </button>
@@ -1798,17 +1798,17 @@ if (currentScreen === "mapViewer" && activeMap) {
                     setCurrentScreen("category")
                     setTimeout(() => setHighlightActiveMap(false), 2000)
                   }}
-                  className={`p-1.5 backdrop-blur-sm rounded-lg shadow-lg w-fit ${
+                  className={`p-1.5 backdrop-blur-sm rounded-lg w-fit ${
                     mapViewerTheme === "light" 
                       ? "bg-white/90 text-gray-800 hover:bg-white" 
                       : "bg-black/70 text-white hover:bg-black/80"
                   }`}
                 >
-                  <ArrowLeft className="w-5 h-5" />
+                  <ArrowLeft className="w-4 h-4" />
                 </button>
                 <div 
                   onClick={() => handleLongPress(activeMap.title)}
-                  className={`text-sm backdrop-blur-sm px-3 py-1.5 rounded-lg shadow-lg cursor-pointer ${
+                  className={`text-sm backdrop-blur-sm px-3 py-1.5 rounded-lg cursor-pointer ${
                     mapViewerTheme === "light" 
                       ? "bg-white/90 text-gray-800 hover:bg-white" 
                       : "bg-black/70 text-white hover:bg-black/80"
@@ -1830,7 +1830,7 @@ if (currentScreen === "mapViewer" && activeMap) {
                   }`}
                 >
                   {mapViewerTheme === "light" ? (
-                    <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                    <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
                       <path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z" />
                     </svg>
                   ) : (
@@ -1843,13 +1843,13 @@ if (currentScreen === "mapViewer" && activeMap) {
                 {/* Favorite Button */}
                 <button
                   onClick={() => toggleFavorite(activeMap.id)}
-                  className={`p-1.5 backdrop-blur-sm rounded-lg shadow-lg ${
+                  className={`p-1.5 backdrop-blur-sm rounded-lg ${
                     mapViewerTheme === "light" 
                       ? "bg-white/90 hover:bg-white" 
                       : "bg-black/70 hover:bg-black/80"
                   }`}
                 >
-                  <Star className={`w-5 h-5 ${favorites.has(activeMap.id) ? "text-yellow-500 fill-current" : mapViewerTheme === "light" ? "text-gray-600" : "text-white"}`} />
+                  <Star className={`w-4 h-4 ${favorites.has(activeMap.id) ? "text-yellow-500 fill-current" : mapViewerTheme === "light" ? "text-gray-600" : "text-white"}`} />
                 </button>
               </div>
 
@@ -1862,13 +1862,13 @@ if (currentScreen === "mapViewer" && activeMap) {
                     setActiveMap(mockMapData[currentCategory].maps[newIndex])
                     setShowControls(true)
                   }}
-                  className={`absolute left-4 top-1/2 transform -translate-y-1/2 p-1.5 backdrop-blur-sm rounded-lg shadow-lg pointer-events-auto ${
+                  className={`absolute left-4 top-1/2 transform -translate-y-1/2 p-1.5 backdrop-blur-sm rounded-lg pointer-events-auto ${
                     mapViewerTheme === "light" 
                       ? "bg-white/90 text-gray-800 hover:bg-white" 
                       : "bg-black/70 text-white hover:bg-black/80"
                   }`}
                 >
-                  <ChevronLeft className="w-6 h-6" />
+                  <ChevronLeft className="w-4 h-4" />
                 </button>
               )}
 
@@ -1880,7 +1880,7 @@ if (currentScreen === "mapViewer" && activeMap) {
                     setActiveMap(mockMapData[currentCategory].maps[newIndex])
                     setShowControls(true)
                   }}
-                  className={`absolute right-4 top-1/2 transform -translate-y-1/2 p-1.5 backdrop-blur-sm rounded-lg shadow-lg pointer-events-auto ${
+                  className={`absolute right-4 top-1/2 transform -translate-y-1/2 p-1.5 backdrop-blur-sm rounded-lg pointer-events-auto ${
                     mapViewerTheme === "light" 
                       ? "bg-white/90 text-gray-800 hover:bg-white" 
                       : "bg-black/70 text-white hover:bg-black/80"
@@ -1893,7 +1893,7 @@ if (currentScreen === "mapViewer" && activeMap) {
               {/* Home Button */}
               <button
                 onClick={() => setCurrentScreen("home")}
-                className={`absolute bottom-6 left-1/2 transform -translate-x-1/2 p-2 backdrop-blur-sm rounded-lg shadow-lg pointer-events-auto ${
+                className={`absolute bottom-6 left-1/2 transform -translate-x-1/2 p-2 backdrop-blur-sm rounded-lg pointer-events-auto ${
                   mapViewerTheme === "light" 
                     ? "bg-white/90 text-gray-800 hover:bg-white" 
                     : "bg-black/70 text-white hover:bg-black/80"
