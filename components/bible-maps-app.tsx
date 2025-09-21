@@ -1440,7 +1440,6 @@ if (currentScreen === "favorites") {
             )}
 
             {viewMode === "largeList" && (
-            {viewMode === "largeList" && (
               <div className="space-y-6">
                 {/* Map Title List */}
                 <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-4">
