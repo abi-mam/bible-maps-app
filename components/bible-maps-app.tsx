@@ -792,30 +792,6 @@ useEffect(() => {
   };
 }, []);
   
-useEffect(() => {
-  const setupMapViewerBars = () => {
-    if (!Capacitor.isNativePlatform()) return;
-
-    try {
-      if (currentScreen === "mapViewer") {
-        StatusBar.setOverlaysWebView({ overlay: true });
-        StatusBar.setBackgroundColor({ color: '#4a7c59' });
-        StatusBar.setStyle({
-          style: mapViewerTheme === "light" ? Style.Dark : Style.Light
-        });
-      } else {
-        StatusBar.setOverlaysWebView({ overlay: false });
-        StatusBar.setBackgroundColor({ color: '#4a7c59' });
-        StatusBar.setStyle({ style: Style.Light });
-      }
-    } catch (error) {
-      console.error('Bar configuration error:', error);
-    }
-  };
-
-  setupMapViewerBars();
-}, [currentScreen, mapViewerTheme]);
-
   // ... rest of your component code (toggleFavorite, openMapViewer, etc.) ...
   
   const toggleFavorite = (mapId) => {
@@ -851,18 +827,6 @@ useEffect(() => {
       return getAllMaps().filter((map) => favorites.has(map.id))
     }
     return currentCategory ? mockMapData[currentCategory].maps : []
-  }
-
-  // Splash Screen
-  if (currentScreen === "splash") {
-    return (
-      <div className="fixed inset-0 bg-gradient-to-br from-slate-50 to-slate-100 flex items-center justify-center">
-        <div className="flex flex-col items-center">
-          <img src="/bible-maps-icon.png" alt="Bible Maps" className="w-24 h-24 mb-4" />
-          <h1 className="text-2xl font-bold text-slate-800">Bible Maps</h1>
-        </div>
-      </div>
-    )
   }
 
 // Home Screen
