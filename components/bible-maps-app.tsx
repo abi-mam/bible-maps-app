@@ -671,7 +671,12 @@ const BibleMapsApp = () => {
   const [showControls, setShowControls] = useState(false);
   const [isAtFitToPage, setIsAtFitToPage] = useState(true);
   const [mapViewerTheme, setMapViewerTheme] = useState("light")
-
+  const currentScreenRef = useRef(currentScreen);
+  const searchFromContextRef = useRef(searchFromContext);
+  const favoriteFromContextRef = useRef(favoriteFromContext);
+  const searchFromViewModeRef = useRef(searchFromViewMode);
+  const favoriteFromViewModeRef = useRef(favoriteFromViewMode);
+  
   const handleLongPress = (title) => {
     setPopupTitle(title)
     setShowTitlePopup(true)
@@ -712,51 +717,78 @@ const BibleMapsApp = () => {
     }
   }, [showControls, currentScreen])
 
-  // System's back button handler for Android Capacitor
+ // Update refs when values change
   useEffect(() => {
-    let backButtonListener: any;
+    currentScreenRef.current = currentScreen;
+  }, [currentScreen]);
 
-    App.addListener('backButton', (event) => {
-      console.log('Back button pressed, current screen:', currentScreen);
+  useEffect(() => {
+    searchFromContextRef.current = searchFromContext;
+  }, [searchFromContext]);
 
-      if (currentScreen === "home") {
-        App.exitApp();
-      } else if (currentScreen === "mapViewer") {
-        setHighlightActiveMap(true);
-        setCurrentScreen("category");
-        setTimeout(() => setHighlightActiveMap(false), 2000);
-      } else if (currentScreen === "category") {
-        setCurrentScreen("home");
-        setActiveTab("view");
-      } else if (currentScreen === "search") {
-        if (searchFromContext && searchFromContext !== "home") {
-          setCurrentScreen("category");
-          setViewMode(searchFromViewMode);
-        } else {
-          setCurrentScreen("home");
-        }
-        setSearchFromContext(null);
-        setActiveTab("view");
-      } else if (currentScreen === "favorites") {
-        if (favoriteFromContext && favoriteFromContext !== "home") {
-          setCurrentScreen("category");
-          setViewMode(favoriteFromViewMode);
-        } else {
-          setCurrentScreen("home");
-        }
-        setFavoriteFromContext(null);
-        setActiveTab("view");
+  useEffect(() => {
+    favoriteFromContextRef.current = favoriteFromContext;
+  }, [favoriteFromContext]);
+
+  useEffect(() => {
+    searchFromViewModeRef.current = searchFromViewMode;
+  }, [searchFromViewMode]);
+
+  useEffect(() => {
+    favoriteFromViewModeRef.current = favoriteFromViewMode;
+  }, [favoriteFromViewMode]);
+
+  // System's back button handler for Android Capacitor - REPLACE THE EXISTING ONE
+  useEffect(() => {
+    let backButtonListener = null;
+
+    const setupBackButtonListener = async () => {
+      try {
+        backButtonListener = await App.addListener('backButton', (event) => {
+          console.log('Back button pressed, current screen:', currentScreenRef.current);
+
+          if (currentScreenRef.current === "home") {
+            App.exitApp();
+          } else if (currentScreenRef.current === "mapViewer") {
+            setHighlightActiveMap(true);
+            setCurrentScreen("category");
+            setTimeout(() => setHighlightActiveMap(false), 2000);
+          } else if (currentScreenRef.current === "category") {
+            setCurrentScreen("home");
+            setActiveTab("view");
+          } else if (currentScreenRef.current === "search") {
+            if (searchFromContextRef.current && searchFromContextRef.current !== "home") {
+              setCurrentScreen("category");
+              setViewMode(searchFromViewModeRef.current);
+            } else {
+              setCurrentScreen("home");
+            }
+            setSearchFromContext(null);
+            setActiveTab("view");
+          } else if (currentScreenRef.current === "favorites") {
+            if (favoriteFromContextRef.current && favoriteFromContextRef.current !== "home") {
+              setCurrentScreen("category");
+              setViewMode(favoriteFromViewModeRef.current);
+            } else {
+              setCurrentScreen("home");
+            }
+            setFavoriteFromContext(null);
+            setActiveTab("view");
+          }
+        });
+      } catch (error) {
+        console.error('Error setting up back button listener:', error);
       }
-    }).then(listener => {
-      backButtonListener = listener; // store listener so we can remove it later
-    });
+    };
+
+    setupBackButtonListener();
 
     return () => {
       if (backButtonListener) {
         backButtonListener.remove();
       }
     };
-  }, [currentScreen, searchFromContext, favoriteFromContext, searchFromViewMode, favoriteFromViewMode]);
+  }, []); // Empty dependency array - set up once
   
   // Make status bar transparent and request fullscreen when entering map viewer
   useEffect(() => {
@@ -1238,37 +1270,16 @@ if (currentScreen === "search") {
 
             {viewMode === "largeList" && (
               <div className="space-y-6">
-                {/* Map Title List */}
-                <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-4">
+                {/* Map Titles */}
+                <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-4 mb-8">
                   <div className="space-y-2">
                     {searchResults.map((map, index) => (
-                      <div key={`title-${map.id}`} className="flex items-center gap-3">
-                        <div className="w-8 text-sm text-gray-600 font-mono tabular-nums text-right">
-                          {index + 1}
+                      <div key={`title-${map.id}`} className="flex items-start gap-2 pr-4">
+                        <span className="w-8 text-sm text-gray-600 font-mono shrink-0 leading-5 text-right tabular-nums">{index + 1} :</span>
+                        <div className="min-w-0 flex-1">
+                          <div className="text-sm text-black leading-5 truncate">{map.title}</div>
+                          <div className="text-xs text-gray-500">{map.category}</div>
                         </div>
-                        <div className="text-sm text-gray-600">:</div>
-                        <div className="flex-1 text-sm text-black relative overflow-hidden">
-                          {map.title.length <= 18 ? (
-                            <div className="whitespace-nowrap">{map.title}</div>
-                          ) : map.title.length <= 28 ? (
-                            <div className="absolute inset-0 flex">
-                              <div className="flex-shrink-0">{map.title.split(' ')[0]}</div>
-                              <div className="flex-grow text-center px-2">
-                                {map.title.split(' ').slice(1, -1).join(' ')}
-                              </div>
-                              <div className="flex-shrink-0">{map.title.split(' ').slice(-1)[0]}</div>
-                            </div>
-                          ) : (
-                            <div className="absolute inset-0 flex">
-                              <div className="flex-shrink-0">{map.title.split(' ')[0]}</div>
-                              <div className="flex-grow text-center px-2 overflow-hidden whitespace-nowrap" style={{textOverflow: 'ellipsis'}}>
-                                {map.title.split(' ').slice(1, -1).join(' ')}
-                              </div>
-                              <div className="flex-shrink-0">{map.title.split(' ').slice(-1)[0]}</div>
-                            </div>
-                          )}
-                        </div>
-                        <span className="text-xs text-gray-500 whitespace-nowrap">{map.category}</span>
                       </div>
                     ))}
                   </div>
@@ -1473,33 +1484,12 @@ if (currentScreen === "favorites") {
                 <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-4">
                   <div className="space-y-2">
                     {favoritesList.map((map, index) => (
-                      <div key={`title-${map.id}`} className="flex items-center gap-3">
-                        <div className="w-8 text-sm text-gray-600 font-mono tabular-nums text-right">
-                          {index + 1}
+                      <div key={`favorite-${map.id}`} className="flex items-start gap-2 pr-4">
+                        <span className="w-8 text-sm text-gray-600 font-mono shrink-0 leading-5 text-right tabular-nums">{index + 1} :</span>
+                        <div className="min-w-0 flex-1">
+                          <div className="text-sm text-black leading-5 truncate">{map.title}</div>
+                          <div className="text-xs text-gray-500">{map.category}</div>
                         </div>
-                        <div className="text-sm text-gray-600">:</div>
-                        <div className="flex-1 text-sm text-black relative overflow-hidden">
-                          {map.title.length <= 18 ? (
-                            <div className="whitespace-nowrap">{map.title}</div>
-                          ) : map.title.length <= 28 ? (
-                            <div className="absolute inset-0 flex">
-                              <div className="flex-shrink-0">{map.title.split(' ')[0]}</div>
-                              <div className="flex-grow text-center px-2">
-                                {map.title.split(' ').slice(1, -1).join(' ')}
-                              </div>
-                              <div className="flex-shrink-0">{map.title.split(' ').slice(-1)[0]}</div>
-                            </div>
-                          ) : (
-                            <div className="absolute inset-0 flex">
-                              <div className="flex-shrink-0">{map.title.split(' ')[0]}</div>
-                              <div className="flex-grow text-center px-2 overflow-hidden whitespace-nowrap" style={{textOverflow: 'ellipsis'}}>
-                                {map.title.split(' ').slice(1, -1).join(' ')}
-                              </div>
-                              <div className="flex-shrink-0">{map.title.split(' ').slice(-1)[0]}</div>
-                            </div>
-                          )}
-                        </div>
-                        <span className="text-xs text-gray-500 whitespace-nowrap">{map.category}</span>
                       </div>
                     ))}
                   </div>
@@ -1689,38 +1679,16 @@ if (currentScreen === "category") {
             <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-4">
               <div className="space-y-2">
                 {maps.map((map, index) => (
-                  <div key={`title-${map.id}`} className="flex items-center gap-3">
-                    <div className="w-8 text-sm text-gray-600 font-mono tabular-nums text-right">
-                      {index + 1}
+                  <div key={`map-${map.id}`} className="flex items-start gap-2 pr-4">
+                    <span className="w-8 text-sm text-gray-600 font-mono shrink-0 leading-5 text-right tabular-nums">{index + 1} :</span>
+                    <div className="min-w-0 flex-1">
+                      <div className="text-sm text-black leading-5 truncate">{map.title}</div>
                     </div>
-                    <div className="text-sm text-gray-600">:</div>
-                    <div className="flex-1 text-sm text-black relative overflow-hidden">
-                      {map.title.length <= 25 ? (
-                        <div className="whitespace-nowrap">{map.title}</div>
-                      ) : map.title.length <= 35 ? (
-                        <div className="absolute inset-0 flex">
-                          <div className="flex-shrink-0">{map.title.split(' ')[0]}</div>
-                          <div className="flex-grow text-center px-2">
-                            {map.title.split(' ').slice(1, -1).join(' ')}
-                          </div>
-                          <div className="flex-shrink-0">{map.title.split(' ').slice(-1)[0]}</div>
-                        </div>
-                      ) : (
-                        <div className="absolute inset-0 flex">
-                          <div className="flex-shrink-0">{map.title.split(' ')[0]}</div>
-                          <div className="flex-grow text-center px-2 overflow-hidden whitespace-nowrap" style={{textOverflow: 'ellipsis'}}>
-                            {map.title.split(' ').slice(1, -1).join(' ')}
-                          </div>
-                          <div className="flex-shrink-0">{map.title.split(' ').slice(-1)[0]}</div>
-                        </div>
-                      )}
-                    </div>
-                    <div className="w-4"></div>
                   </div>
                 ))}
               </div>
             </div>
-        
+
             {/* Large Thumbnails - Long Tile Container */}
             <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-4">
               {maps.map((map, index) => {
