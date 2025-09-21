@@ -702,21 +702,24 @@ const BibleMapsApp = () => {
       const timer = setTimeout(() => setShowControls(false), 4000)
       return () => clearTimeout(timer)
     }
-  }, [showControls, currentScreen])// System's back button handler:
+  }, [showControls, currentScreen])
+
+  // System's back button handler for Capacitor
   useEffect(() => {
     const handleBackButton = () => {
       if (currentScreen === "home") {
         // Exit the app when on home screen
-        // For Capacitor: App.exitApp()
-        // For web testing: do nothing (let browser handle it)
-        return
+        App.exitApp()
+        return false // Prevent default browser behavior
       } else if (currentScreen === "mapViewer") {
         setHighlightActiveMap(true)
         setCurrentScreen("category")
         setTimeout(() => setHighlightActiveMap(false), 2000)
+        return false
       } else if (currentScreen === "category") {
         setCurrentScreen("home")
         setActiveTab("view")
+        return false
       } else if (currentScreen === "search") {
         if (searchFromContext && searchFromContext !== "home") {
           setCurrentScreen("category")
@@ -726,6 +729,7 @@ const BibleMapsApp = () => {
         }
         setSearchFromContext(null)
         setActiveTab("view")
+        return false
       } else if (currentScreen === "favorites") {
         if (favoriteFromContext && favoriteFromContext !== "home") {
           setCurrentScreen("category")
@@ -735,21 +739,29 @@ const BibleMapsApp = () => {
         }
         setFavoriteFromContext(null)
         setActiveTab("view")
+        return false
       }
     }
 
+    // Capacitor back button listener
+    const backButtonListener = App.addListener('backButton', handleBackButton)
+
+    // Web browser fallback
     const handlePopState = (event) => {
-      if (currentScreen === "home") {
-        return
-      }
       event.preventDefault()
       window.history.pushState(null, null, window.location.pathname)
       handleBackButton()
     }
     
+    // Set up web browser history manipulation
     window.history.pushState(null, null, window.location.pathname)
     window.addEventListener('popstate', handlePopState)
-    return () => window.removeEventListener('popstate', handlePopState)
+
+    return () => {
+      // Clean up both listeners
+      backButtonListener.remove()
+      window.removeEventListener('popstate', handlePopState)
+    }
   }, [currentScreen, searchFromContext, favoriteFromContext, searchFromViewMode, favoriteFromViewMode])
 
   
