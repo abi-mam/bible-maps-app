@@ -799,7 +799,7 @@ useEffect(() => {
     try {
       if (currentScreen === "mapViewer") {
         StatusBar.setOverlaysWebView({ overlay: true });
-        StatusBar.setBackgroundColor({ color: '#00000000' });
+        StatusBar.setBackgroundColor({ color: '#4a7c59' });
         StatusBar.setStyle({
           style: mapViewerTheme === "light" ? Style.Dark : Style.Light
         });
