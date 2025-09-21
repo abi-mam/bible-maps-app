@@ -1123,7 +1123,7 @@ if (currentScreen === "search") {
               </button>
             )}
           </div>
-          <div className="flex-1 mr-3">
+          <div className="flex-1 mr-4">
             <input
               type="text"
               placeholder="Search maps..."
@@ -1235,9 +1235,32 @@ if (currentScreen === "search") {
                 <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-4">
                   <div className="space-y-2">
                     {searchResults.map((map, index) => (
-                      <div key={`title-${map.id}`} className="grid grid-cols-[1.5rem_1fr_auto] gap-2 items-center">
-                        <span className="text-sm text-gray-600 text-right font-mono tabular-nums">{index + 1} :</span>
-                        <span className="text-sm text-black truncate">{map.title}</span>
+                      <div key={`title-${map.id}`} className="flex items-center gap-3">
+                        <div className="w-8 text-sm text-gray-600 font-mono tabular-nums text-right">
+                          {index + 1}
+                        </div>
+                        <div className="text-sm text-gray-600">:</div>
+                        <div className="flex-1 text-sm text-black relative overflow-hidden">
+                          {map.title.length <= 18 ? (
+                            <div className="whitespace-nowrap">{map.title}</div>
+                          ) : map.title.length <= 28 ? (
+                            <div className="absolute inset-0 flex">
+                              <div className="flex-shrink-0">{map.title.split(' ')[0]}</div>
+                              <div className="flex-grow text-center px-2">
+                                {map.title.split(' ').slice(1, -1).join(' ')}
+                              </div>
+                              <div className="flex-shrink-0">{map.title.split(' ').slice(-1)[0]}</div>
+                            </div>
+                          ) : (
+                            <div className="absolute inset-0 flex">
+                              <div className="flex-shrink-0">{map.title.split(' ')[0]}</div>
+                              <div className="flex-grow text-center px-2 overflow-hidden whitespace-nowrap" style={{textOverflow: 'ellipsis'}}>
+                                {map.title.split(' ').slice(1, -1).join(' ')}
+                              </div>
+                              <div className="flex-shrink-0">{map.title.split(' ').slice(-1)[0]}</div>
+                            </div>
+                          )}
+                        </div>
                         <span className="text-xs text-gray-500 whitespace-nowrap">{map.category}</span>
                       </div>
                     ))}
@@ -1443,9 +1466,32 @@ if (currentScreen === "favorites") {
                 <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-4">
                   <div className="space-y-2">
                     {favoritesList.map((map, index) => (
-                      <div key={`title-${map.id}`} className="grid grid-cols-[1.5rem_1fr_auto] gap-2 items-center">
-                        <span className="text-sm text-gray-600 text-right font-mono tabular-nums">{index + 1} :</span>
-                        <span className="text-sm text-black truncate">{map.title}</span>
+                      <div key={`title-${map.id}`} className="flex items-center gap-3">
+                        <div className="w-8 text-sm text-gray-600 font-mono tabular-nums text-right">
+                          {index + 1}
+                        </div>
+                        <div className="text-sm text-gray-600">:</div>
+                        <div className="flex-1 text-sm text-black relative overflow-hidden">
+                          {map.title.length <= 18 ? (
+                            <div className="whitespace-nowrap">{map.title}</div>
+                          ) : map.title.length <= 28 ? (
+                            <div className="absolute inset-0 flex">
+                              <div className="flex-shrink-0">{map.title.split(' ')[0]}</div>
+                              <div className="flex-grow text-center px-2">
+                                {map.title.split(' ').slice(1, -1).join(' ')}
+                              </div>
+                              <div className="flex-shrink-0">{map.title.split(' ').slice(-1)[0]}</div>
+                            </div>
+                          ) : (
+                            <div className="absolute inset-0 flex">
+                              <div className="flex-shrink-0">{map.title.split(' ')[0]}</div>
+                              <div className="flex-grow text-center px-2 overflow-hidden whitespace-nowrap" style={{textOverflow: 'ellipsis'}}>
+                                {map.title.split(' ').slice(1, -1).join(' ')}
+                              </div>
+                              <div className="flex-shrink-0">{map.title.split(' ').slice(-1)[0]}</div>
+                            </div>
+                          )}
+                        </div>
                         <span className="text-xs text-gray-500 whitespace-nowrap">{map.category}</span>
                       </div>
                     ))}
@@ -1636,15 +1682,38 @@ if (currentScreen === "category") {
             <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-4">
               <div className="space-y-2">
                 {maps.map((map, index) => (
-                  <div key={`title-${map.id}`} className="grid grid-cols-[1.5rem_1fr_1.5rem] gap-2 items-center">
-                    <span className="text-sm text-gray-600 text-right font-mono tabular-nums">{index + 1} :</span>
-                    <span className="text-sm text-black truncate">{map.title}</span>
-                    <div></div>
+                  <div key={`title-${map.id}`} className="flex items-center gap-3">
+                    <div className="w-8 text-sm text-gray-600 font-mono tabular-nums text-right">
+                      {index + 1}
+                    </div>
+                    <div className="text-sm text-gray-600">:</div>
+                    <div className="flex-1 text-sm text-black relative overflow-hidden">
+                      {map.title.length <= 25 ? (
+                        <div className="whitespace-nowrap">{map.title}</div>
+                      ) : map.title.length <= 35 ? (
+                        <div className="absolute inset-0 flex">
+                          <div className="flex-shrink-0">{map.title.split(' ')[0]}</div>
+                          <div className="flex-grow text-center px-2">
+                            {map.title.split(' ').slice(1, -1).join(' ')}
+                          </div>
+                          <div className="flex-shrink-0">{map.title.split(' ').slice(-1)[0]}</div>
+                        </div>
+                      ) : (
+                        <div className="absolute inset-0 flex">
+                          <div className="flex-shrink-0">{map.title.split(' ')[0]}</div>
+                          <div className="flex-grow text-center px-2 overflow-hidden whitespace-nowrap" style={{textOverflow: 'ellipsis'}}>
+                            {map.title.split(' ').slice(1, -1).join(' ')}
+                          </div>
+                          <div className="flex-shrink-0">{map.title.split(' ').slice(-1)[0]}</div>
+                        </div>
+                      )}
+                    </div>
+                    <div className="w-4"></div>
                   </div>
                 ))}
               </div>
             </div>
-
+        
             {/* Large Thumbnails - Long Tile Container */}
             <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-4">
               {maps.map((map, index) => {
@@ -1701,7 +1770,7 @@ if (currentScreen === "category") {
       <div className="flex items-center justify-center h-14 shadow-sm" style={{ backgroundColor: '#f0f1f2' }}>
         
         {/* Centered Button Group */}
-        <div className="flex items-center gap-8">
+        <div className="flex items-center gap-16">
           {/* Favorites Button */}
           <button
             onClick={() => {
