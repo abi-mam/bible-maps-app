@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect, useRef } from "react"
 import { Capacitor } from '@capacitor/core';
-import { StatusBar } from '@capacitor/status-bar';
+import { StatusBar, Style } from '@capacitor/status-bar';
 import { App as CapacitorApp } from '@capacitor/app';
 import { TransformWrapper, TransformComponent } from "react-zoom-pan-pinch";
 import { Search, Star, Grid3X3, List, ChevronLeft, ChevronRight, ArrowLeft, Home } from "lucide-react"
@@ -688,14 +688,6 @@ const BibleMapsApp = () => {
     console.log('Screen changed to:', currentScreen)
   }, [currentScreen])
 
-  // Default status bar setup (after splash, for all screens)
-  useEffect(() => {
-    // Set default status bar color and style on app launch
-    StatusBar.setOverlaysWebView({ overlay: false })
-    StatusBar.setBackgroundColor({ color: '#006400' }) // @color/colorBibleMapsDark
-    StatusBar.setStyle({ style: 'LIGHT' }) // light icons/text
-  }, [])
-
   useEffect(() => {
     // Splash screen logic
     if (currentScreen === "splash") {
@@ -746,13 +738,13 @@ useEffect(() => {
   const setupBackButtonListener = async () => {
     try {
       console.log('Setting up back button listener...');
-      backButtonListener = await App.addListener('backButton', (event) => {
+      backButtonListener = await CapacitorApp.addListener('backButton', (event) => {
         console.log('Back button pressed, current screen:', currentScreenRef.current);
         console.log('Event data:', event);
 
         if (currentScreenRef.current === "home") {
           console.log('Exiting app...');
-          App.exitApp();
+          CapacitorApp.exitApp();
         } else if (currentScreenRef.current === "mapViewer") {
           console.log('Navigating from mapViewer to category');
           setHighlightActiveMap(true);
@@ -801,20 +793,20 @@ useEffect(() => {
 }, []);
   
 useEffect(() => {
-  const setupMapViewerBars = async () => {
+  const setupMapViewerBars = () => {
     if (!Capacitor.isNativePlatform()) return;
 
     try {
       if (currentScreen === "mapViewer") {
-        await StatusBar.setOverlaysWebView({ overlay: true });
-        await StatusBar.setBackgroundColor({ color: '#00000000' });
-        await StatusBar.setStyle({
-          style: mapViewerTheme === "light" ? "DARK" : "LIGHT"
+        StatusBar.setOverlaysWebView({ overlay: true });
+        StatusBar.setBackgroundColor({ color: '#00000000' });
+        StatusBar.setStyle({
+          style: mapViewerTheme === "light" ? Style.Dark : Style.Light
         });
       } else {
-        await StatusBar.setOverlaysWebView({ overlay: false });
-        await StatusBar.setBackgroundColor({ color: '#4a7c59' });
-        await StatusBar.setStyle({ style: 'LIGHT' });
+        StatusBar.setOverlaysWebView({ overlay: false });
+        StatusBar.setBackgroundColor({ color: '#4a7c59' });
+        StatusBar.setStyle({ style: Style.Light });
       }
     } catch (error) {
       console.error('Bar configuration error:', error);

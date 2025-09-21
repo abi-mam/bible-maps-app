@@ -1,23 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <!-- Base application theme -->
-    <style name="AppTheme" parent="Theme.Material3.DayNight.NoActionBar">
-        <!-- Status bar uses Bible Maps green -->
-        <item name="android:statusBarColor">@color/colorBibleMapsDark</item>
-        <item name="android:windowLightStatusBar">false</item>
-
-        <!-- Navigation bar stays unchanged -->
-        <item name="android:navigationBarColor">?attr/colorSurface</item>
-    </style>
-
-    <!-- NoActionBar theme -->
-    <style name="AppTheme.NoActionBar" parent="Theme.Material3.DayNight.NoActionBar">
-        <item name="windowActionBar">false</item>
-        <item name="windowNoTitle">true</item>
-        <item name="android:background">@null</item>
-    </style>
-
     <!-- Splash screen theme -->
     <style name="AppTheme.NoActionBarLaunch" parent="Theme.SplashScreen">
         <item name="android:background">@drawable/splash_screen</item>
@@ -25,5 +8,19 @@
         <item name="android:windowLightStatusBar">true</item>
         <item name="android:navigationBarColor">@color/colorBibleMapsDark</item>
         <item name="android:windowLightNavigationBar">true</item>
+        <item name="postSplashScreenTheme">@style/AppTheme</item>
     </style>
+
+    <!-- Base application theme -->
+    <style name="AppTheme" parent="Theme.Material3.DayNight.NoActionBar">
+        <!-- Status bar uses Bible Maps green -->
+        <item name="android:statusBarColor">@color/colorBibleMapsDark</item>
+        <item name="android:windowLightStatusBar">false</item>
+       
+        <!-- Navigation bar stays unchanged -->
+        <item name="android:navigationBarColor">?attr/colorSurface</item>
+
+        <item name="android:windowDrawsSystemBarBackgrounds">true</item>
+    </style>
+
 </resources>
