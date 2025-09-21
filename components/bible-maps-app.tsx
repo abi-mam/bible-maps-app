@@ -1714,6 +1714,23 @@ if (currentScreen === "category") {
         
         {/* Centered Button Group */}
         <div className="flex items-center gap-40">
+
+          {/* Search Button */}
+          <button
+            onClick={() => {
+              setActiveTab("search")
+              setSearchFromContext(currentCategory)
+              setSearchFromViewMode(viewMode)
+              setCurrentScreen("search")
+            }}
+            className="flex flex-col items-center w-16 p-2 rounded-lg shadow-lg"
+          >
+            <Search className="h-4 w-4 text-gray-600" />
+            <span className={`text-xs mt-1 ${activeTab === "search" ? "text-indigo-600" : "text-gray-400"}`}>
+              Search
+            </span>
+          </button>
+         
           {/* Favorites Button */}
           <button
             onClick={() => {
@@ -1728,23 +1745,7 @@ if (currentScreen === "category") {
             <span className={`text-xs mt-1 ${activeTab === "favorites" ? "text-indigo-600" : "text-gray-400"}`}>
               Favorites
             </span>
-          </button>
-
-          {/* Search Button */}
-          <button
-            onClick={() => {
-              setActiveTab("search")
-              setSearchFromContext(currentCategory)
-              setSearchFromViewMode(viewMode)
-              setCurrentScreen("search")
-            }}
-            className="flex flex-col items-center w-16"
-          >
-            <Search className="h-4 w-4 text-gray-600" />
-            <span className={`text-xs mt-1 ${activeTab === "search" ? "text-indigo-600" : "text-gray-400"}`}>
-              Search
-            </span>
-          </button>
+          </button>     
         </div>
 
       </div>
