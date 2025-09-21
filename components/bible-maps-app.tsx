@@ -1125,7 +1125,7 @@ if (currentScreen === "search") {
               </button>
             )}
           </div>
-          <div className="flex-1 mr-3 ml-5">
+          <div className="flex-1 mr-3">
             <input
               type="text"
               placeholder="Search maps..."
