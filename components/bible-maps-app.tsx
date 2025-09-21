@@ -3,7 +3,6 @@
 import React, { useState, useEffect, useRef } from "react"
 import { Capacitor } from '@capacitor/core';
 import { StatusBar } from '@capacitor/status-bar';
-import { NavigationBar } from '@capacitor/navigation-bar';
 import { App as CapacitorApp } from '@capacitor/app';
 import { TransformWrapper, TransformComponent } from "react-zoom-pan-pinch";
 import { Search, Star, Grid3X3, List, ChevronLeft, ChevronRight, ArrowLeft, Home } from "lucide-react"
@@ -812,22 +811,10 @@ useEffect(() => {
         await StatusBar.setStyle({
           style: mapViewerTheme === "light" ? "DARK" : "LIGHT"
         });
-
-        if (Capacitor.getPlatform() === 'android') {
-          const { NavigationBar } = await import('capacitor-navigation-bar');
-          await NavigationBar.setColor({ color: '#00000000' });
-          await NavigationBar.setTransparency({ isTransparent: true });
-        }
       } else {
         await StatusBar.setOverlaysWebView({ overlay: false });
         await StatusBar.setBackgroundColor({ color: '#4a7c59' });
         await StatusBar.setStyle({ style: 'LIGHT' });
-
-        if (Capacitor.getPlatform() === 'android') {
-          const { NavigationBar } = await import('capacitor-navigation-bar');
-          await NavigationBar.setColor({ color: 'default' });
-          await NavigationBar.setTransparency({ isTransparent: false });
-        }
       }
     } catch (error) {
       console.error('Bar configuration error:', error);
