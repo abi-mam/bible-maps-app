@@ -682,6 +682,14 @@ const BibleMapsApp = () => {
     console.log('Screen changed to:', currentScreen)
   }, [currentScreen])
 
+  // Default status bar setup (after splash, for all screens)
+  useEffect(() => {
+    // Set default status bar color and style on app launch
+    StatusBar.setOverlaysWebView({ overlay: false })
+    StatusBar.setBackgroundColor({ color: '#006400' }) // @color/colorBibleMapsDark
+    StatusBar.setStyle({ style: 'LIGHT' }) // light icons/text
+  }, [])
+
   useEffect(() => {
     // Splash screen logic
     if (currentScreen === "splash") {
@@ -706,50 +714,49 @@ const BibleMapsApp = () => {
 
   // System's back button handler for Android Capacitor
   useEffect(() => {
-    const handleBackButton = (event) => {
+    let backButtonListener: any;
+
+    App.addListener('backButton', (event) => {
       console.log('Back button pressed, current screen:', currentScreen);
-      
+
       if (currentScreen === "home") {
-        // Exit the app when on home screen
         App.exitApp();
-        return;
       } else if (currentScreen === "mapViewer") {
-        setHighlightActiveMap(true)
-        setCurrentScreen("category")
-        setTimeout(() => setHighlightActiveMap(false), 2000)
+        setHighlightActiveMap(true);
+        setCurrentScreen("category");
+        setTimeout(() => setHighlightActiveMap(false), 2000);
       } else if (currentScreen === "category") {
-        setCurrentScreen("home")
-        setActiveTab("view")
+        setCurrentScreen("home");
+        setActiveTab("view");
       } else if (currentScreen === "search") {
         if (searchFromContext && searchFromContext !== "home") {
-          setCurrentScreen("category")
-          setViewMode(searchFromViewMode)
+          setCurrentScreen("category");
+          setViewMode(searchFromViewMode);
         } else {
-          setCurrentScreen("home")
+          setCurrentScreen("home");
         }
-        setSearchFromContext(null)
-        setActiveTab("view")
+        setSearchFromContext(null);
+        setActiveTab("view");
       } else if (currentScreen === "favorites") {
         if (favoriteFromContext && favoriteFromContext !== "home") {
-          setCurrentScreen("category")
-          setViewMode(favoriteFromViewMode)
+          setCurrentScreen("category");
+          setViewMode(favoriteFromViewMode);
         } else {
-          setCurrentScreen("home")
+          setCurrentScreen("home");
         }
-        setFavoriteFromContext(null)
-        setActiveTab("view")
+        setFavoriteFromContext(null);
+        setActiveTab("view");
       }
-    }
-
-    // Android back button listener
-    const backButtonListener = App.addListener('backButton', handleBackButton);
-    console.log('Back button listener added for screen:', currentScreen);
+    }).then(listener => {
+      backButtonListener = listener; // store listener so we can remove it later
+    });
 
     return () => {
-      console.log('Removing back button listener for screen:', currentScreen);
-      backButtonListener.remove();
-    }
-  }, [currentScreen, searchFromContext, favoriteFromContext, searchFromViewMode, favoriteFromViewMode])
+      if (backButtonListener) {
+        backButtonListener.remove();
+      }
+    };
+  }, [currentScreen, searchFromContext, favoriteFromContext, searchFromViewMode, favoriteFromViewMode]);
   
   // Make status bar transparent and request fullscreen when entering map viewer
   useEffect(() => {

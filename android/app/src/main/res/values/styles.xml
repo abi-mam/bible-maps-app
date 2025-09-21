@@ -5,6 +5,7 @@
     <style name="AppTheme" parent="Theme.Material3.DayNight.NoActionBar">
         <!-- Status bar uses Bible Maps green -->
         <item name="android:statusBarColor">@color/colorBibleMapsDark</item>
+        <item name="android:windowLightStatusBar">false</item>
 
         <!-- Navigation bar stays unchanged -->
         <item name="android:navigationBarColor">?attr/colorSurface</item>
@@ -19,7 +20,7 @@
 
     <!-- Splash screen theme -->
     <style name="AppTheme.NoActionBarLaunch" parent="Theme.SplashScreen">
-        <item name="android:background">@drawable/splash</item>
+        <item name="android:background">@drawable/splash_screen</item>
         <item name="android:statusBarColor">@color/colorBibleMapsDark</item>
         <item name="android:windowLightStatusBar">false</item>
     </style>
