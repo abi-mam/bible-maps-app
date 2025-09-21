@@ -800,41 +800,47 @@ useEffect(() => {
   };
 }, []);
   
-  // Make status bar transparent and request fullscreen when entering map viewer
-useEffect(() => {
-  if (currentScreen === "mapViewer") {
-    if (Capacitor.isNativePlatform()) {
-      // Transparent status bar
-      StatusBar.setOverlaysWebView({ overlay: true });
-      StatusBar.setBackgroundColor({ color: 'transparent' });
+export default function MapViewer({ currentScreen }) {
+  // Make sure mapBackground has a default
+  const [mapBackground, setMapBackground] = useState("light"); // or "dark"
 
-      // Icons adapt to map background
-      StatusBar.setStyle({
-        style: mapBackground === "light" ? "DARK" : "LIGHT",
-      });
+  useEffect(() => {
+    // Only run on client (browser) and when using native Capacitor
+    if (typeof window !== "undefined" && Capacitor.isNativePlatform()) {
+      if (currentScreen === "mapViewer") {
+        // Transparent status bar
+        StatusBar.setOverlaysWebView({ overlay: true });
+        StatusBar.setBackgroundColor({ color: 'transparent' });
 
-      // Transparent navigation bar
-      CapacitorApp.setWindowFlags({
-        android: ['FLAG_LAYOUT_NO_LIMITS', 'FLAG_TRANSLUCENT_NAVIGATION'],
-      });
-    } else {
-      document.documentElement.requestFullscreen?.().catch(() => {});
+        // Icons adapt to map background
+        StatusBar.setStyle({
+          style: mapBackground === "light" ? "DARK" : "LIGHT",
+        });
+
+        // Transparent navigation bar
+        CapacitorApp.setWindowFlags({
+          android: ['FLAG_LAYOUT_NO_LIMITS', 'FLAG_TRANSLUCENT_NAVIGATION'],
+        });
+      }
     }
-  }
 
-  return () => {
-    if (Capacitor.isNativePlatform()) {
-      // Restore after map viewer
-      StatusBar.setOverlaysWebView({ overlay: false });
-      StatusBar.setBackgroundColor({ color: '#006400' }); // colorBibleMapsDark
-      StatusBar.setStyle({ style: 'DARK' }); // dark icons for splash/default
+    return () => {
+      if (typeof window !== "undefined" && Capacitor.isNativePlatform()) {
+        // Restore default bars
+        StatusBar.setOverlaysWebView({ overlay: false });
+        StatusBar.setBackgroundColor({ color: '#006400' }); // colorBibleMapsDark
+        StatusBar.setStyle({ style: 'DARK' }); // dark icons to match splash
+        CapacitorApp.setWindowFlags({ android: [] });
+      }
+    };
+  }, [currentScreen, mapBackground]);
 
-      CapacitorApp.setWindowFlags({ android: [] });
-    } else {
-      document.exitFullscreen?.().catch(() => {});
-    }
-  };
-}, [currentScreen, mapBackground]);  
+  return (
+    <div>
+      {/* your map component here */}
+    </div>
+  );
+}
 
   // ... rest of your component code (toggleFavorite, openMapViewer, etc.) ...
   
