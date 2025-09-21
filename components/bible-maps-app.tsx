@@ -3,6 +3,7 @@
 import React, { useState, useEffect, useRef } from "react"
 import { Capacitor } from '@capacitor/core';
 import { StatusBar } from '@capacitor/status-bar';
+import { NavigationBar } from '@capacitor/navigation-bar';
 import { App as CapacitorApp } from '@capacitor/app';
 import { TransformWrapper, TransformComponent } from "react-zoom-pan-pinch";
 import { Search, Star, Grid3X3, List, ChevronLeft, ChevronRight, ArrowLeft, Home } from "lucide-react"
@@ -800,47 +801,41 @@ useEffect(() => {
   };
 }, []);
   
-export default function MapViewer({ currentScreen }) {
-  // Make sure mapBackground has a default
-  const [mapBackground, setMapBackground] = useState("light"); // or "dark"
+useEffect(() => {
+  const setupMapViewerBars = async () => {
+    if (!Capacitor.isNativePlatform()) return;
 
-  useEffect(() => {
-    // Only run on client (browser) and when using native Capacitor
-    if (typeof window !== "undefined" && Capacitor.isNativePlatform()) {
+    try {
       if (currentScreen === "mapViewer") {
-        // Transparent status bar
-        StatusBar.setOverlaysWebView({ overlay: true });
-        StatusBar.setBackgroundColor({ color: 'transparent' });
-
-        // Icons adapt to map background
-        StatusBar.setStyle({
-          style: mapBackground === "light" ? "DARK" : "LIGHT",
+        await StatusBar.setOverlaysWebView({ overlay: true });
+        await StatusBar.setBackgroundColor({ color: '#00000000' });
+        await StatusBar.setStyle({
+          style: mapViewerTheme === "light" ? "DARK" : "LIGHT"
         });
 
-        // Transparent navigation bar
-        CapacitorApp.setWindowFlags({
-          android: ['FLAG_LAYOUT_NO_LIMITS', 'FLAG_TRANSLUCENT_NAVIGATION'],
-        });
+        if (Capacitor.getPlatform() === 'android') {
+          const { NavigationBar } = await import('capacitor-navigation-bar');
+          await NavigationBar.setColor({ color: '#00000000' });
+          await NavigationBar.setTransparency({ isTransparent: true });
+        }
+      } else {
+        await StatusBar.setOverlaysWebView({ overlay: false });
+        await StatusBar.setBackgroundColor({ color: '#4a7c59' });
+        await StatusBar.setStyle({ style: 'LIGHT' });
+
+        if (Capacitor.getPlatform() === 'android') {
+          const { NavigationBar } = await import('capacitor-navigation-bar');
+          await NavigationBar.setColor({ color: 'default' });
+          await NavigationBar.setTransparency({ isTransparent: false });
+        }
       }
+    } catch (error) {
+      console.error('Bar configuration error:', error);
     }
+  };
 
-    return () => {
-      if (typeof window !== "undefined" && Capacitor.isNativePlatform()) {
-        // Restore default bars
-        StatusBar.setOverlaysWebView({ overlay: false });
-        StatusBar.setBackgroundColor({ color: '#006400' }); // colorBibleMapsDark
-        StatusBar.setStyle({ style: 'DARK' }); // dark icons to match splash
-        CapacitorApp.setWindowFlags({ android: [] });
-      }
-    };
-  }, [currentScreen, mapBackground]);
-
-  return (
-    <div>
-      {/* your map component here */}
-    </div>
-  );
-}
+  setupMapViewerBars();
+}, [currentScreen, mapViewerTheme]);
 
   // ... rest of your component code (toggleFavorite, openMapViewer, etc.) ...
   
@@ -1817,7 +1812,7 @@ if (currentScreen === "category") {
 // Map Viewer
 if (currentScreen === "mapViewer" && activeMap) {
   return (
-    <div className={`fixed inset-0 ${mapViewerTheme === "light" ? "bg-slate-50" : "bg-black"}`}>
+    <div className={`map-viewer-container ${mapViewerTheme === "light" ? "bg-slate-50" : "bg-black"}`}>
       <TransformWrapper
         initialScale={1}
         minScale={0.5}

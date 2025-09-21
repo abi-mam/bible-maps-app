@@ -3,40 +3,18 @@ import { CapacitorConfig } from '@capacitor/cli';
 const config: CapacitorConfig = {
   appId: 'com.abi.biblemaps',
   appName: 'Bible Maps',
-  webDir: 'out', // <-- must match Next.js "output" folder
+  webDir: 'out',
   plugins: {
-    StatusBar: {
-      style: 'DEFAULT',
-      backgroundColor: '#ffffff',
-      overlaysWebView: false,
-    },
     App: {
-      windowFlags: {
-        android: [
-          'FLAG_HIDE_NAVIGATION',
-          'FLAG_IMMERSIVE_STICKY',
-        ],
-      },
     },
     Keyboard: {
-      resize: 'none',
-    },
-    SplashScreen: {
-      launchShowDuration: 1500,        // how long splash shows (ms)
-      launchAutoHide: true,            // auto-hide when app is ready
-      backgroundColor: '#ffffff',      // matches app background
-      androidSplashResourceName: 'splash', // points to generated splash.png
-      showSpinner: false               // no spinner
+      resize: 'native',
     },
   },
   android: {
     allowMixedContent: true,
     webContentsDebuggingEnabled: false,
     appendUserAgent: 'BibleMapsApp',
-    windowFlags: [
-      'FLAG_HIDE_NAVIGATION',
-      'FLAG_IMMERSIVE_STICKY',
-    ],
   },
   ios: {
     contentInset: 'automatic',

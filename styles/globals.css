@@ -123,3 +123,11 @@
     @apply bg-background text-foreground;
   }
 }
+
+/* Add this at the bottom */
+.map-viewer-container {
+  height: 100vh;
+  height: 100dvh;
+  background: transparent;
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+}
