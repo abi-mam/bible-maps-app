@@ -704,22 +704,22 @@ const BibleMapsApp = () => {
     }
   }, [showControls, currentScreen])
 
-  // System's back button handler for Capacitor
+  // System's back button handler for Android Capacitor
   useEffect(() => {
-    const handleBackButton = () => {
+    const handleBackButton = (event) => {
+      console.log('Back button pressed, current screen:', currentScreen);
+      
       if (currentScreen === "home") {
         // Exit the app when on home screen
-        App.exitApp()
-        return false // Prevent default browser behavior
+        App.exitApp();
+        return;
       } else if (currentScreen === "mapViewer") {
         setHighlightActiveMap(true)
         setCurrentScreen("category")
         setTimeout(() => setHighlightActiveMap(false), 2000)
-        return false
       } else if (currentScreen === "category") {
         setCurrentScreen("home")
         setActiveTab("view")
-        return false
       } else if (currentScreen === "search") {
         if (searchFromContext && searchFromContext !== "home") {
           setCurrentScreen("category")
@@ -729,7 +729,6 @@ const BibleMapsApp = () => {
         }
         setSearchFromContext(null)
         setActiveTab("view")
-        return false
       } else if (currentScreen === "favorites") {
         if (favoriteFromContext && favoriteFromContext !== "home") {
           setCurrentScreen("category")
@@ -739,31 +738,18 @@ const BibleMapsApp = () => {
         }
         setFavoriteFromContext(null)
         setActiveTab("view")
-        return false
       }
     }
 
-    // Capacitor back button listener
-    const backButtonListener = App.addListener('backButton', handleBackButton)
-
-    // Web browser fallback
-    const handlePopState = (event) => {
-      event.preventDefault()
-      window.history.pushState(null, null, window.location.pathname)
-      handleBackButton()
-    }
-    
-    // Set up web browser history manipulation
-    window.history.pushState(null, null, window.location.pathname)
-    window.addEventListener('popstate', handlePopState)
+    // Android back button listener
+    const backButtonListener = App.addListener('backButton', handleBackButton);
+    console.log('Back button listener added for screen:', currentScreen);
 
     return () => {
-      // Clean up both listeners
-      backButtonListener.remove()
-      window.removeEventListener('popstate', handlePopState)
+      console.log('Removing back button listener for screen:', currentScreen);
+      backButtonListener.remove();
     }
   }, [currentScreen, searchFromContext, favoriteFromContext, searchFromViewMode, favoriteFromViewMode])
-
   
   // Make status bar transparent and request fullscreen when entering map viewer
   useEffect(() => {
@@ -1249,7 +1235,7 @@ if (currentScreen === "search") {
                 <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-4">
                   <div className="space-y-2">
                     {searchResults.map((map, index) => (
-                      <div key={`title-${map.id}`} className="grid grid-cols-[3rem_1fr_auto] gap-2 items-center">
+                      <div key={`title-${map.id}`} className="grid grid-cols-[1.25rem_1fr_auto] gap-2 items-center">
                         <span className="text-sm text-gray-600 text-right font-mono tabular-nums">{index + 1} :</span>
                         <span className="text-sm text-black truncate">{map.title}</span>
                         <span className="text-xs text-gray-500 whitespace-nowrap">{map.category}</span>
@@ -1457,7 +1443,7 @@ if (currentScreen === "favorites") {
                 <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-4">
                   <div className="space-y-2">
                     {favoritesList.map((map, index) => (
-                      <div key={`title-${map.id}`} className="grid grid-cols-[3rem_1fr_auto] gap-2 items-center">
+                      <div key={`title-${map.id}`} className="grid grid-cols-[1.25rem_1fr_auto] gap-2 items-center">
                         <span className="text-sm text-gray-600 text-right font-mono tabular-nums">{index + 1} :</span>
                         <span className="text-sm text-black truncate">{map.title}</span>
                         <span className="text-xs text-gray-500 whitespace-nowrap">{map.category}</span>
@@ -1650,7 +1636,7 @@ if (currentScreen === "category") {
             <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-4">
               <div className="space-y-2">
                 {maps.map((map, index) => (
-                  <div key={`title-${map.id}`} className="grid grid-cols-[3rem_1fr_3rem] gap-2 items-center">
+                  <div key={`title-${map.id}`} className="grid grid-cols-[1.25rem_1fr_3rem] gap-2 items-center">
                     <span className="text-sm text-gray-600 text-right font-mono tabular-nums">{index + 1} :</span>
                     <span className="text-sm text-black truncate">{map.title}</span>
                     <div></div>
@@ -1712,46 +1698,42 @@ if (currentScreen === "category") {
       </div>
 
       {/* Bottom Bar */}
-      <div className="flex items-center h-14 shadow-sm" style={{ backgroundColor: '#f0f1f2' }}>
+      <div className="flex items-center justify-center h-14 shadow-sm" style={{ backgroundColor: '#f0f1f2' }}>
+        {/* Favorites Button */}
+         <button
+           onClick={() => {
+             setActiveTab("favorites")
+             setFavoriteFromContext(currentCategory)
+             setFavoriteFromViewMode(viewMode)
+             setCurrentScreen("favorites")
+           }}
+           className="flex flex-col items-center w-16"
+         >
+           <Star className="h-4 w-4 text-gray-600" />
+           <span className={`text-xs mt-1 ${activeTab === "favorites" ? "text-indigo-600" : "text-gray-400"}`}>
+             Favorites
+           </span>
+         </button>
 
-        {/* Favorites Button - Mirrored positioning from right edge */}
-        <button
-          onClick={() => {
-            setActiveTab("favorites")
-            setFavoriteFromContext(currentCategory)
-            setFavoriteFromViewMode(viewMode)
-            setCurrentScreen("favorites")
-          }}
-          className="flex flex-col items-center w-16"
-          style={{ marginLeft: '40px' }}
-        >
-          <Star className="h-4 w-4 text-gray-600" />
-          <span className={`text-xs mt-1 ${activeTab === "favorites" ? "text-indigo-600" : "text-gray-400"}`}>
-            Favorites
-          </span>
-        </button>
-
-        {/* Spacer */}
-        <div className="flex-1"></div>
-
-        {/* Search Button - Center aligned with thumbnail center */}
-        <button
-          onClick={() => {
-            setActiveTab("search")
-            setSearchFromContext(currentCategory)
-            setSearchFromViewMode(viewMode)
-            setCurrentScreen("search")
-          }}
-          className="flex flex-col items-center w-16"
-          style={{ marginRight: '40px' }}
-        >
-          <Search className="h-4 w-4 text-gray-600" />
-          <span className={`text-xs mt-1 ${activeTab === "search" ? "text-indigo-600" : "text-gray-400"}`}>
-            Search
-          </span>
-        </button>
-
+         {/* Search Button */}
+         <button
+           onClick={() => {
+             setActiveTab("search")
+             setSearchFromContext(currentCategory)
+             setSearchFromViewMode(viewMode)
+             setCurrentScreen("search")
+           }}
+           className="flex flex-col items-center w-16"
+         >
+           <Search className="h-4 w-4 text-gray-600" />
+           <span className={`text-xs mt-1 ${activeTab === "search" ? "text-indigo-600" : "text-gray-400"}`}>
+             Search
+           </span>
+          </button>
+        </div> 
+        
       </div>
+
     </div>
   )
 }
