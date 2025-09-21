@@ -1,9 +1,10 @@
 "use client"
 
-import { App } from '@capacitor/app';
-import { StatusBar } from '@capacitor/status-bar';
-import { TransformWrapper, TransformComponent } from "react-zoom-pan-pinch";
 import React, { useState, useEffect, useRef } from "react"
+import { Capacitor } from '@capacitor/core';
+import { StatusBar } from '@capacitor/status-bar';
+import { App as CapacitorApp } from '@capacitor/app';
+import { TransformWrapper, TransformComponent } from "react-zoom-pan-pinch";
 import { Search, Star, Grid3X3, List, ChevronLeft, ChevronRight, ArrowLeft, Home } from "lucide-react"
 
 // ---------------- BOTTOM BAR ----------------
@@ -738,88 +739,102 @@ const BibleMapsApp = () => {
     favoriteFromViewModeRef.current = favoriteFromViewMode;
   }, [favoriteFromViewMode]);
 
-  // System's back button handler for Android Capacitor - REPLACE THE EXISTING ONE
-  useEffect(() => {
-    let backButtonListener = null;
+// System's back button handler for Android Capacitor
+useEffect(() => {
+  let backButtonListener = null;
 
-    const setupBackButtonListener = async () => {
-      try {
-        backButtonListener = await App.addListener('backButton', (event) => {
-          console.log('Back button pressed, current screen:', currentScreenRef.current);
+  const setupBackButtonListener = async () => {
+    try {
+      console.log('Setting up back button listener...');
+      backButtonListener = await App.addListener('backButton', (event) => {
+        console.log('Back button pressed, current screen:', currentScreenRef.current);
+        console.log('Event data:', event);
 
-          if (currentScreenRef.current === "home") {
-            App.exitApp();
-          } else if (currentScreenRef.current === "mapViewer") {
-            setHighlightActiveMap(true);
+        if (currentScreenRef.current === "home") {
+          console.log('Exiting app...');
+          App.exitApp();
+        } else if (currentScreenRef.current === "mapViewer") {
+          console.log('Navigating from mapViewer to category');
+          setHighlightActiveMap(true);
+          setCurrentScreen("category");
+          setTimeout(() => setHighlightActiveMap(false), 2000);
+        } else if (currentScreenRef.current === "category") {
+          console.log('Navigating from category to home');
+          setCurrentScreen("home");
+          setActiveTab("view");
+        } else if (currentScreenRef.current === "search") {
+          console.log('Navigating from search, context:', searchFromContextRef.current);
+          if (searchFromContextRef.current && searchFromContextRef.current !== "home") {
             setCurrentScreen("category");
-            setTimeout(() => setHighlightActiveMap(false), 2000);
-          } else if (currentScreenRef.current === "category") {
+            setViewMode(searchFromViewModeRef.current);
+          } else {
             setCurrentScreen("home");
-            setActiveTab("view");
-          } else if (currentScreenRef.current === "search") {
-            if (searchFromContextRef.current && searchFromContextRef.current !== "home") {
-              setCurrentScreen("category");
-              setViewMode(searchFromViewModeRef.current);
-            } else {
-              setCurrentScreen("home");
-            }
-            setSearchFromContext(null);
-            setActiveTab("view");
-          } else if (currentScreenRef.current === "favorites") {
-            if (favoriteFromContextRef.current && favoriteFromContextRef.current !== "home") {
-              setCurrentScreen("category");
-              setViewMode(favoriteFromViewModeRef.current);
-            } else {
-              setCurrentScreen("home");
-            }
-            setFavoriteFromContext(null);
-            setActiveTab("view");
           }
-        });
-      } catch (error) {
-        console.error('Error setting up back button listener:', error);
-      }
-    };
+          setSearchFromContext(null);
+          setActiveTab("view");
+        } else if (currentScreenRef.current === "favorites") {
+          console.log('Navigating from favorites, context:', favoriteFromContextRef.current);
+          if (favoriteFromContextRef.current && favoriteFromContextRef.current !== "home") {
+            setCurrentScreen("category");
+            setViewMode(favoriteFromViewModeRef.current);
+          } else {
+            setCurrentScreen("home");
+          }
+          setFavoriteFromContext(null);
+          setActiveTab("view");
+        }
+      });
+      console.log('Back button listener registered:', backButtonListener);
+    } catch (error) {
+      console.error('Error setting up back button listener:', error);
+    }
+  };
 
-    setupBackButtonListener();
+  setupBackButtonListener();
 
-    return () => {
-      if (backButtonListener) {
-        backButtonListener.remove();
-      }
-    };
-  }, []); // Empty dependency array - set up once
+  return () => {
+    console.log('Cleaning up back button listener:', backButtonListener);
+    if (backButtonListener) {
+      backButtonListener.remove();
+    }
+  };
+}, []);
   
   // Make status bar transparent and request fullscreen when entering map viewer
-  useEffect(() => {
-    if (currentScreen === "mapViewer") {
+useEffect(() => {
+  if (currentScreen === "mapViewer") {
+    if (Capacitor.isNativePlatform()) {
+      // Transparent status bar
       StatusBar.setOverlaysWebView({ overlay: true });
-      StatusBar.setBackgroundColor({ color: '#00000000' }); // Transparent
-      StatusBar.setStyle({ style: 'DARK' }); // Adjust based on your map content
-      
-      // Request fullscreen for immersive experience
-      if (document.documentElement.requestFullscreen) {
-        document.documentElement.requestFullscreen().catch(() => {
-          // Fullscreen not supported or denied
-        });
-      }
+      StatusBar.setBackgroundColor({ color: 'transparent' });
+
+      // Icons adapt to map background
+      StatusBar.setStyle({
+        style: mapBackground === "light" ? "DARK" : "LIGHT",
+      });
+
+      // Transparent navigation bar
+      CapacitorApp.setWindowFlags({
+        android: ['FLAG_LAYOUT_NO_LIMITS', 'FLAG_TRANSLUCENT_NAVIGATION'],
+      });
+    } else {
+      document.documentElement.requestFullscreen?.().catch(() => {});
     }
-    
-    return () => {
-      // Always restore normal status bar when leaving map viewer
+  }
+
+  return () => {
+    if (Capacitor.isNativePlatform()) {
+      // Restore after map viewer
       StatusBar.setOverlaysWebView({ overlay: false });
-      StatusBar.setBackgroundColor({ color: '#4a7c59' }); // Your app's green
-      StatusBar.setStyle({ style: 'LIGHT' });
-      
-      // Exit fullscreen
-      if (document.exitFullscreen) {
-        document.exitFullscreen().catch(() => {
-          // Already exited or not supported
-        });
-      }
+      StatusBar.setBackgroundColor({ color: '#006400' }); // colorBibleMapsDark
+      StatusBar.setStyle({ style: 'DARK' }); // dark icons for splash/default
+
+      CapacitorApp.setWindowFlags({ android: [] });
+    } else {
+      document.exitFullscreen?.().catch(() => {});
     }
-  }, [currentScreen])
-  
+  };
+}, [currentScreen, mapBackground]);  
 
   // ... rest of your component code (toggleFavorite, openMapViewer, etc.) ...
   
@@ -1275,7 +1290,10 @@ if (currentScreen === "search") {
                   <div className="space-y-2">
                     {searchResults.map((map, index) => (
                       <div key={`title-${map.id}`} className="flex items-start gap-2 pr-4">
-                        <span className="w-8 text-sm text-gray-600 font-mono shrink-0 leading-5 text-right tabular-nums">{index + 1} :</span>
+                        <div className="w-4 text-sm text-gray-600 font-mono shrink-0 leading-5 tabular-nums">{index + 1}
+                        </div>
+                        <div className="text-sm text-gray-600 mr-1">:
+                        </div>
                         <div className="min-w-0 flex-1">
                           <div className="text-sm text-black leading-5 truncate">{map.title}</div>
                           <div className="text-xs text-gray-500">{map.category}</div>
@@ -1485,7 +1503,10 @@ if (currentScreen === "favorites") {
                   <div className="space-y-2">
                     {favoritesList.map((map, index) => (
                       <div key={`favorite-${map.id}`} className="flex items-start gap-2 pr-4">
-                        <span className="w-8 text-sm text-gray-600 font-mono shrink-0 leading-5 text-right tabular-nums">{index + 1} :</span>
+                        <div className="w-4 text-sm text-gray-600 font-mono shrink-0 leading-5 tabular-nums">{index + 1}
+                        </div>
+                        <div className="text-sm text-gray-600 mr-1">:
+                        </div>
                         <div className="min-w-0 flex-1">
                           <div className="text-sm text-black leading-5 truncate">{map.title}</div>
                           <div className="text-xs text-gray-500">{map.category}</div>
@@ -1680,7 +1701,10 @@ if (currentScreen === "category") {
               <div className="space-y-2">
                 {maps.map((map, index) => (
                   <div key={`map-${map.id}`} className="flex items-start gap-2 pr-4">
-                    <span className="w-8 text-sm text-gray-600 font-mono shrink-0 leading-5 text-right tabular-nums">{index + 1} :</span>
+                    <div className="w-4 text-sm text-gray-600 font-mono shrink-0 leading-5 tabular-nums">{index + 1}
+                    </div>
+                    <div className="text-sm text-gray-600 mr-1">:
+                    </div>
                     <div className="min-w-0 flex-1">
                       <div className="text-sm text-black leading-5 truncate">{map.title}</div>
                     </div>
@@ -1745,7 +1769,7 @@ if (currentScreen === "category") {
       <div className="flex items-center justify-center h-14 shadow-sm" style={{ backgroundColor: '#f0f1f2' }}>
         
         {/* Centered Button Group */}
-        <div className="flex items-center gap-16">
+        <div className="flex items-center gap-32">
           {/* Favorites Button */}
           <button
             onClick={() => {
