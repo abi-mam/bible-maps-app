@@ -1713,7 +1713,7 @@ if (currentScreen === "category") {
       <div className="flex items-center justify-center h-14 shadow-sm" style={{ backgroundColor: '#f0f1f2' }}>
         
         {/* Centered Button Group */}
-        <div className="flex items-center gap-48">
+        <div className="flex items-center gap-40">
           {/* Favorites Button */}
           <button
             onClick={() => {
