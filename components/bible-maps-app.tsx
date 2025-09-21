@@ -1700,40 +1700,37 @@ if (currentScreen === "category") {
       {/* Bottom Bar */}
       <div className="flex items-center justify-center h-14 shadow-sm" style={{ backgroundColor: '#f0f1f2' }}>
         {/* Favorites Button */}
-         <button
-           onClick={() => {
-             setActiveTab("favorites")
-             setFavoriteFromContext(currentCategory)
-             setFavoriteFromViewMode(viewMode)
-             setCurrentScreen("favorites")
-           }}
-           className="flex flex-col items-center w-16"
-         >
-           <Star className="h-4 w-4 text-gray-600" />
-           <span className={`text-xs mt-1 ${activeTab === "favorites" ? "text-indigo-600" : "text-gray-400"}`}>
-             Favorites
-           </span>
-         </button>
+        <button
+          onClick={() => {
+            setActiveTab("favorites")
+            setFavoriteFromContext(currentCategory)
+            setFavoriteFromViewMode(viewMode)
+            setCurrentScreen("favorites")
+          }}
+          className="flex flex-col items-center w-16"
+        >
+          <Star className="h-4 w-4 text-gray-600" />
+          <span className={`text-xs mt-1 ${activeTab === "favorites" ? "text-indigo-600" : "text-gray-400"}`}>
+            Favorites
+          </span>
+        </button>
 
-         {/* Search Button */}
-         <button
-           onClick={() => {
-             setActiveTab("search")
-             setSearchFromContext(currentCategory)
-             setSearchFromViewMode(viewMode)
-             setCurrentScreen("search")
-           }}
-           className="flex flex-col items-center w-16"
-         >
-           <Search className="h-4 w-4 text-gray-600" />
-           <span className={`text-xs mt-1 ${activeTab === "search" ? "text-indigo-600" : "text-gray-400"}`}>
-             Search
-           </span>
-          </button>
-        </div> 
-        
+        {/* Search Button */}
+        <button
+          onClick={() => {
+            setActiveTab("search")
+            setSearchFromContext(currentCategory)
+            setSearchFromViewMode(viewMode)
+            setCurrentScreen("search")
+          }}
+          className="flex flex-col items-center w-16"
+        >
+          <Search className="h-4 w-4 text-gray-600" />
+          <span className={`text-xs mt-1 ${activeTab === "search" ? "text-indigo-600" : "text-gray-400"}`}>
+            Search
+          </span>
+        </button>
       </div>
-
     </div>
   )
 }
