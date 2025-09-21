@@ -1235,7 +1235,7 @@ if (currentScreen === "search") {
                 <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-4">
                   <div className="space-y-2">
                     {searchResults.map((map, index) => (
-                      <div key={`title-${map.id}`} className="grid grid-cols-[1.25rem_1fr_auto] gap-2 items-center">
+                      <div key={`title-${map.id}`} className="grid grid-cols-[1.5rem_1fr_auto] gap-2 items-center">
                         <span className="text-sm text-gray-600 text-right font-mono tabular-nums">{index + 1} :</span>
                         <span className="text-sm text-black truncate">{map.title}</span>
                         <span className="text-xs text-gray-500 whitespace-nowrap">{map.category}</span>
@@ -1443,7 +1443,7 @@ if (currentScreen === "favorites") {
                 <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-4">
                   <div className="space-y-2">
                     {favoritesList.map((map, index) => (
-                      <div key={`title-${map.id}`} className="grid grid-cols-[1.25rem_1fr_auto] gap-2 items-center">
+                      <div key={`title-${map.id}`} className="grid grid-cols-[1.5rem_1fr_auto] gap-2 items-center">
                         <span className="text-sm text-gray-600 text-right font-mono tabular-nums">{index + 1} :</span>
                         <span className="text-sm text-black truncate">{map.title}</span>
                         <span className="text-xs text-gray-500 whitespace-nowrap">{map.category}</span>
@@ -1636,7 +1636,7 @@ if (currentScreen === "category") {
             <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-4">
               <div className="space-y-2">
                 {maps.map((map, index) => (
-                  <div key={`title-${map.id}`} className="grid grid-cols-[1.25rem_1fr_3rem] gap-2 items-center">
+                  <div key={`title-${map.id}`} className="grid grid-cols-[1.5rem_1fr_1.5rem] gap-2 items-center">
                     <span className="text-sm text-gray-600 text-right font-mono tabular-nums">{index + 1} :</span>
                     <span className="text-sm text-black truncate">{map.title}</span>
                     <div></div>
@@ -1699,37 +1699,42 @@ if (currentScreen === "category") {
 
       {/* Bottom Bar */}
       <div className="flex items-center justify-center h-14 shadow-sm" style={{ backgroundColor: '#f0f1f2' }}>
-        {/* Favorites Button */}
-        <button
-          onClick={() => {
-            setActiveTab("favorites")
-            setFavoriteFromContext(currentCategory)
-            setFavoriteFromViewMode(viewMode)
-            setCurrentScreen("favorites")
-          }}
-          className="flex flex-col items-center w-16"
-        >
-          <Star className="h-4 w-4 text-gray-600" />
-          <span className={`text-xs mt-1 ${activeTab === "favorites" ? "text-indigo-600" : "text-gray-400"}`}>
-            Favorites
-          </span>
-        </button>
+        
+        {/* Centered Button Group */}
+        <div className="flex items-center gap-8">
+          {/* Favorites Button */}
+          <button
+            onClick={() => {
+              setActiveTab("favorites")
+              setFavoriteFromContext(currentCategory)
+              setFavoriteFromViewMode(viewMode)
+              setCurrentScreen("favorites")
+            }}
+            className="flex flex-col items-center w-16"
+          >
+            <Star className="h-4 w-4 text-gray-600" />
+            <span className={`text-xs mt-1 ${activeTab === "favorites" ? "text-indigo-600" : "text-gray-400"}`}>
+              Favorites
+            </span>
+          </button>
 
-        {/* Search Button */}
-        <button
-          onClick={() => {
-            setActiveTab("search")
-            setSearchFromContext(currentCategory)
-            setSearchFromViewMode(viewMode)
-            setCurrentScreen("search")
-          }}
-          className="flex flex-col items-center w-16"
-        >
-          <Search className="h-4 w-4 text-gray-600" />
-          <span className={`text-xs mt-1 ${activeTab === "search" ? "text-indigo-600" : "text-gray-400"}`}>
-            Search
-          </span>
-        </button>
+          {/* Search Button */}
+          <button
+            onClick={() => {
+              setActiveTab("search")
+              setSearchFromContext(currentCategory)
+              setSearchFromViewMode(viewMode)
+              setCurrentScreen("search")
+            }}
+            className="flex flex-col items-center w-16"
+          >
+            <Search className="h-4 w-4 text-gray-600" />
+            <span className={`text-xs mt-1 ${activeTab === "search" ? "text-indigo-600" : "text-gray-400"}`}>
+              Search
+            </span>
+          </button>
+        </div>
+
       </div>
     </div>
   )
