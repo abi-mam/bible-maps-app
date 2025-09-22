@@ -1,10 +1,7 @@
 "use client"
 
-import { Immersive } from '../immersive';
 import React, { useState, useEffect, useRef } from "react"
-import { Capacitor } from '@capacitor/core';
 import { StatusBar, Style } from '@capacitor/status-bar';
-import { App as CapacitorApp } from '@capacitor/app';
 import { TransformWrapper, TransformComponent } from "react-zoom-pan-pinch";
 import { Search, Star, Grid3X3, List, ChevronLeft, ChevronRight, ArrowLeft, Home } from "lucide-react"
 
@@ -1076,7 +1073,7 @@ if (currentScreen === "home") {
       )}
 
       {/* Bottom Bar - Covers system navigation area on home screen only */}
-      <div className="bg-lime-200 fixed bottom-0 left-0 right-0 h-14 shadow-sm border-t border-stone-200"></div>
+      <div className="bg-lime-400 fixed bottom-0 left-0 right-0 h-14 shadow-sm border-t border-stone-200"></div>
 
     </div>
   )
@@ -1535,7 +1532,7 @@ if (currentScreen === "category") {
   const Icon = showFavorites ? Star : mockMapData[currentCategory]?.icon || BookIcon
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gray-50 pb-14">
       {showTitlePopup && <TitlePopup title={popupTitle} onClose={() => setShowTitlePopup(false)} />}
 
       {/* Header */}
@@ -1730,43 +1727,45 @@ if (currentScreen === "category") {
         )}
       </div>
       
-      {/* Bottom Bar */}
-      <div className="flex items-center justify-center h-14 bg-lime-200 shadow-sm">
-        {/* Button Container with equal spacing */}
-        <div className="flex items-center justify-between w-full max-w-md px-12">
-          {/* Search Button */}
-          <button
-            onClick={() => {
-              setActiveTab("search")
-              setSearchFromContext(currentCategory)
-              setSearchFromViewMode(viewMode)
-              setCurrentScreen("search")
-            }}
-            className="flex flex-col items-center w-16"
-         >
-            <Search className="h-5 w-5 text-stone-700" />
-            <span className={`text-xs mt-1 ${activeTab === "search" ? "text-indigo-600" : "text-gray-400"}`}>
-             Search
-            </span>
-          </button>
-   
-         {/* Favorites Button */}
-         <button
-           onClick={() => {
-             setActiveTab("favorites")
-             setFavoriteFromContext(currentCategory)
-             setFavoriteFromViewMode(viewMode)
-              setCurrentScreen("favorites")
-           }}
-           className="flex flex-col items-center w-16"
-         >
-           <Star className="h-5 w-5 text-stone-700" />
-           <span className={`text-xs mt-1 ${activeTab === "favorites" ? "text-indigo-600" : "text-gray-400"}`}>
-            Favorites
-           </span>
-         </button>     
-       </div>
-     </div>
+      {/* Bottom Bar - Fixed at bottom */}
+      <div className="fixed bottom-0 left-0 right-0 bg-lime-400 shadow-sm border-t border-stone-200 z-10">
+        <div className="flex items-center justify-center h-14">
+          {/* Button Container with equal spacing */}
+          <div className="flex items-center justify-between w-full max-w-md px-12">
+            {/* Search Button */}
+            <button
+              onClick={() => {
+                setActiveTab("search")
+                setSearchFromContext(currentCategory)
+                setSearchFromViewMode(viewMode)
+                setCurrentScreen("search")
+              }}
+              className="flex flex-col items-center w-16"
+            >
+              <Search className="h-5 w-5 text-stone-700" />
+              <span className={`text-xs mt-1 ${activeTab === "search" ? "text-indigo-600" : "text-gray-400"}`}>
+                Search
+              </span>
+            </button>
+
+            {/* Favorites Button */}
+            <button
+              onClick={() => {
+                setActiveTab("favorites")
+                setFavoriteFromContext(currentCategory)
+                setFavoriteFromViewMode(viewMode)
+                setCurrentScreen("favorites")
+              }}
+              className="flex flex-col items-center w-16"
+            >
+              <Star className="h-5 w-5 text-stone-700" />
+              <span className={`text-xs mt-1 ${activeTab === "favorites" ? "text-indigo-600" : "text-gray-400"}`}>
+                Favorites
+              </span>
+            </button>
+          </div>
+        </div>
+      </div>
 
     </div>
   )
