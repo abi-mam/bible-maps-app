@@ -681,48 +681,43 @@ const BibleMapsApp = () => {
     }
   }, [currentScreen, hasOpenedBefore, activeMap])
 
-  export default function MapViewer() {
-  useEffect(() => {
-    Immersive.enter();
-
-    return () => {
-      Immersive.exit();
-    };
-  }, []);
-
-  return (
-    <div className="w-full h-full bg-black">
-      {/* your map content */}
-    </div>
-  );
-}
-
-  useEffect(() => {
-  const setupMapViewerBars = () => {
+   // Immersive mode control
+   useEffect(() => {
     if (!Capacitor.isNativePlatform()) return;
 
-    try {
-      if (currentScreen === "mapViewer") {
-        StatusBar.setOverlaysWebView({ overlay: true });
-        StatusBar.setBackgroundColor({ color: '#4a7c59' });
-        StatusBar.setStyle({
-          style: mapViewerTheme === "light" ? Style.Dark : Style.Light
-        });
-      } else {
-        StatusBar.setOverlaysWebView({ overlay: false });
-        StatusBar.setBackgroundColor({ color: '#4a7c59' });
-        StatusBar.setStyle({ style: Style.Light });
-      }
-    } catch (error) {
-      console.error('Bar configuration error:', error);
+    if (currentScreen === "mapViewer") {
+      Immersive.enter();
+    } else {
+      Immersive.exit();
     }
-  };
+  }, [currentScreen]);
 
-  setupMapViewerBars();
-}, [currentScreen, mapViewerTheme]);
+  // StatusBar adjustments
+  useEffect(() => {
+    const setupMapViewerBars = () => {
+      if (!Capacitor.isNativePlatform()) return;
 
+      try {
+        if (currentScreen === "mapViewer") {
+          StatusBar.setOverlaysWebView({ overlay: true });
+          StatusBar.setBackgroundColor({ color: '#000000' });
+          StatusBar.setStyle({
+            style: mapViewerTheme === "light" ? Style.Dark : Style.Light
+          });
+        } else {
+          StatusBar.setOverlaysWebView({ overlay: false });
+          StatusBar.setBackgroundColor({ color: '#4a7c59' });
+          StatusBar.setStyle({ style: Style.Light });
+        }
+      } catch (error) {
+        console.error('Bar configuration error:', error);
+      }
+    };
 
-  // Handle controls timeout  
+    setupMapViewerBars();
+  }, [currentScreen, mapViewerTheme]);
+
+  // Controls auto-hide
   useEffect(() => {
     if (showControls && currentScreen === "mapViewer") {
       const timer = setTimeout(() => setShowControls(false), 4000)
@@ -820,9 +815,6 @@ useEffect(() => {
   };
 }, []);
   
-
-
-
   // ... rest of your component code (toggleFavorite, openMapViewer, etc.) ...
   
   const toggleFavorite = (mapId) => {
