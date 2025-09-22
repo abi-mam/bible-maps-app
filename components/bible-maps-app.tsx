@@ -681,16 +681,15 @@ const BibleMapsApp = () => {
     }
   }, [currentScreen, hasOpenedBefore, activeMap])
 
-   // Immersive mode control
-   useEffect(() => {
-    if (!Capacitor.isNativePlatform()) return;
+useEffect(() => {
+  if (!Capacitor.isNativePlatform()) return;
 
-    if (currentScreen === "mapViewer") {
-      Immersive.enter();
-    } else {
-      Immersive.exit();
-    }
-  }, [currentScreen]);
+  if (currentScreen === "mapViewer") {
+    Immersive.enter().then(res => console.log("Immersive enter result:", res));
+  } else {
+    Immersive.exit().then(res => console.log("Immersive exit result:", res));
+  }
+}, [currentScreen]);
 
   // StatusBar adjustments
   useEffect(() => {

@@ -1,11 +1,11 @@
 package com.abi.biblemaps;
 
 import android.os.Build;
-import android.util.Log;
 import android.view.View;
 import android.view.WindowInsets;
 import android.view.WindowInsetsController;
 
+import com.getcapacitor.JSObject;
 import com.getcapacitor.Plugin;
 import com.getcapacitor.PluginMethod;
 import com.getcapacitor.PluginCall;
@@ -16,8 +16,6 @@ public class ImmersivePlugin extends Plugin {
 
     @PluginMethod
     public void enter(PluginCall call) {
-        Log.d("ImmersivePlugin", "enter() called");
-
         getActivity().runOnUiThread(() -> {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
                 WindowInsetsController controller = getActivity().getWindow().getInsetsController();
@@ -36,13 +34,13 @@ public class ImmersivePlugin extends Plugin {
             }
         });
 
-        call.resolve();
+        JSObject ret = new JSObject();
+        ret.put("status", "enter-called");
+        call.resolve(ret);
     }
 
     @PluginMethod
     public void exit(PluginCall call) {
-        Log.d("ImmersivePlugin", "exit() called");
-
         getActivity().runOnUiThread(() -> {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
                 WindowInsetsController controller = getActivity().getWindow().getInsetsController();
@@ -56,6 +54,8 @@ public class ImmersivePlugin extends Plugin {
             }
         });
 
-        call.resolve();
+        JSObject ret = new JSObject();
+        ret.put("status", "exit-called");
+        call.resolve(ret);
     }
 }
