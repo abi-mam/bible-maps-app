@@ -20,11 +20,10 @@ public class MainActivity extends BridgeActivity {
             WindowInsetsController controller = window.getInsetsController();
             if (controller != null) {
                 controller.setSystemBarsAppearance(
-                    WindowInsetsController.APPEARANCE_LIGHT_STATUS_BARS,
+                    0, // clear APPEARANCE_LIGHT_STATUS_BARS
                     WindowInsetsController.APPEARANCE_LIGHT_STATUS_BARS
                 );
             }
         }
-
     }
 }
