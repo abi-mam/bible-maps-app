@@ -1,5 +1,6 @@
 "use client"
 
+import { Immersive } from '../immersive';
 import React, { useState, useEffect, useRef } from "react"
 import { Capacitor } from '@capacitor/core';
 import { StatusBar, Style } from '@capacitor/status-bar';
@@ -680,7 +681,23 @@ const BibleMapsApp = () => {
     }
   }, [currentScreen, hasOpenedBefore, activeMap])
 
- useEffect(() => {
+  export default function MapViewer() {
+  useEffect(() => {
+    Immersive.enter();
+
+    return () => {
+      Immersive.exit();
+    };
+  }, []);
+
+  return (
+    <div className="w-full h-full bg-black">
+      {/* your map content */}
+    </div>
+  );
+}
+
+  useEffect(() => {
   const setupMapViewerBars = () => {
     if (!Capacitor.isNativePlatform()) return;
 
@@ -705,7 +722,7 @@ const BibleMapsApp = () => {
 }, [currentScreen, mapViewerTheme]);
 
 
- // Handle controls timeout  
+  // Handle controls timeout  
   useEffect(() => {
     if (showControls && currentScreen === "mapViewer") {
       const timer = setTimeout(() => setShowControls(false), 4000)
