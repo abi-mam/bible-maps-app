@@ -1726,7 +1726,7 @@ if (currentScreen === "category") {
       {/* Bottom Bar */}
       <div className="flex items-center justify-center h-14 shadow-sm" style={{ backgroundColor: '#f0f1f2' }}>
         {/* Button Container with equal spacing */}
-        <div className="flex items-center justify-between w-full max-w-md px-6">
+        <div className="flex items-center justify-between w-full max-w-md px-12">
           {/* Search Button */}
           <button
             onClick={() => {
@@ -1737,9 +1737,8 @@ if (currentScreen === "category") {
             }}
             className="flex flex-col items-center p-2 bg-gray-50 rounded-lg"
          >
-            <Search className="h-6 w-6 text-stone-600" />
-            <span>Search</span>
-         </button>
+            <Search className="h-5 w-5 text-stone-400" />
+          </button>
    
          {/* Favorites Button */}
          <button
@@ -1751,8 +1750,7 @@ if (currentScreen === "category") {
            }}
            className="flex flex-col items-center p-2 bg-gray-50 rounded-lg"
          >
-           <Star className="h-6 w-6 text-stone-600" />
-           <span>Favorites</span>
+           <Star className="h-5 w-5 text-stone-400" />
          </button>     
        </div>
      </div>
