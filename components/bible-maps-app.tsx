@@ -1069,8 +1069,7 @@ if (currentScreen === "home") {
 
       {/* Bottom Bar - Covers system navigation area on home screen only */}
       <div className="bg-lime-200 fixed bottom-0 left-0 right-0 h-14 shadow-sm border-t border-stone-200"><div>
-    </div>
-  )
+   )
 }
 
 // Search Screen
