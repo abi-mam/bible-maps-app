@@ -5,11 +5,11 @@ import android.view.View;
 import android.view.WindowInsets;
 import android.view.WindowInsetsController;
 
-import com.getcapacitor.JSObject;
 import com.getcapacitor.Plugin;
-import com.getcapacitor.PluginMethod;
 import com.getcapacitor.PluginCall;
+import com.getcapacitor.PluginMethod;
 import com.getcapacitor.annotation.CapacitorPlugin;
+import com.getcapacitor.JSObject;
 
 @CapacitorPlugin(name = "Immersive")
 public class ImmersivePlugin extends Plugin {
@@ -28,14 +28,14 @@ public class ImmersivePlugin extends Plugin {
             } else {
                 getActivity().getWindow().getDecorView().setSystemUiVisibility(
                     View.SYSTEM_UI_FLAG_FULLSCREEN
-                    | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
-                    | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY
+                        | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
+                        | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY
                 );
             }
         });
 
         JSObject ret = new JSObject();
-        ret.put("status", "enter-called");
+        ret.put("status", "Immersive enter() reached Java");
         call.resolve(ret);
     }
 
@@ -55,7 +55,7 @@ public class ImmersivePlugin extends Plugin {
         });
 
         JSObject ret = new JSObject();
-        ret.put("status", "exit-called");
+        ret.put("status", "Immersive exit() reached Java");
         call.resolve(ret);
     }
 }

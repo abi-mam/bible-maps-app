@@ -6,4 +6,3 @@ type ImmersivePlugin = {
 };
 
 export const Immersive = registerPlugin<ImmersivePlugin>('Immersive');
-
