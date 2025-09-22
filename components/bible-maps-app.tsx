@@ -722,6 +722,13 @@ const BibleMapsApp = () => {
     searchFromContextRef.current = searchFromContext;
   }, [searchFromContext]);
 
+  // Sync isSearchingFromHome with searchQuery state
+  useEffect(() => {
+    if (currentScreen === "home") {
+      setIsSearchingFromHome(searchQuery.trim() !== "");
+    }
+  }, [searchQuery, currentScreen]);
+
   useEffect(() => {
     favoriteFromContextRef.current = favoriteFromContext;
   }, [favoriteFromContext]);
