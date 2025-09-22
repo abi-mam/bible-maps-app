@@ -4,8 +4,12 @@ const config: CapacitorConfig = {
   appId: 'com.abi.biblemaps',
   appName: 'Bible Maps',
   webDir: 'out',
-  plugins: {
-    App: {
+  plugins: {      
+    SplashScreen: {
+      launchAutoHide: false,   // we will hide manually in code
+      androidSplashResourceName: 'splash', // your drawable name
+      showSpinner: false,      // optional
+      backgroundColor: '#1a1a1a', // colorBibleMapsDark
     },
     Keyboard: {
       resize: 'native',

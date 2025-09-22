@@ -3,15 +3,19 @@
 
     <!-- Splash screen theme -->
     <style name="AppTheme.NoActionBarLaunch" parent="Theme.SplashScreen">
-        <!-- Android 12+ -->
+        <!-- Android 12+ background -->
         <item name="android:windowSplashScreenBackground">@color/colorBibleMapsDark</item>
-     
+
         <!-- Android <12 fallback -->
         <item name="android:background">@drawable/splash_screen</item>
 
-        <!-- Status and nav bars -->
-        <item name="android:statusBarColor">@color/colorBibleMapsDark</item>
-        <item name="android:navigationBarColor">@color/colorBibleMapsDark</item>
+        <!-- Hide status and nav bars -->
+        <item name="android:windowFullscreen">true</item>
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:statusBarColor">@android:color/transparent</item>
+        <item name="android:navigationBarColor">@android:color/transparent</item>
+
+        <!-- No icons -->
         <item name="android:windowLightStatusBar">false</item>
         <item name="android:windowLightNavigationBar">false</item>
 

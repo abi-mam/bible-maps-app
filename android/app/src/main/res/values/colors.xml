@@ -7,7 +7,7 @@
     <color name="colorAccent">#03DAC5</color>         <!-- old teal accent -->
 
     <!-- Bible Maps brand (green family) -->
-    <color name="colorBibleMapsDark">#0c2e16</color>   <!-- deep green (current main) -->
+    <color name="colorBibleMapsDark">#368a12</color>   <!-- deep green (current main) -->
     <color name="colorBibleMaps">#6b947e</color>       <!-- mid-tone green -->
     <color name="colorBibleMapsLight">#a8c3b1</color> <!-- light green -->
 

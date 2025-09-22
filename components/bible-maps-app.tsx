@@ -1715,13 +1715,11 @@ if (currentScreen === "category") {
           </div>
         )}
       </div>
-
+      
       {/* Bottom Bar */}
       <div className="flex items-center justify-center h-14 shadow-sm" style={{ backgroundColor: '#f0f1f2' }}>
-        
-        {/* Centered Button Group */}
-        <div className="flex items-center gap-48">
-
+        {/* Button Container with equal spacing */}
+        <div className="flex items-center justify-between w-full max-w-md px-6">
           {/* Search Button */}
           <button
             onClick={() => {
@@ -1730,32 +1728,28 @@ if (currentScreen === "category") {
               setSearchFromViewMode(viewMode)
               setCurrentScreen("search")
             }}
-            className="flex flex-col items-center w-16 bg-gray-100 rounded-lg"
-          >
-            <Search className="h-4 w-4 text-gray-600" />
-            <span className={`text-xs mt-1 ${activeTab === "search" ? "text-indigo-600" : "text-gray-400"}`}>
-              Search
-            </span>
-          </button>
-         
-          {/* Favorites Button */}
-          <button
-            onClick={() => {
-              setActiveTab("favorites")
-              setFavoriteFromContext(currentCategory)
-              setFavoriteFromViewMode(viewMode)
+            className="flex flex-col items-center p-2 bg-gray-50 rounded-lg"
+         >
+            <Search className="h-6 w-6 text-stone-600" />
+            <span>Search</span>
+         </button>
+   
+         {/* Favorites Button */}
+         <button
+           onClick={() => {
+             setActiveTab("favorites")
+             setFavoriteFromContext(currentCategory)
+             setFavoriteFromViewMode(viewMode)
               setCurrentScreen("favorites")
-            }}
-            className="flex flex-col items-center w-16 bg-gray-100 rounded-lg"
-          >
-            <Star className="h-4 w-4 text-gray-600" />
-            <span className={`text-xs mt-1 ${activeTab === "favorites" ? "text-indigo-600" : "text-gray-400"}`}>
-              Favorites
-            </span>
-          </button>     
-        </div>
+           }}
+           className="flex flex-col items-center p-2 bg-gray-50 rounded-lg"
+         >
+           <Star className="h-6 w-6 text-stone-600" />
+           <span>Favorites</span>
+         </button>     
+       </div>
+     </div>
 
-      </div>
     </div>
   )
 }
