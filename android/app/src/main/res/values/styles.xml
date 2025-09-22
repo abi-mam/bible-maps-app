@@ -5,16 +5,15 @@
     <style name="AppTheme.NoActionBarLaunch" parent="Theme.SplashScreen">
         <!-- Android 12+ -->
         <item name="android:windowSplashScreenBackground">@color/colorBibleMapsDark</item>
-        <item name="android:windowSplashScreenAnimatedIcon">@drawable/splash</item>
-
+     
         <!-- Android <12 fallback -->
         <item name="android:background">@drawable/splash_screen</item>
 
         <!-- Status and nav bars -->
         <item name="android:statusBarColor">@color/colorBibleMapsDark</item>
         <item name="android:navigationBarColor">@color/colorBibleMapsDark</item>
-        <item name="android:windowLightStatusBar">true</item>
-        <item name="android:windowLightNavigationBar">true</item>
+        <item name="android:windowLightStatusBar">false</item>
+        <item name="android:windowLightNavigationBar">false</item>
 
         <item name="postSplashScreenTheme">@style/AppTheme</item>
     </style>

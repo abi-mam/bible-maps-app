@@ -1730,7 +1730,7 @@ if (currentScreen === "category") {
               setSearchFromViewMode(viewMode)
               setCurrentScreen("search")
             }}
-            className="flex flex-col items-center w-16 rounded-lg shadow-lg"
+            className="flex flex-col items-center w-16 bg-gray-100 rounded-lg"
           >
             <Search className="h-4 w-4 text-gray-600" />
             <span className={`text-xs mt-1 ${activeTab === "search" ? "text-indigo-600" : "text-gray-400"}`}>
@@ -1746,7 +1746,7 @@ if (currentScreen === "category") {
               setFavoriteFromViewMode(viewMode)
               setCurrentScreen("favorites")
             }}
-            className="flex flex-col items-center w-16 rounded-lg shadow-lg"
+            className="flex flex-col items-center w-16 bg-gray-100 rounded-lg"
           >
             <Star className="h-4 w-4 text-gray-600" />
             <span className={`text-xs mt-1 ${activeTab === "favorites" ? "text-indigo-600" : "text-gray-400"}`}>
