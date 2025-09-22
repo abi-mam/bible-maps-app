@@ -680,7 +680,32 @@ const BibleMapsApp = () => {
     }
   }, [currentScreen, hasOpenedBefore, activeMap])
 
-  // Handle controls timeout  
+ useEffect(() => {
+  const setupMapViewerBars = () => {
+    if (!Capacitor.isNativePlatform()) return;
+
+    try {
+      if (currentScreen === "mapViewer") {
+        StatusBar.setOverlaysWebView({ overlay: true });
+        StatusBar.setBackgroundColor({ color: '#4a7c59' });
+        StatusBar.setStyle({
+          style: mapViewerTheme === "light" ? Style.Dark : Style.Light
+        });
+      } else {
+        StatusBar.setOverlaysWebView({ overlay: false });
+        StatusBar.setBackgroundColor({ color: '#4a7c59' });
+        StatusBar.setStyle({ style: Style.Light });
+      }
+    } catch (error) {
+      console.error('Bar configuration error:', error);
+    }
+  };
+
+  setupMapViewerBars();
+}, [currentScreen, mapViewerTheme]);
+
+
+ // Handle controls timeout  
   useEffect(() => {
     if (showControls && currentScreen === "mapViewer") {
       const timer = setTimeout(() => setShowControls(false), 4000)
@@ -708,6 +733,7 @@ const BibleMapsApp = () => {
   useEffect(() => {
     favoriteFromViewModeRef.current = favoriteFromViewMode;
   }, [favoriteFromViewMode]);
+
 
 // System's back button handler for Android Capacitor
 useEffect(() => {
@@ -770,6 +796,9 @@ useEffect(() => {
   };
 }, []);
   
+
+
+
   // ... rest of your component code (toggleFavorite, openMapViewer, etc.) ...
   
   const toggleFavorite = (mapId) => {
