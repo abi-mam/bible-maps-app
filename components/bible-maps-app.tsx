@@ -1064,13 +1064,11 @@ if (currentScreen === "home") {
             </div>
           </div>
 
-          {/* System Navigation Bar Color Pad - only visible portion */}
-          <div className="h-6 w-full" style={{ backgroundColor: '#f0f1f2' }}></div>
         </>
       )}
 
       {/* Bottom Bar - Covers system navigation area on home screen only */}
-      <div className="fixed bottom-0 left-0 right-0 h-14 shadow-sm border-t border-stone-200" style={{ backgroundColor: '#f0f1f2' }}></div>
+      <div className="bg-lime-200 fixed bottom-0 left-0 right-0 h-14 shadow-sm border-t border-stone-200"><div>
     </div>
   )
 }
@@ -1724,7 +1722,7 @@ if (currentScreen === "category") {
       </div>
       
       {/* Bottom Bar */}
-      <div className="flex items-center justify-center h-14 shadow-sm" style={{ backgroundColor: '#f0f1f2' }}>
+      <div className="flex items-center justify-center h-14 bg-lime-200 shadow-sm">
         {/* Button Container with equal spacing */}
         <div className="flex items-center justify-between w-full max-w-md px-12">
           {/* Search Button */}
@@ -1735,9 +1733,12 @@ if (currentScreen === "category") {
               setSearchFromViewMode(viewMode)
               setCurrentScreen("search")
             }}
-            className="flex flex-col items-center p-2 bg-gray-50 rounded-lg"
+            className="flex flex-col items-center w-16"
          >
-            <Search className="h-5 w-5 text-stone-400" />
+            <Search className="h-5 w-5 text-stone-700" />
+            <span className={`text-xs mt-1 ${activeTab === "search" ? "text-indigo-600" : "text-gray-400"}`}>
+             Search
+            </span>
           </button>
    
          {/* Favorites Button */}
@@ -1748,9 +1749,12 @@ if (currentScreen === "category") {
              setFavoriteFromViewMode(viewMode)
               setCurrentScreen("favorites")
            }}
-           className="flex flex-col items-center p-2 bg-gray-50 rounded-lg"
+           className="flex flex-col items-center w-16"
          >
-           <Star className="h-5 w-5 text-stone-400" />
+           <Star className="h-5 w-5 text-stone-700" />
+           <span className={`text-xs mt-1 ${activeTab === "favorites" ? "text-indigo-600" : "text-gray-400"}`}>
+            Favorites
+           </span>
          </button>     
        </div>
      </div>
