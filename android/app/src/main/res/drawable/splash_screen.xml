@@ -1,11 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
 <layer-list xmlns:android="http://schemas.android.com/apk/res/android">
-    <!-- Background color -->
-    <item android:drawable="@color/colorBibleMapsDark" />
 
-    <!-- Centered PNG icon -->
+    <item>
+        <shape android:shape="rectangle">
+            <solid android:color="@color/colorBibleMapsDark"/>
+        </shape>
+    </item>
+
     <item>
         <bitmap
             android:gravity="center"
-            android:src="@drawable/splash" />
+            android:src="@drawable/splash"/>
     </item>
+
 </layer-list>

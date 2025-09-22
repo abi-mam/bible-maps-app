@@ -7,28 +7,6 @@ import { App as CapacitorApp } from '@capacitor/app';
 import { TransformWrapper, TransformComponent } from "react-zoom-pan-pinch";
 import { Search, Star, Grid3X3, List, ChevronLeft, ChevronRight, ArrowLeft, Home } from "lucide-react"
 
-// ---------------- BOTTOM BAR ----------------
-const BottomBar = ({ activeTab, onTabChange }) => {
-  return (
-    <div
-      className="fixed inset-x-0 bottom-0 h-14 bg-white/95 backdrop-blur-md border-t border-slate-200 z-50 flex items-center justify-around pb-[env(safe-area-inset-bottom)]"
-    >
-      <button
-        onClick={() => onTabChange("search")}
-        className={`flex flex-col items-center ${activeTab === "search" ? "text-indigo-600" : "text-slate-600"}`}>
-        <Search className="h-5 w-5" />
-        <span className="text-xs">Search</span>
-      </button>
-      <button
-        onClick={() => onTabChange("favorites")}
-        className={`flex flex-col items-center ${activeTab === "favorites" ? "text-indigo-600" : "text-slate-600"}`}>
-        <Star className="h-5 w-5" />
-        <span className="text-xs">Favorites</span>
-      </button>
-    </div>
-  )
-}
-
 const SimpleBookIcon = ({ className }) => (
   <div className={className}>
     <img src="/open-book-icon.png" alt="Open Book" className="w-full h-full" />
@@ -1713,7 +1691,7 @@ if (currentScreen === "category") {
       <div className="flex items-center justify-center h-14 shadow-sm" style={{ backgroundColor: '#f0f1f2' }}>
         
         {/* Centered Button Group */}
-        <div className="flex items-center gap-40">
+        <div className="flex items-center gap-44">
 
           {/* Search Button */}
           <button
@@ -1723,7 +1701,7 @@ if (currentScreen === "category") {
               setSearchFromViewMode(viewMode)
               setCurrentScreen("search")
             }}
-            className="flex flex-col items-center w-16 p-2 rounded-lg shadow-lg"
+            className="flex flex-col items-center w-16 rounded-lg shadow-lg"
           >
             <Search className="h-4 w-4 text-gray-600" />
             <span className={`text-xs mt-1 ${activeTab === "search" ? "text-indigo-600" : "text-gray-400"}`}>
@@ -1739,7 +1717,7 @@ if (currentScreen === "category") {
               setFavoriteFromViewMode(viewMode)
               setCurrentScreen("favorites")
             }}
-            className="flex flex-col items-center w-16"
+            className="flex flex-col items-center w-16 rounded-lg shadow-lg"
           >
             <Star className="h-4 w-4 text-gray-600" />
             <span className={`text-xs mt-1 ${activeTab === "favorites" ? "text-indigo-600" : "text-gray-400"}`}>
