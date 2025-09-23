@@ -838,7 +838,10 @@ if (currentScreen === "home") {
   return (
     <div className={`min-h-screen transition-all duration-300 ${isSearchingFromHome ? 'bg-stone-50' : 'bg-gradient-to-br from-slate-50 via-stone-50 to-slate-100'}`}>
       {showTitlePopup && <TitlePopup title={popupTitle} onClose={() => setShowTitlePopup(false)} />}
-
+  
+      {/* Status Bar Pad */}
+      <div className="bg-lime-800 w-full py-2"></div>
+      
       {/* Header */}
       <div className={`transition-all duration-300 ${isSearchingFromHome ? 'bg-stone-100' : 'bg-gradient-to-r from-slate-100 to-stone-100'} px-5 py-6 shadow-sm`}>
         <div className="flex items-center justify-center mb-6">
@@ -1061,6 +1064,9 @@ if (currentScreen === "search") {
   return (
     <div className="min-h-screen bg-gray-50" style={{ paddingBottom: isSystemNavVisible ? '4rem' : '0' }}>
       {showTitlePopup && <TitlePopup title={popupTitle} onClose={() => setShowTitlePopup(false)} />}
+
+      {/* Status Bar Pad */}
+      <div className="bg-lime-800 w-full py-2"></div>
 
       {/* Header */}
       <div className="bg-gray-100 px-4 py-4">
@@ -1289,6 +1295,9 @@ if (currentScreen === "favorites") {
     <div className="min-h-screen bg-gray-50" style={{ paddingBottom: isSystemNavVisible ? '4rem' : '0' }}>
       {showTitlePopup && <TitlePopup title={popupTitle} onClose={() => setShowTitlePopup(false)} />}
 
+      {/* Status Bar Pad */}
+      <div className="bg-lime-800 w-full py-2"></div>
+
       {/* Header */}
       <div className="bg-gray-100 px-4 py-4">
         {/* Row 1: Category icon + Title */}
@@ -1501,6 +1510,9 @@ if (currentScreen === "category") {
   return (
     <div className="min-h-screen bg-gray-50 pb-14">
       {showTitlePopup && <TitlePopup title={popupTitle} onClose={() => setShowTitlePopup(false)} />}
+
+      {/* Status Bar Pad */}
+      <div className="bg-lime-800 w-full py-2"></div>
 
       {/* Header */}
       <div className="bg-gray-100 px-4 py-4 flex items-center justify-between">

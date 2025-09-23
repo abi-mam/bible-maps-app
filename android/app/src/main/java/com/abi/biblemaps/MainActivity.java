@@ -2,9 +2,6 @@ package com.abi.biblemaps;
 
 import android.os.Build;
 import android.os.Bundle;
-import android.view.ActionMode;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowInsetsController;
@@ -21,17 +18,17 @@ public class MainActivity extends BridgeActivity {
         applySystemUI();
 
         // --- Disable WebView long press / selection ---
-        WebView webView = this.bridge.getWebView();
+        WebView webView = (WebView) this.bridge.getWebView();
+
+        // Consume long press
         webView.setOnLongClickListener(v -> true);
         webView.setHapticFeedbackEnabled(false);
         webView.setLongClickable(false);
 
-        webView.setCustomSelectionActionModeCallback(new ActionMode.Callback() {
-            @Override public boolean onCreateActionMode(ActionMode mode, Menu menu) { return false; }
-            @Override public boolean onPrepareActionMode(ActionMode mode, Menu menu) { return false; }
-            @Override public boolean onActionItemClicked(ActionMode mode, MenuItem item) { return false; }
-            @Override public void onDestroyActionMode(ActionMode mode) { }
-        });
+        // For Android 13+ (optional)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            webView.setTextSelectionEnabled(false);
+        }
     }
 
     @Override
@@ -43,12 +40,11 @@ public class MainActivity extends BridgeActivity {
     private void applySystemUI() {
         Window window = getWindow();
 
-        // Transparent status bar and prevent overlay at startup
+        // Transparent status bar
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             window.setStatusBarColor(android.graphics.Color.TRANSPARENT);
-
             int flags = window.getDecorView().getSystemUiVisibility();
-            flags |= View.SYSTEM_UI_FLAG_LAYOUT_STABLE; // content not pushed under status bar
+            flags |= View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN | View.SYSTEM_UI_FLAG_LAYOUT_STABLE;
             window.getDecorView().setSystemUiVisibility(flags);
         }
 
@@ -65,11 +61,12 @@ public class MainActivity extends BridgeActivity {
             window.getDecorView().setSystemUiVisibility(
                     View.SYSTEM_UI_FLAG_HIDE_NAVIGATION |
                     View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY |
-                    View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+                    View.SYSTEM_UI_FLAG_LAYOUT_STABLE |
+                    View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
             );
         }
 
-        // Adaptive status bar icons based on actual top background color
+        // Adaptive status bar icons
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             WindowInsetsController controller = window.getInsetsController();
             if (controller != null) {
@@ -90,9 +87,9 @@ public class MainActivity extends BridgeActivity {
         }
     }
 
-    // Determines if the top background is light or dark dynamically
+    // Determines if background is light
     private boolean isBackgroundLight() {
-        int color = getResources().getColor(R.color.appBackgroundColor); // use your top background color
+        int color = getResources().getColor(R.color.appBackgroundColor); // use your defined app background color
         int r = (color >> 16) & 0xff;
         int g = (color >> 8) & 0xff;
         int b = color & 0xff;
