@@ -6,7 +6,7 @@ const config: CapacitorConfig = {
   webDir: 'out',
   plugins: {      
     SplashScreen: {
-      "launchShowDuration": 1500, 
+      launchShowDuration: 1500, 
       launchAutoHide: false,   // we will hide manually in code
       androidSplashResourceName: 'splash', // your drawable name
       showSpinner: false,      // optional
@@ -15,6 +15,9 @@ const config: CapacitorConfig = {
     Keyboard: {
       resize: 'native',
     },
+    StatusBar: {
+      overlaysWebView: true   // ✅ makes content extend under transparent status bar
+    }
   },
   android: {
     allowMixedContent: true,

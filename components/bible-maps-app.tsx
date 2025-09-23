@@ -1,5 +1,6 @@
 "use client"
 
+import { setOpaqueStatusBar, setTransparentStatusBar } from '../helpers/statusBarHelper';
 import { App as CapacitorApp } from '@capacitor/app';
 import React, { useState, useEffect, useRef } from "react"
 import { StatusBar, Style } from '@capacitor/status-bar';
@@ -679,30 +680,13 @@ const BibleMapsApp = () => {
     }
   }, [currentScreen, hasOpenedBefore, activeMap])
 
-  // StatusBar adjustments
-  useEffect(() => {
-    const setupMapViewerBars = () => {
-      if (!Capacitor.isNativePlatform()) return;
-
-      try {
-        if (currentScreen === "mapViewer") {
-          StatusBar.setOverlaysWebView({ overlay: true });
-          StatusBar.setBackgroundColor({ color: '#000000' });
-          StatusBar.setStyle({
-            style: mapViewerTheme === "light" ? Style.Dark : Style.Light
-          });
-        } else {
-          StatusBar.setOverlaysWebView({ overlay: false });
-          StatusBar.setBackgroundColor({ color: '#4a7c59' });
-          StatusBar.setStyle({ style: Style.Light });
-        }
-      } catch (error) {
-        console.error('Bar configuration error:', error);
-      }
-    };
-
-    setupMapViewerBars();
-  }, [currentScreen, mapViewerTheme]);
+useEffect(() => {
+  if (currentScreen === "mapViewer") {
+    setTransparentStatusBar();
+  } else {
+    setOpaqueStatusBar();
+  }
+}, [currentScreen, mapViewerTheme]);
 
   // Controls auto-hide
   useEffect(() => {
