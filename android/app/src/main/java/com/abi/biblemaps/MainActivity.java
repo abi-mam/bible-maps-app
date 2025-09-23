@@ -21,23 +21,13 @@ public class MainActivity extends BridgeActivity {
         applySystemUI();
 
         // --- Disable WebView long press / selection ---
-        WebView webView = (WebView) this.bridge.getWebView();
-
-        // Consume long press
+        WebView webView = this.bridge.getWebView();
         webView.setOnLongClickListener(v -> true);
         webView.setHapticFeedbackEnabled(false);
         webView.setLongClickable(false);
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) { // Android 13+
-            webView.setTextSelectionEnabled(false);
-        }
-
-        // Disable selection action mode (cut/copy/share popup)
         webView.setCustomSelectionActionModeCallback(new ActionMode.Callback() {
-            @Override
-            public boolean onCreateActionMode(ActionMode mode, Menu menu) {
-                return false; // prevent popup
-            }
+            @Override public boolean onCreateActionMode(ActionMode mode, Menu menu) { return false; }
             @Override public boolean onPrepareActionMode(ActionMode mode, Menu menu) { return false; }
             @Override public boolean onActionItemClicked(ActionMode mode, MenuItem item) { return false; }
             @Override public void onDestroyActionMode(ActionMode mode) { }
@@ -56,8 +46,10 @@ public class MainActivity extends BridgeActivity {
         // Transparent status bar
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             window.setStatusBarColor(android.graphics.Color.TRANSPARENT);
+
+            // Prevent overlay at initial state
             int flags = window.getDecorView().getSystemUiVisibility();
-            flags |= View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN | View.SYSTEM_UI_FLAG_LAYOUT_STABLE;
+            flags |= View.SYSTEM_UI_FLAG_LAYOUT_STABLE;
             window.getDecorView().setSystemUiVisibility(flags);
         }
 
@@ -74,39 +66,19 @@ public class MainActivity extends BridgeActivity {
             window.getDecorView().setSystemUiVisibility(
                     View.SYSTEM_UI_FLAG_HIDE_NAVIGATION |
                     View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY |
-                    View.SYSTEM_UI_FLAG_LAYOUT_STABLE |
-                    View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+                    View.SYSTEM_UI_FLAG_LAYOUT_STABLE
             );
         }
 
-        // Adaptive status bar icons
+        // Adaptive icons: default white (safe for your 4 dark-green screens)
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             WindowInsetsController controller = window.getInsetsController();
             if (controller != null) {
-                boolean backgroundIsLight = isBackgroundLight();
-
-                if (backgroundIsLight) {
-                    controller.setSystemBarsAppearance(
-                            WindowInsetsController.APPEARANCE_LIGHT_STATUS_BARS,
-                            WindowInsetsController.APPEARANCE_LIGHT_STATUS_BARS
-                    ); // dark icons
-                } else {
-                    controller.setSystemBarsAppearance(
-                            0,
-                            WindowInsetsController.APPEARANCE_LIGHT_STATUS_BARS
-                    ); // white icons
-                }
+                controller.setSystemBarsAppearance(
+                        0,
+                        WindowInsetsController.APPEARANCE_LIGHT_STATUS_BARS
+                );
             }
         }
-    }
-
-    // Determines if background is light
-    private boolean isBackgroundLight() {
-        int color = getResources().getColor(R.color.appBackgroundColor);
-        int r = (color >> 16) & 0xff;
-        int g = (color >> 8) & 0xff;
-        int b = color & 0xff;
-        double luminance = (0.299 * r + 0.587 * g + 0.114 * b);
-        return luminance > 186;
     }
 }
