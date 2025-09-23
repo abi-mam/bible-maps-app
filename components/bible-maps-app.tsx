@@ -1,5 +1,6 @@
 "use client"
 
+import { App as CapacitorApp } from '@capacitor/app';
 import React, { useState, useEffect, useRef } from "react"
 import { StatusBar, Style } from '@capacitor/status-bar';
 import { TransformWrapper, TransformComponent } from "react-zoom-pan-pinch";
