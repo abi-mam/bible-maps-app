@@ -23,7 +23,8 @@ public class MainActivity extends BridgeActivity {
         // --- Disable WebView long press / selection ---
         WebView webView = (WebView) this.bridge.getWebView();
 
-        webView.setOnLongClickListener(v -> true); // consume long press
+        // Consume long press
+        webView.setOnLongClickListener(v -> true);
         webView.setHapticFeedbackEnabled(false);
         webView.setLongClickable(false);
 
@@ -31,6 +32,7 @@ public class MainActivity extends BridgeActivity {
             webView.setTextSelectionEnabled(false);
         }
 
+        // Disable selection action mode (cut/copy/share popup)
         webView.setCustomSelectionActionModeCallback(new ActionMode.Callback() {
             @Override
             public boolean onCreateActionMode(ActionMode mode, Menu menu) {
