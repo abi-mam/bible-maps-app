@@ -11,6 +11,9 @@
     <color name="colorBibleMaps">#6b947e</color>       <!-- mid-tone green -->
     <color name="colorBibleMapsLight">#f0fdf4</color> <!-- light green -->
 
+    <!-- App background color for adaptive status bar -->
+    <color name="appBackgroundColor">@color/colorBibleMapsDark</color> <!-- reused deep green -->
+
     <!-- Neutral Colors -->
     <color name="white">#FFFFFF</color>
     <color name="black">#000000</color>

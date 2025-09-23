@@ -43,13 +43,12 @@ public class MainActivity extends BridgeActivity {
     private void applySystemUI() {
         Window window = getWindow();
 
-        // Transparent status bar
+        // Transparent status bar and prevent overlay at startup
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             window.setStatusBarColor(android.graphics.Color.TRANSPARENT);
 
-            // Prevent overlay at initial state
             int flags = window.getDecorView().getSystemUiVisibility();
-            flags |= View.SYSTEM_UI_FLAG_LAYOUT_STABLE;
+            flags |= View.SYSTEM_UI_FLAG_LAYOUT_STABLE; // content not pushed under status bar
             window.getDecorView().setSystemUiVisibility(flags);
         }
 
@@ -70,15 +69,34 @@ public class MainActivity extends BridgeActivity {
             );
         }
 
-        // Adaptive icons: default white (safe for your 4 dark-green screens)
+        // Adaptive status bar icons based on actual top background color
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             WindowInsetsController controller = window.getInsetsController();
             if (controller != null) {
-                controller.setSystemBarsAppearance(
-                        0,
-                        WindowInsetsController.APPEARANCE_LIGHT_STATUS_BARS
-                );
+                boolean backgroundIsLight = isBackgroundLight();
+
+                if (backgroundIsLight) {
+                    controller.setSystemBarsAppearance(
+                            WindowInsetsController.APPEARANCE_LIGHT_STATUS_BARS,
+                            WindowInsetsController.APPEARANCE_LIGHT_STATUS_BARS
+                    ); // dark icons
+                } else {
+                    controller.setSystemBarsAppearance(
+                            0,
+                            WindowInsetsController.APPEARANCE_LIGHT_STATUS_BARS
+                    ); // white icons
+                }
             }
         }
+    }
+
+    // Determines if the top background is light or dark dynamically
+    private boolean isBackgroundLight() {
+        int color = getResources().getColor(R.color.appBackgroundColor); // use your top background color
+        int r = (color >> 16) & 0xff;
+        int g = (color >> 8) & 0xff;
+        int b = color & 0xff;
+        double luminance = (0.299 * r + 0.587 * g + 0.114 * b);
+        return luminance > 186;
     }
 }
