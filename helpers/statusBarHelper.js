@@ -5,7 +5,7 @@ import { StatusBar, Style } from '@capacitor/status-bar';
  */
 export function setOpaqueStatusBar() {
   StatusBar.setOverlaysWebView({ overlay: false });
-  StatusBar.setBackgroundColor({ color: '#006400' }); // dark green
+  StatusBar.setBackgroundColor({ color: '#3f6212' }); // dark green
   StatusBar.setStyle({ style: Style.Light }); // white icons
 }
 
