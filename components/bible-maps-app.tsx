@@ -1695,7 +1695,7 @@ if (currentScreen === "category") {
       </div>
       
       {/* Bottom Bar - Fixed at bottom */}
-      <div className="fixed bottom-0 left-0 right-0 bg-green-50 shadow-sm border-t border-stone-200 z-10">
+      <div className="fixed bottom-0 left-0 right-0 h-14 shadow-sm border-t border-stone-200 z-10" style={{ backgroundColor: '#f0f1f2'}}>
         <div className="flex items-center justify-center h-14">
           {/* Button Container with equal spacing */}
           <div className="flex items-center justify-between w-full max-w-md px-12">
@@ -1795,7 +1795,7 @@ if (currentScreen === "mapViewer" && activeMap) {
                   }}
                   className={`p-1.5 backdrop-blur-none rounded-lg shadow-lg w-fit ${
                     mapViewerTheme === "light" 
-                      ? "bg-white/90 text-gray-800 hover:bg-white" 
+                      ? "bg-white/90 text-blue-600 hover:bg-white" 
                       : "bg-black/70 text-white hover:bg-black/80"
                   }`}
                 >
