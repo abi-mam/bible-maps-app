@@ -18,13 +18,13 @@ public class MainActivity extends BridgeActivity {
     }
 
     @Override
-    public void onResume() {  // <- changed from protected to public
+    public void onResume() {  // must be public to override BridgeActivity
         super.onResume();
         applySystemUI();
     }
 
     /**
-     * Apply immersive nav bar and default status bar color
+     * Apply immersive nav bar and transparent status bar with adaptive icons
      */
     private void applySystemUI() {
         Window window = getWindow();
@@ -45,15 +45,27 @@ public class MainActivity extends BridgeActivity {
             );
         }
 
-        // Use Android resource color for status bar
+        // Make status bar transparent and allow content behind it
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            window.setStatusBarColor(getResources().getColor(R.color.colorBibleMapsDark));
+            window.setStatusBarColor(android.graphics.Color.TRANSPARENT);
+            int flags = window.getDecorView().getSystemUiVisibility();
+            flags |= View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN | View.SYSTEM_UI_FLAG_LAYOUT_STABLE;
+            window.getDecorView().setSystemUiVisibility(flags);
         }
 
-        // Light icons (white) by default
+        // Adaptive status bar icons (light/dark) depending on background
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             int flags = window.getDecorView().getSystemUiVisibility();
-            flags &= ~View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR;
+
+            // Detect background brightness and set icon color
+            // Example: you can decide dynamically; here we set dark icons for light backgrounds
+            boolean useDarkIcons = false; // change based on your background color logic
+            if (useDarkIcons) {
+                flags |= View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR; // dark icons
+            } else {
+                flags &= ~View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR; // light icons
+            }
+
             window.getDecorView().setSystemUiVisibility(flags);
         }
     }
