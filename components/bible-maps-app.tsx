@@ -1064,7 +1064,7 @@ if (currentScreen === "home") {
       )}
 
       {/* Bottom Bar - Covers system navigation area on home screen only */}
-      <div className="bg-green-100 fixed bottom-0 left-0 right-0 h-14 shadow-sm border-t border-stone-200"></div>
+      <div className="bg-green-50 fixed bottom-0 left-0 right-0 h-14 shadow-sm border-t border-stone-200"></div>
 
     </div>
   )
@@ -1087,7 +1087,7 @@ if (currentScreen === "search") {
       {showTitlePopup && <TitlePopup title={popupTitle} onClose={() => setShowTitlePopup(false)} />}
 
       {/* Header */}
-      <div className="bg-green-100 px-4 py-4">
+      <div className="bg-gray-100 px-4 py-4">
         {/* Row 1: Category icon + Title */}
         <div className="flex items-center mb-4">
           <button 
@@ -1314,7 +1314,7 @@ if (currentScreen === "favorites") {
       {showTitlePopup && <TitlePopup title={popupTitle} onClose={() => setShowTitlePopup(false)} />}
 
       {/* Header */}
-      <div className="bg-green-100 px-4 py-4">
+      <div className="bg-gray-100 px-4 py-4">
         {/* Row 1: Category icon + Title */}
         <div className="flex items-center mb-4">
           <button 
@@ -1719,7 +1719,7 @@ if (currentScreen === "category") {
       </div>
       
       {/* Bottom Bar - Fixed at bottom */}
-      <div className="fixed bottom-0 left-0 right-0 bg-green-100 shadow-sm border-t border-stone-200 z-10">
+      <div className="fixed bottom-0 left-0 right-0 bg-green-50 shadow-sm border-t border-stone-200 z-10">
         <div className="flex items-center justify-center h-14">
           {/* Button Container with equal spacing */}
           <div className="flex items-center justify-between w-full max-w-md px-12">

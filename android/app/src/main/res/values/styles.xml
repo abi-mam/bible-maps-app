@@ -28,8 +28,8 @@
         <item name="android:statusBarColor">@color/colorBibleMapsDark</item>
         <item name="android:windowLightStatusBar">false</item>
        
-        <!-- Navigation bar stays unchanged -->
-        <item name="android:navigationBarColor">?attr/colorSurface</item>
+        <!-- Navigation bar changed -->
+        <item name="android:navigationBarColor">@color/colorBibleMapsLight</item>
 
         <item name="android:windowDrawsSystemBarBackgrounds">true</item>
     </style>

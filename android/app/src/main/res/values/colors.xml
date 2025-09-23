@@ -9,7 +9,7 @@
     <!-- Bible Maps brand (green family) -->
     <color name="colorBibleMapsDark">#3f6212</color>   <!-- deep green (current main) -->
     <color name="colorBibleMaps">#6b947e</color>       <!-- mid-tone green -->
-    <color name="colorBibleMapsLight">#a8c3b1</color> <!-- light green -->
+    <color name="colorBibleMapsLight">#f0fdf4</color> <!-- light green -->
 
     <!-- Neutral Colors -->
     <color name="white">#FFFFFF</color>
