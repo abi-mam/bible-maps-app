@@ -679,16 +679,6 @@ const BibleMapsApp = () => {
     }
   }, [currentScreen, hasOpenedBefore, activeMap])
 
-useEffect(() => {
-  if (!Capacitor.isNativePlatform()) return;
-
-  if (currentScreen === "mapViewer") {
-    Immersive.enter().then(res => console.log("Immersive enter result:", res));
-  } else {
-    Immersive.exit().then(res => console.log("Immersive exit result:", res));
-  }
-}, [currentScreen]);
-
   // StatusBar adjustments
   useEffect(() => {
     const setupMapViewerBars = () => {
