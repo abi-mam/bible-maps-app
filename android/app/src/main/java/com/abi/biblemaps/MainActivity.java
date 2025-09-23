@@ -18,7 +18,7 @@ public class MainActivity extends BridgeActivity {
     }
 
     @Override
-    protected void onResume() {
+    public void onResume() {  // <- changed from protected to public
         super.onResume();
         applySystemUI();
     }
@@ -29,7 +29,7 @@ public class MainActivity extends BridgeActivity {
     private void applySystemUI() {
         Window window = getWindow();
 
-        // ✅ Hide navigation bar (immersive sticky)
+        // Hide navigation bar (immersive sticky)
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
             WindowInsetsController controller = window.getInsetsController();
             if (controller != null) {
@@ -45,12 +45,12 @@ public class MainActivity extends BridgeActivity {
             );
         }
 
-        // ✅ Use Android resource color for status bar
+        // Use Android resource color for status bar
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             window.setStatusBarColor(getResources().getColor(R.color.colorBibleMapsDark));
         }
 
-        // ✅ Light icons (white) by default
+        // Light icons (white) by default
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             int flags = window.getDecorView().getSystemUiVisibility();
             flags &= ~View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR;
