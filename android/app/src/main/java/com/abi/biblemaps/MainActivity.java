@@ -1,45 +1,37 @@
 package com.abi.biblemaps;
-
 import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowInsetsController;
 import android.webkit.WebView;
-
 import com.getcapacitor.BridgeActivity;
 
 public class MainActivity extends BridgeActivity {
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         applySystemUI();
-
+        
         // --- Disable WebView long press / selection ---
         WebView webView = (WebView) this.bridge.getWebView();
-
         // Consume long press
         webView.setOnLongClickListener(v -> true);
         webView.setHapticFeedbackEnabled(false);
         webView.setLongClickable(false);
-
-        // For Android 13+ (optional)
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-            webView.setTextSelectionEnabled(false);
-        }
+        
+        // Remove the problematic line - setTextSelectionEnabled() doesn't exist
+        // The above methods already handle disabling text selection effectively
     }
-
+    
     @Override
     public void onResume() {
         super.onResume();
         applySystemUI();
     }
-
+    
     private void applySystemUI() {
         Window window = getWindow();
-
         // Transparent status bar
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             window.setStatusBarColor(android.graphics.Color.TRANSPARENT);
@@ -47,7 +39,7 @@ public class MainActivity extends BridgeActivity {
             flags |= View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN | View.SYSTEM_UI_FLAG_LAYOUT_STABLE;
             window.getDecorView().setSystemUiVisibility(flags);
         }
-
+        
         // Hide navigation bar (immersive sticky)
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
             WindowInsetsController controller = window.getInsetsController();
@@ -65,13 +57,12 @@ public class MainActivity extends BridgeActivity {
                     View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
             );
         }
-
+        
         // Adaptive status bar icons
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             WindowInsetsController controller = window.getInsetsController();
             if (controller != null) {
                 boolean backgroundIsLight = isBackgroundLight();
-
                 if (backgroundIsLight) {
                     controller.setSystemBarsAppearance(
                             WindowInsetsController.APPEARANCE_LIGHT_STATUS_BARS,
@@ -86,10 +77,10 @@ public class MainActivity extends BridgeActivity {
             }
         }
     }
-
+    
     // Determines if background is light
     private boolean isBackgroundLight() {
-        int color = getResources().getColor(R.color.appBackgroundColor); // use your defined app background color
+        int color = getResources().getColor(R.color.appBackgroundColor);
         int r = (color >> 16) & 0xff;
         int g = (color >> 8) & 0xff;
         int b = color & 0xff;
