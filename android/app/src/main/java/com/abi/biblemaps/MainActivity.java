@@ -2,10 +2,13 @@ package com.abi.biblemaps;
 
 import android.os.Build;
 import android.os.Bundle;
+import android.view.ActionMode;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
-import android.view.WindowInsets;
 import android.view.WindowInsetsController;
+import android.webkit.WebView;
 
 import com.getcapacitor.BridgeActivity;
 
@@ -14,38 +17,41 @@ public class MainActivity extends BridgeActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         applySystemUI();
+
+        // --- Disable WebView long press / selection ---
+        WebView webView = (WebView) this.bridge.getWebView();
+
+        webView.setOnLongClickListener(v -> true); // consume long press
+        webView.setHapticFeedbackEnabled(false);
+        webView.setLongClickable(false);
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) { // Android 13+
+            webView.setTextSelectionEnabled(false);
+        }
+
+        webView.setCustomSelectionActionModeCallback(new ActionMode.Callback() {
+            @Override
+            public boolean onCreateActionMode(ActionMode mode, Menu menu) {
+                return false; // prevent popup
+            }
+            @Override public boolean onPrepareActionMode(ActionMode mode, Menu menu) { return false; }
+            @Override public boolean onActionItemClicked(ActionMode mode, MenuItem item) { return false; }
+            @Override public void onDestroyActionMode(ActionMode mode) { }
+        });
     }
 
     @Override
-    public void onResume() {  // must be public to override BridgeActivity
+    public void onResume() {
         super.onResume();
         applySystemUI();
     }
 
-    /**
-     * Apply immersive nav bar and transparent status bar with adaptive icons
-     */
     private void applySystemUI() {
         Window window = getWindow();
 
-        // Hide navigation bar (immersive sticky)
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-            WindowInsetsController controller = window.getInsetsController();
-            if (controller != null) {
-                controller.hide(WindowInsets.Type.navigationBars());
-                controller.setSystemBarsBehavior(
-                        WindowInsetsController.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
-                );
-            }
-        } else {
-            window.getDecorView().setSystemUiVisibility(
-                    View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
-                            | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY
-            );
-        }
-
-        // Make status bar transparent and allow content behind it
+        // Transparent status bar
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             window.setStatusBarColor(android.graphics.Color.TRANSPARENT);
             int flags = window.getDecorView().getSystemUiVisibility();
@@ -53,20 +59,52 @@ public class MainActivity extends BridgeActivity {
             window.getDecorView().setSystemUiVisibility(flags);
         }
 
-        // Adaptive status bar icons (light/dark) depending on background
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            int flags = window.getDecorView().getSystemUiVisibility();
-
-            // Detect background brightness and set icon color
-            // Example: you can decide dynamically; here we set dark icons for light backgrounds
-            boolean useDarkIcons = false; // change based on your background color logic
-            if (useDarkIcons) {
-                flags |= View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR; // dark icons
-            } else {
-                flags &= ~View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR; // light icons
+        // Hide navigation bar (immersive sticky)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+            WindowInsetsController controller = window.getInsetsController();
+            if (controller != null) {
+                controller.hide(android.view.WindowInsets.Type.navigationBars());
+                controller.setSystemBarsBehavior(
+                        WindowInsetsController.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
+                );
             }
-
-            window.getDecorView().setSystemUiVisibility(flags);
+        } else {
+            window.getDecorView().setSystemUiVisibility(
+                    View.SYSTEM_UI_FLAG_HIDE_NAVIGATION |
+                    View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY |
+                    View.SYSTEM_UI_FLAG_LAYOUT_STABLE |
+                    View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+            );
         }
+
+        // Adaptive status bar icons
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            WindowInsetsController controller = window.getInsetsController();
+            if (controller != null) {
+                boolean backgroundIsLight = isBackgroundLight();
+
+                if (backgroundIsLight) {
+                    controller.setSystemBarsAppearance(
+                            WindowInsetsController.APPEARANCE_LIGHT_STATUS_BARS,
+                            WindowInsetsController.APPEARANCE_LIGHT_STATUS_BARS
+                    ); // dark icons
+                } else {
+                    controller.setSystemBarsAppearance(
+                            0,
+                            WindowInsetsController.APPEARANCE_LIGHT_STATUS_BARS
+                    ); // white icons
+                }
+            }
+        }
+    }
+
+    // Determines if background is light
+    private boolean isBackgroundLight() {
+        int color = getResources().getColor(R.color.appBackgroundColor);
+        int r = (color >> 16) & 0xff;
+        int g = (color >> 8) & 0xff;
+        int b = color & 0xff;
+        double luminance = (0.299 * r + 0.587 * g + 0.114 * b);
+        return luminance > 186;
     }
 }
