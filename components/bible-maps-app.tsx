@@ -656,11 +656,6 @@ const BibleMapsApp = () => {
   const searchFromViewModeRef = useRef(searchFromViewMode);
   const favoriteFromViewModeRef = useRef(favoriteFromViewMode);
   
-  const handleLongPress = (title) => {
-    setPopupTitle(title)
-    setShowTitlePopup(true)
-  }
-
   // Simple screen change logging - no system manipulation
   useEffect(() => {
     console.log('Screen changed to:', currentScreen)
