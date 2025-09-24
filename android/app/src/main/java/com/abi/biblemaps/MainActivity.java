@@ -78,13 +78,4 @@ public class MainActivity extends BridgeActivity {
         }
     }
     
-    // Determines if background is light
-    private boolean isBackgroundLight() {
-        int color = getResources().getColor(R.color.appBackgroundColor);
-        int r = (color >> 16) & 0xff;
-        int g = (color >> 8) & 0xff;
-        int b = color & 0xff;
-        double luminance = (0.299 * r + 0.587 * g + 0.114 * b);
-        return luminance > 186;
-    }
 }

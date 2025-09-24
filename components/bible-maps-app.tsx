@@ -818,7 +818,7 @@ useEffect(() => {
     return currentCategory ? mockMapData[currentCategory].maps : []
   }
 
-// HOME SCREEN
+// Home Screen
 if (currentScreen === "home") {
   const filteredCategories = searchQuery.trim() 
     ? Object.entries(mockMapData).filter(([category, data]) =>
@@ -836,13 +836,13 @@ if (currentScreen === "home") {
   }
 
   return (
-    <div className="h-screen flex flex-col">
+    <div className={`h-screen flex flex-col transition-all duration-300 ${isSearchingFromHome ? 'bg-stone-50' : 'bg-gradient-to-br from-slate-50 via-stone-50 to-slate-100'}`}>
       {showTitlePopup && <TitlePopup title={popupTitle} onClose={() => setShowTitlePopup(false)} />}
+  
+      {/* Status Bar Pad - Fixed */}
+      <div className="bg-lime-800 w-full py-2 flex-shrink-0"></div>
       
-      {/* Fixed Status Bar */}
-      <div className="bg-lime-800 w-full py-3 flex-shrink-0"></div>
-      
-      {/* Fixed Header */}
+      {/* Header - Fixed */}
       <div className={`transition-all duration-300 ${isSearchingFromHome ? 'bg-stone-100' : 'bg-gradient-to-r from-slate-100 to-stone-100'} px-5 py-6 shadow-sm flex-shrink-0`}>
         <div className="flex items-center justify-center mb-6">
           <div className="p-2 bg-gradient-to-br from-stone-600 to-stone-700 rounded-lg mr-3 shadow-md">
@@ -903,9 +903,8 @@ if (currentScreen === "home") {
         )}
       </div>
 
-      {/* Scrollable Content Area */}
+      {/* Content - Scrollable */}
       <div className="flex-1 overflow-y-auto">
-        {/* Content - Show search results when searching, categories otherwise */}
         {isSearchingFromHome ? (
           <div className="px-5 py-5 space-y-5">
             {searchResults.length === 0 ? (
@@ -982,7 +981,7 @@ if (currentScreen === "home") {
         ) : (
           <>
             {/* Category Cards */}
-            <div className="px-5 py-6 space-y-4 mb-16">
+            <div className="px-5 py-6 space-y-4">
               {filteredCategories.map(([category, data]) => {
                 const Icon = data.icon
                 return (
