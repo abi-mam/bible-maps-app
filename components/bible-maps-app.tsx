@@ -1031,7 +1031,7 @@ if (currentScreen === "home") {
             </div>
 
             {/* Footer Section */}
-            <div className="bg-gradient-to-r from-stone-600 to-stone-700 flex flex-col items-center justify-center px-6 py-12 shadow-lg border-t border-lime-700">
+            <div className="bg-gradient-to-r from-green lime/40 to-green lime/60 flex flex-col items-center justify-center px-6 py-12 shadow-lg border-t border-lime-700">
               <div className="flex items-center justify-center mb-6">
                 <div className="p-2 bg-white/10 rounded-lg mr-3 shadow-sm">
                   <div className="w-6 h-6" style={{ filter: 'brightness(0) saturate(100%) invert(98%) sepia(4%) saturate(339%) hue-rotate(202deg) brightness(106%) contrast(96%)' }}>
@@ -1722,7 +1722,7 @@ if (currentScreen === "category") {
       </div>
       
       {/* Bottom Bar - Fixed with proper positioning */}
-      <div className="fixed bottom-0 left-0 right-0 h-14 shadow-sm flex-shrink-0 z-50" style={{ backgroundColor: '#f0f1f2'}}>                 
+      <div className="fixed bottom-0 left-0 right-0 h-14 shadow-sm flex-shrink-0 z-50 green lime/40">                 
         <div className="flex items-center justify-center h-14">
           {/* Button Container with equal spacing */}
           <div className="flex items-center justify-between w-full max-w-md px-12">
