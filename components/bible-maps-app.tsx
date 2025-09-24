@@ -1814,9 +1814,6 @@ if (currentScreen === "mapViewer" && activeMap) {
       onTouchMove={onTouchMove}
       onTouchEnd={onTouchEnd}
     >
-      {/* Fixed Status Bar area - transparent to show map background */}
-      <div className="fixed top-0 left-0 right-0 h-14 z-50 bg-transparent"></div>
-      
       <TransformWrapper
         initialScale={1}
         minScale={0.5}
@@ -1875,47 +1872,45 @@ if (currentScreen === "mapViewer" && activeMap) {
               showControls ? "opacity-100" : "opacity-0"
             }`}>
               
-              {/* Top Left Controls */}
-              <div className="absolute top-4 left-4 flex flex-col gap-3 pointer-events-auto">
-                <button
-                  onClick={() => {
-                    setHighlightActiveMap(true)
-                    setCurrentScreen("category")
-                    setTimeout(() => setHighlightActiveMap(false), 2000)
-                  }}
-                  className={`p-1.5 backdrop-blur-sm rounded-lg shadow-lg w-fit transition-all duration-200 ${
-                    mapViewerTheme === "light" 
-                      ? "bg-white/30 hover:bg-white/50" 
-                      : "bg-black/30 hover:bg-black/50"
-                  }`}
-                >
-                  <ArrowLeft className={`w-5 h-5 ${
-                    mapViewerTheme === "light" ? "text-slate-500" : "text-slate-400"
-                  }`} />
-                </button>
-                <div 
-                  onClick={() => handleLongPress(activeMap.title)}
-                  className={`text-sm backdrop-blur-sm px-3 py-1.5 rounded-lg shadow-lg cursor-pointer transition-all duration-200 ${
-                    mapViewerTheme === "light" 
-                      ? "bg-white/30 hover:bg-white/50" 
-                      : "bg-black/30 hover:bg-black/50"
-                  }`}
-                >
-                  <p className={`truncate font-medium ${
-                    mapViewerTheme === "light" ? "text-slate-700" : "text-slate-200"
-                  }`}>{activeMap.title}</p>
+              {/* Top Left Controls (pushed down below status bar) */}
+              <div className="absolute top-10 left-0 right-0 flex justify-start px-4 gap-3 pointer-events-auto">
+                <div className="flex flex-col gap-3">
+                  <button
+                    onClick={() => {
+                      setHighlightActiveMap(true)
+                      setCurrentScreen("category")
+                      setTimeout(() => setHighlightActiveMap(false), 2000)
+                    }}
+                    className={`p-1.5 backdrop-blur-sm rounded-lg shadow-lg w-fit transition-all duration-200 ${
+                      mapViewerTheme === "light" 
+                        ? "bg-white/30 hover:bg-white/50" 
+                        : "bg-black/30 hover:bg-black/50"
+                    }`}
+                  >
+                    <ArrowLeft className={`w-5 h-5 ${mapViewerTheme === "light" ? "text-slate-500" : "text-slate-400"}`} />
+                  </button>
+                  <div 
+                    onClick={() => handleLongPress(activeMap.title)}
+                    className={`text-sm backdrop-blur-sm px-3 py-1.5 rounded-lg shadow-lg cursor-pointer transition-all duration-200 ${
+                      mapViewerTheme === "light" 
+                        ? "bg-white/30 hover:bg-white/50" 
+                        : "bg-black/30 hover:bg-black/50"
+                    }`}
+                  >
+                    <p className={`truncate font-medium ${mapViewerTheme === "light" ? "text-slate-700" : "text-slate-200"}`}>{activeMap.title}</p>
+                  </div>
                 </div>
               </div>
 
-              {/* Top Right Controls */}
-              <div className="absolute top-4 right-4 flex items-center gap-3 pointer-events-auto">
+              {/* Top Right Controls (pushed down below status bar) */}
+              <div className="absolute top-10 right-4 flex items-center gap-3 pointer-events-auto">
                 {/* Theme Toggle */}
                 <button
                   onClick={() => setMapViewerTheme(mapViewerTheme === "light" ? "dark" : "light")}
                   className={`p-1.5 backdrop-blur-sm rounded-lg shadow-lg transition-all duration-200 ${
                     mapViewerTheme === "light" 
-                      ? "bg-white/30 hover:bg-white/50" 
-                      : "bg-black/30 hover:bg-black/50"
+                      ? "bg-white/30 hover:bg-white/50 text-slate-600" 
+                      : "bg-black/30 hover:bg-black/50 text-slate-300"
                   }`}
                 >
                   {mapViewerTheme === "light" ? (
@@ -1948,7 +1943,7 @@ if (currentScreen === "mapViewer" && activeMap) {
                 </button>
               </div>
 
-             {/* Navigation Arrows */}
+              {/* Navigation Arrows */}
               {currentMapIndex > 0 && (
                 <button
                   onClick={() => {
@@ -1963,9 +1958,7 @@ if (currentScreen === "mapViewer" && activeMap) {
                       : "bg-black/30 hover:bg-black/50"
                   }`}
                 >
-                  <ChevronLeft className={`w-6 h-6 ${
-                    mapViewerTheme === "light" ? "text-slate-600" : "text-slate-300"
-                  }`} />
+                  <ChevronLeft className={`w-6 h-6 ${mapViewerTheme === "light" ? "text-slate-600" : "text-slate-300"}`} />
                 </button>
               )}
 
@@ -1983,9 +1976,7 @@ if (currentScreen === "mapViewer" && activeMap) {
                       : "bg-black/30 hover:bg-black/50"
                   }`}
                 >
-                  <ChevronRight className={`w-6 h-6 ${
-                    mapViewerTheme === "light" ? "text-slate-600" : "text-slate-300"
-                  }`} />
+                  <ChevronRight className={`w-6 h-6 ${mapViewerTheme === "light" ? "text-slate-600" : "text-slate-300"}`} />
                 </button>
               )}
 
@@ -1998,9 +1989,7 @@ if (currentScreen === "mapViewer" && activeMap) {
                     : "bg-black/30 hover:bg-black/50"
                 }`}
               >
-                <Home className={`w-5 h-5 ${
-                  mapViewerTheme === "light" ? "text-slate-600" : "text-slate-300"
-                }`} />
+                <Home className={`w-5 h-5 ${mapViewerTheme === "light" ? "text-slate-600" : "text-slate-300"}`} />
               </button>
             </div>
           </>
