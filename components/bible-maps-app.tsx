@@ -840,7 +840,7 @@ if (currentScreen === "home") {
       {showTitlePopup && <TitlePopup title={popupTitle} onClose={() => setShowTitlePopup(false)} />}
   
       {/* Status Bar Pad - Fixed */}
-      <div className="bg-lime-800 w-full py-3 flex-shrink-0"></div>
+      <div className="bg-lime-800 w-full py-4 flex-shrink-0"></div>
       
       {/* Header - Fixed */}
       <div className={`transition-all duration-300 ${isSearchingFromHome ? 'bg-stone-100' : 'bg-gradient-to-r from-slate-100 to-stone-100'} px-5 py-6 shadow-sm flex-shrink-0`}>
@@ -1066,7 +1066,7 @@ if (currentScreen === "search") {
       {showTitlePopup && <TitlePopup title={popupTitle} onClose={() => setShowTitlePopup(false)} />}
 
       {/* Status Bar Pad - Fixed */}
-      <div className="bg-lime-800 w-full py-3 flex-shrink-0"></div>
+      <div className="bg-lime-800 w-full py-4 flex-shrink-0"></div>
 
       {/* Header - Fixed */}
       <div className="bg-gray-100 px-4 py-4 flex-shrink-0">
@@ -1296,7 +1296,7 @@ if (currentScreen === "favorites") {
       {showTitlePopup && <TitlePopup title={popupTitle} onClose={() => setShowTitlePopup(false)} />}
 
       {/* Status Bar Pad - Fixed */}
-      <div className="bg-lime-800 w-full py-3 flex-shrink-0"></div>
+      <div className="bg-lime-800 w-full py-4 flex-shrink-0"></div>
 
       {/* Header - Fixed */}
       <div className="bg-gray-100 px-4 py-4 flex-shrink-0">
@@ -1508,14 +1508,14 @@ if (currentScreen === "category") {
   const Icon = showFavorites ? Star : mockMapData[currentCategory]?.icon || BookIcon
 
   return (
-    <div className="h-screen flex flex-col bg-gray-50">
+    <div className="h-screen flex flex-col bg-gray-50 relative overflow-hidden">
       {showTitlePopup && <TitlePopup title={popupTitle} onClose={() => setShowTitlePopup(false)} />}
 
       {/* Status Bar Pad - Fixed */}
-      <div className="bg-lime-800 w-full py-3 flex-shrink-0"></div>
+      <div className="bg-lime-800 w-full py-4 flex-shrink-0 relative z-50"></div>
 
       {/* Header - Fixed */}
-      <div className="bg-gray-100 px-4 py-4 flex items-center justify-between flex-shrink-0">
+      <div className="bg-gray-100 px-4 py-4 flex items-center justify-between flex-shrink-0 relative z-50">
         <div className="flex items-center">
           <button onClick={() => setCurrentScreen("home")} className="mr-3">
             <LayeredSquaresIcon className="w-6 h-6 text-blue-600" />
@@ -1545,172 +1545,174 @@ if (currentScreen === "category") {
         </div>
       </div>
 
-      {/* Content - Scrollable */}
-      <div className="flex-1 overflow-y-auto px-4 py-4 mb-16">
-        {viewMode === "grid" && (
-          <div className="grid grid-cols-2 gap-4">
-            {maps.map((map) => {
-              const isActiveMap = activeMap && map.id === activeMap.id
-              const shouldHighlight = highlightActiveMap && isActiveMap
-              return (
-                <div
-                  key={map.id}
-                  onClick={() =>
-                    openMapViewer(
-                      map.category || currentCategory,
-                      mockMapData[map.category || currentCategory].maps.findIndex((m) => m.id === map.id)
-                    )
-                  }
-                  className={`bg-white rounded-lg shadow-sm overflow-hidden cursor-pointer hover:shadow-md transition-all duration-300 ${
-                    shouldHighlight ? "ring-4 ring-blue-500 ring-opacity-75 shadow-lg scale-105" : ""
-                  }`}
-                >
-                  <div className="relative">
-                    <img
-                      src={map.thumbnail || "/placeholder.svg"}
-                      alt={map.title}
-                      className="w-full h-32 object-cover"
-                    />
-                    <button
-                      onClick={(e) => {
-                        e.stopPropagation()
-                        toggleFavorite(map.id)
-                      }}
-                      className="absolute top-2 right-2"
-                    >
-                      <Star
-                        className={`w-5 h-5 ${favorites.has(map.id) ? "text-yellow-500 fill-current" : "text-gray-400"}`}
-                      />
-                    </button>
-                  </div>
-                  <div className="p-3">
-                    <p className="text-sm font-medium text-black line-clamp-2">{map.title}</p>
-                  </div>
-                </div>
-              )
-            })}
-          </div>
-        )}
-
-        {viewMode === "smallList" && (
-          <div className="bg-white rounded-lg shadow-sm border border-gray-200">
-            {maps.map((map) => {
-              const isActiveMap = activeMap && map.id === activeMap.id
-              const shouldHighlight = highlightActiveMap && isActiveMap
-              return (
-                <div
-                  key={map.id}
-                  onClick={() =>
-                    openMapViewer(
-                      map.category || currentCategory,
-                      mockMapData[map.category || currentCategory].maps.findIndex((m) => m.id === map.id)
-                    )
-                  }
-                  className={`flex items-center p-4 border-b border-gray-100 last:border-b-0 cursor-pointer hover:bg-gray-50 transition-all duration-300 ${
-                    shouldHighlight ? "bg-blue-50 ring-2 ring-blue-500 ring-inset" : ""
-                  }`}
-                >
-                  <img
-                    src={map.thumbnail || "/placeholder.svg"}
-                    alt={map.title}
-                    className="w-16 h-12 object-cover rounded mr-4 flex-shrink-0"
-                  />
-                  <div className="flex-1 min-w-0">
-                    <p className="text-sm font-medium text-black truncate">{map.title}</p>
-                  </div>
-                  <button
-                    onClick={(e) => {
-                      e.stopPropagation()
-                      toggleFavorite(map.id)
-                    }}
-                    className="ml-2 flex-shrink-0"
-                  >
-                    <Star
-                      className={`w-4 h-4 ${favorites.has(map.id) ? "text-yellow-500 fill-current" : "text-gray-400"}`}
-                    />
-                  </button>
-                </div>
-              )
-            })}
-          </div>
-        )}
-
-        {viewMode === "largeList" && (
-          <div className="space-y-6">
-            {/* Map Title List */}
-            <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-4">
-              <div className="space-y-2">
-                {maps.map((map, index) => (
-                  <div key={`map-${map.id}`} className="flex items-start gap-2 pr-4">
-                    <div className="w-4 text-sm text-gray-600 font-mono shrink-0 leading-5 tabular-nums">{index + 1}
-                    </div>
-                    <div className="text-sm text-gray-600 mr-1">:
-                    </div>
-                    <div className="min-w-0 flex-1">
-                      <div className="text-sm text-black leading-5 truncate">{map.title}</div>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
-
-            {/* Large Thumbnails - Long Tile Container */}
-            <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-4">
-              {maps.map((map, index) => {
+      {/* Content - Scrollable with proper containment */}
+      <div className="flex-1 relative z-10" style={{ overflowY: 'auto', overscrollBehavior: 'contain' }}>
+        <div className="px-4 py-4 pb-20">{/* Added pb-20 for bottom bar clearance */}
+          {viewMode === "grid" && (
+            <div className="grid grid-cols-2 gap-4">
+              {maps.map((map) => {
                 const isActiveMap = activeMap && map.id === activeMap.id
                 const shouldHighlight = highlightActiveMap && isActiveMap
                 return (
-                  <div key={map.id} className={index > 0 ? "mt-4" : ""}>
-                    <div
-                      onClick={() =>
-                        openMapViewer(
-                          map.category || currentCategory,
-                          mockMapData[map.category || currentCategory].maps.findIndex((m) => m.id === map.id)
-                        )
-                      }
-                      className={`bg-white rounded-lg shadow-sm overflow-hidden cursor-pointer hover:opacity-90 transition-all duration-300 ${
-                        shouldHighlight ? "ring-4 ring-blue-500 ring-opacity-75 shadow-lg" : ""
-                      }`}
-                    >
-                      <div className="relative">
-                        <img
-                          src={map.thumbnail || "/placeholder.svg"}
-                          alt={map.title}
-                          className="w-full h-auto object-contain"
-                          style={{ maxHeight: "none" }}
+                  <div
+                    key={map.id}
+                    onClick={() =>
+                      openMapViewer(
+                        map.category || currentCategory,
+                        mockMapData[map.category || currentCategory].maps.findIndex((m) => m.id === map.id)
+                      )
+                    }
+                    className={`bg-white rounded-lg shadow-sm overflow-hidden cursor-pointer hover:shadow-md transition-all duration-300 ${
+                      shouldHighlight ? "ring-4 ring-blue-500 ring-opacity-75 shadow-lg scale-105" : ""
+                    }`}
+                  >
+                    <div className="relative">
+                      <img
+                        src={map.thumbnail || "/placeholder.svg"}
+                        alt={map.title}
+                        className="w-full h-32 object-cover"
+                      />
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation()
+                          toggleFavorite(map.id)
+                        }}
+                        className="absolute top-2 right-2"
+                      >
+                        <Star
+                          className={`w-5 h-5 ${favorites.has(map.id) ? "text-yellow-500 fill-current" : "text-gray-400"}`}
                         />
-                        <button
-                          onClick={(e) => {
-                            e.stopPropagation()
-                            toggleFavorite(map.id)
-                          }}
-                          className="absolute top-2 right-2"
-                        >
-                          <Star
-                            className={`w-5 h-5 ${favorites.has(map.id) ? "text-yellow-500 fill-current" : "text-gray-400"}`}
-                          />
-                        </button>
-                      </div>
-                      <div className="p-3">
-                        <div className="flex justify-between items-center">
-                          <p className="text-sm font-medium text-black truncate flex-1">{map.title}</p>
-                          <div className="bg-blue-500 text-white text-xs px-2 py-1 rounded-full ml-2">#{index + 1}</div>
-                        </div>
-                      </div>
+                      </button>
+                    </div>
+                    <div className="p-3">
+                      <p className="text-sm font-medium text-black line-clamp-2">{map.title}</p>
                     </div>
                   </div>
                 )
               })}
             </div>
-          </div>
-        )}
+          )}
+
+          {viewMode === "smallList" && (
+            <div className="bg-white rounded-lg shadow-sm border border-gray-200">
+              {maps.map((map) => {
+                const isActiveMap = activeMap && map.id === activeMap.id
+                const shouldHighlight = highlightActiveMap && isActiveMap
+                return (
+                  <div
+                    key={map.id}
+                    onClick={() =>
+                      openMapViewer(
+                        map.category || currentCategory,
+                        mockMapData[map.category || currentCategory].maps.findIndex((m) => m.id === map.id)
+                      )
+                    }
+                    className={`flex items-center p-4 border-b border-gray-100 last:border-b-0 cursor-pointer hover:bg-gray-50 transition-all duration-300 ${
+                      shouldHighlight ? "bg-blue-50 ring-2 ring-blue-500 ring-inset" : ""
+                    }`}
+                  >
+                    <img
+                      src={map.thumbnail || "/placeholder.svg"}
+                      alt={map.title}
+                      className="w-16 h-12 object-cover rounded mr-4 flex-shrink-0"
+                    />
+                    <div className="flex-1 min-w-0">
+                      <p className="text-sm font-medium text-black truncate">{map.title}</p>
+                    </div>
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation()
+                        toggleFavorite(map.id)
+                      }}
+                      className="ml-2 flex-shrink-0"
+                    >
+                      <Star
+                        className={`w-4 h-4 ${favorites.has(map.id) ? "text-yellow-500 fill-current" : "text-gray-400"}`}
+                      />
+                    </button>
+                  </div>
+                )
+              })}
+            </div>
+          )}
+
+          {viewMode === "largeList" && (
+            <div className="space-y-6">
+              {/* Map Title List */}
+              <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-4">
+                <div className="space-y-2">
+                  {maps.map((map, index) => (
+                    <div key={`map-${map.id}`} className="flex items-start gap-2 pr-4">
+                      <div className="w-4 text-sm text-gray-600 font-mono shrink-0 leading-5 tabular-nums">{index + 1}
+                      </div>
+                      <div className="text-sm text-gray-600 mr-1">:
+                      </div>
+                      <div className="min-w-0 flex-1">
+                        <div className="text-sm text-black leading-5 truncate">{map.title}</div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              {/* Large Thumbnails - Long Tile Container */}
+              <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-4">
+                {maps.map((map, index) => {
+                  const isActiveMap = activeMap && map.id === activeMap.id
+                  const shouldHighlight = highlightActiveMap && isActiveMap
+                  return (
+                    <div key={map.id} className={index > 0 ? "mt-4" : ""}>
+                      <div
+                        onClick={() =>
+                          openMapViewer(
+                            map.category || currentCategory,
+                            mockMapData[map.category || currentCategory].maps.findIndex((m) => m.id === map.id)
+                          )
+                        }
+                        className={`bg-white rounded-lg shadow-sm overflow-hidden cursor-pointer hover:opacity-90 transition-all duration-300 ${
+                          shouldHighlight ? "ring-4 ring-blue-500 ring-opacity-75 shadow-lg" : ""
+                        }`}
+                      >
+                        <div className="relative">
+                          <img
+                            src={map.thumbnail || "/placeholder.svg"}
+                            alt={map.title}
+                            className="w-full h-auto object-contain"
+                            style={{ maxHeight: "none" }}
+                          />
+                          <button
+                            onClick={(e) => {
+                              e.stopPropagation()
+                              toggleFavorite(map.id)
+                            }}
+                            className="absolute top-2 right-2"
+                          >
+                            <Star
+                              className={`w-5 h-5 ${favorites.has(map.id) ? "text-yellow-500 fill-current" : "text-gray-400"}`}
+                            />
+                          </button>
+                        </div>
+                        <div className="p-3">
+                          <div className="flex justify-between items-center">
+                            <p className="text-sm font-medium text-black truncate flex-1">{map.title}</p>
+                            <div className="bg-blue-500 text-white text-xs px-2 py-1 rounded-full ml-2">#{index + 1}</div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  )
+                })}
+              </div>
+            </div>
+          )}
+        </div>
       </div>
       
-      {/* Bottom Bar - Fixed */}
-      <div className="h-14 shadow-sm border-t border-stone-200 flex-shrink-0" style={{ backgroundColor: '#f0f1f2'}}>                 
+      {/* Bottom Bar - Fixed with proper positioning */}
+      <div className="fixed bottom-0 left-0 right-0 h-14 shadow-sm border-t border-stone-200 flex-shrink-0 z-50" style={{ backgroundColor: '#f0f1f2'}}>                 
         <div className="flex items-center justify-center h-14">
           {/* Button Container with equal spacing */}
-          <div className="flex items-center justify-between w-full max-w-md px-12">
+          <div className="flex items-center justify-between w-full max-w-md px-16">
             {/* Search Button */}
             <button
               onClick={() => {
@@ -1754,11 +1756,13 @@ if (currentScreen === "category") {
 if (currentScreen === "mapViewer" && activeMap) {
   
   return (
-    <div className={`map-viewer-container ${mapViewerTheme === "light" ? "bg-slate-50" : "bg-black"}`}>
-      
-      {/* Status Bar */}
-      <div className={`w-full py-3 flex-shrink-0 ${mapViewerTheme === "light" ? "bg-slate-200" : "bg-gray-900"}`}/>
+     
+    <div className="h-screen flex flex-col">
+      {/* Status Bar Pad - Fixed */}
+      <div className={`w-full py-4 flex-shrink-0 z-50 ${mapViewerTheme === "light" ? "bg-slate-200" : "bg-gray-900"}`}></div>
 
+      <div className={`map-viewer-container ${mapViewerTheme === "light" ? "bg-slate-50" : "bg-black"}`}>
+    
       <TransformWrapper
         initialScale={1}
         minScale={0.5}
