@@ -848,69 +848,72 @@ if (currentScreen === "home") {
       {/* Status Bar Pad - Fixed */}
       <div className="bg-lime-800 w-full h-10 flex-shrink-0"></div>
       
-      {/* Header - Fixed */}
-      <div className={`transition-all duration-300 ${isSearchingFromHome ? 'bg-stone-100' : 'bg-gradient-to-r from-slate-100 to-stone-100'} px-5 py-6 shadow-sm flex-shrink-0`}>
-        <div className="flex items-center justify-center mb-6">
+      {/* Main Header - Fixed */}
+      <div className={`transition-all duration-300 ${isSearchingFromHome ? 'bg-stone-100' : 'bg-gradient-to-r from-slate-100 to-stone-100'} px-5 py-4 shadow-sm flex-shrink-0`}>
+        <div className="flex items-center justify-center">
           <div className="p-2 bg-gradient-to-br from-stone-600 to-stone-700 rounded-lg mr-3 shadow-md">
             <SimpleBookIcon className="w-6 h-6 brightness-0 invert opacity-95" />
           </div>
           <h1 className="text-xl font-semibold text-stone-800 tracking-tight">Bible Maps</h1>
         </div>
-
-        {/* Search and Favorites Row */}
-        <div className="flex items-center gap-3">
-          <div className="flex-1">
-            <div className="relative">
-              <input
-                type="text"
-                placeholder="Search maps..."
-                value={searchQuery}
-                onChange={(e) => {
-                  setSearchQuery(e.target.value)
-                  if (e.target.value.trim()) {
-                    setIsSearchingFromHome(true)
-                  } else {
-                    setIsSearchingFromHome(false)
-                  }
-                }}
-                onFocus={() => {
-                  setSearchFromContext("home")
-                  setSearchFromViewMode(viewMode)
-                  setCurrentScreen("search")
-                  setActiveTab("search")
-                }}
-                className="w-full px-4 py-2.5 bg-white border border-stone-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-stone-400 focus:border-stone-400 shadow-sm text-sm placeholder-stone-500"
-              />
-              <Search className="absolute right-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-stone-400" />
-            </div>
-          </div>
-          <button
-            onClick={() => {
-              setShowFavorites(true)
-              setCurrentCategory(null)
-              setFavoriteFromContext("home")
-              setFavoriteFromViewMode(viewMode)
-              setCurrentScreen("favorites")
-              setActiveTab("favorites")
-            }}
-            className="p-2.5 bg-white border border-stone-200 rounded-lg hover:bg-stone-50 hover:shadow-md transition-all duration-200 shadow-sm"
-          >
-            <Star className="w-4 h-4 text-stone-600" />
-          </button>
-        </div>
-
-        {/* Show search results count when searching */}
-        {isSearchingFromHome && (
-          <div className="mt-4">
-            <div className="bg-white/90 rounded-lg px-3 py-1.5 mx-auto w-fit shadow-sm border border-stone-200">
-              <p className="text-xs text-stone-600 font-medium text-center">{searchResults.length} Maps Found</p>
-            </div>
-          </div>
-        )}
       </div>
 
       {/* Content - Scrollable */}
       <div className="flex-1 overflow-y-auto">
+        {/* Secondary Header - Scrollable */}
+        <div className={`transition-all duration-300 ${isSearchingFromHome ? 'bg-stone-100' : 'bg-gradient-to-r from-slate-100 to-stone-100'} px-5 py-4 shadow-sm`}>
+          {/* Search and Favorites Row */}
+          <div className="flex items-center gap-3">
+            <div className="flex-1">
+              <div className="relative">
+                <input
+                  type="text"
+                  placeholder="Search maps..."
+                  value={searchQuery}
+                  onChange={(e) => {
+                    setSearchQuery(e.target.value)
+                    if (e.target.value.trim()) {
+                      setIsSearchingFromHome(true)
+                    } else {
+                      setIsSearchingFromHome(false)
+                    }
+                  }}
+                  onFocus={() => {
+                    setSearchFromContext("home")
+                    setSearchFromViewMode(viewMode)
+                    setCurrentScreen("search")
+                    setActiveTab("search")
+                  }}
+                  className="w-full px-4 py-2.5 bg-white border border-stone-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-stone-400 focus:border-stone-400 shadow-sm text-sm placeholder-stone-500"
+                />
+                <Search className="absolute right-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-stone-400" />
+              </div>
+            </div>
+            <button
+              onClick={() => {
+                setShowFavorites(true)
+                setCurrentCategory(null)
+                setFavoriteFromContext("home")
+                setFavoriteFromViewMode(viewMode)
+                setCurrentScreen("favorites")
+                setActiveTab("favorites")
+              }}
+              className="p-2.5 bg-white border border-stone-200 rounded-lg hover:bg-stone-50 hover:shadow-md transition-all duration-200 shadow-sm"
+            >
+              <Star className="w-4 h-4 text-stone-600" />
+            </button>
+          </div>
+
+          {/* Show search results count when searching */}
+          {isSearchingFromHome && (
+            <div className="mt-4">
+              <div className="bg-white/90 rounded-lg px-3 py-1.5 mx-auto w-fit shadow-sm border border-stone-200">
+                <p className="text-xs text-stone-600 font-medium text-center">{searchResults.length} Maps Found</p>
+              </div>
+            </div>
+          )}
+        </div>
+
         {isSearchingFromHome ? (
           <div className="px-5 py-5 space-y-5">
             {searchResults.length === 0 ? (
