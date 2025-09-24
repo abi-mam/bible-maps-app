@@ -846,7 +846,7 @@ if (currentScreen === "home") {
       {showTitlePopup && <TitlePopup title={popupTitle} onClose={() => setShowTitlePopup(false)} />}
   
       {/* Status Bar Pad - Fixed */}
-      <div className="bg-lime-800 w-full py-4 flex-shrink-0"></div>
+      <div className="bg-lime-800 w-full h-10 flex-shrink-0"></div>
       
       {/* Header - Fixed */}
       <div className={`transition-all duration-300 ${isSearchingFromHome ? 'bg-stone-100' : 'bg-gradient-to-r from-slate-100 to-stone-100'} px-5 py-6 shadow-sm flex-shrink-0`}>
@@ -1072,7 +1072,7 @@ if (currentScreen === "search") {
       {showTitlePopup && <TitlePopup title={popupTitle} onClose={() => setShowTitlePopup(false)} />}
 
       {/* Status Bar Pad - Fixed */}
-      <div className="bg-lime-800 w-full py-4 flex-shrink-0"></div>
+      <div className="bg-lime-800 w-full h-10 flex-shrink-0"></div>
 
       {/* Header - Fixed */}
       <div className="bg-gray-100 px-4 py-4 flex-shrink-0">
@@ -1302,7 +1302,7 @@ if (currentScreen === "favorites") {
       {showTitlePopup && <TitlePopup title={popupTitle} onClose={() => setShowTitlePopup(false)} />}
 
       {/* Status Bar Pad - Fixed */}
-      <div className="bg-lime-800 w-full py-4 flex-shrink-0"></div>
+      <div className="bg-lime-800 w-full h-10 flex-shrink-0"></div>
 
       {/* Header - Fixed */}
       <div className="bg-gray-100 px-4 py-4 flex-shrink-0">
@@ -1518,258 +1518,7 @@ if (currentScreen === "category") {
       {showTitlePopup && <TitlePopup title={popupTitle} onClose={() => setShowTitlePopup(false)} />}
 
       {/* Status Bar Pad - Fixed */}
-      <div className="bg-lime-800 w-full py-4 flex-shrink-0 relative z-50"></div>
-
-      {/* Header - Fixed */}
-      <div className="bg-gray-100 px-4 py-4 flex items-center justify-between flex-shrink-0 relative z-50">
-        <div className="flex items-center">
-          <button onClick={() => setCurrentScreen("home")} className="mr-3">
-            <LayeredSquaresIcon className="w-6 h-6 text-blue-600" />
-          </button>
-          <div>
-            <h2 className="text-lg font-bold text-black">{displayTitle}</h2>
-            <p className="text-sm text-green-700 opacity-75">{maps.length} Maps</p>
-          </div>
-        </div>
-
-        <div className="flex items-center gap-2">
-          {/* View Mode Toggle */}
-          <div className="flex items-center bg-white rounded-lg p-1">
-            <button
-              onClick={() => setViewMode("grid")}
-              className={`p-2 rounded ${viewMode === "grid" ? "bg-blue-100 text-blue-600" : "text-gray-600"}`}
-            >
-              <Grid3X3 className="w-4 h-4" />
-            </button>
-            <button
-              onClick={() => setViewMode(viewMode === "smallList" ? "largeList" : "smallList")}
-              className={`p-2 rounded ml-1 ${viewMode.includes("List") ? "bg-blue-100 text-blue-600" : "text-gray-600"}`}
-            >
-              <List className="w-4 h-4" />
-            </button>
-          </div>
-        </div>
-      </div>
-
-      {/* Content - Scrollable with proper containment */}
-      <div className="flex-1 relative z-10" style={{ overflowY: 'auto', overscrollBehavior: 'contain' }}>
-        <div className="px-4 py-4 pb-20">{/* Added pb-20 for bottom bar clearance */}
-          {viewMode === "grid" && (
-            <div className="grid grid-cols-2 gap-4">
-              {maps.map((map) => {
-                const isActiveMap = activeMap && map.id === activeMap.id
-                const shouldHighlight = highlightActiveMap && isActiveMap
-                return (
-                  <div
-                    key={map.id}
-                    onClick={() =>
-                      openMapViewer(
-                        map.category || currentCategory,
-                        mockMapData[map.category || currentCategory].maps.findIndex((m) => m.id === map.id)
-                      )
-                    }
-                    className={`bg-white rounded-lg shadow-sm overflow-hidden cursor-pointer hover:shadow-md transition-all duration-300 ${
-                      shouldHighlight ? "ring-4 ring-blue-500 ring-opacity-75 shadow-lg scale-105" : ""
-                    }`}
-                  >
-                    <div className="relative">
-                      <img
-                        src={map.thumbnail || "/placeholder.svg"}
-                        alt={map.title}
-                        className="w-full h-32 object-cover"
-                      />
-                      <button
-                        onClick={(e) => {
-                          e.stopPropagation()
-                          toggleFavorite(map.id)
-                        }}
-                        className="absolute top-2 right-2"
-                      >
-                        <Star
-                          className={`w-5 h-5 ${favorites.has(map.id) ? "text-yellow-500 fill-current" : "text-gray-400"}`}
-                        />
-                      </button>
-                    </div>
-                    <div className="p-3">
-                      <p className="text-sm font-medium text-black line-clamp-2">{map.title}</p>
-                    </div>
-                  </div>
-                )
-              })}
-            </div>
-          )}
-
-          {viewMode === "smallList" && (
-            <div className="bg-white rounded-lg shadow-sm border border-gray-200">
-              {maps.map((map) => {
-                const isActiveMap = activeMap && map.id === activeMap.id
-                const shouldHighlight = highlightActiveMap && isActiveMap
-                return (
-                  <div
-                    key={map.id}
-                    onClick={() =>
-                      openMapViewer(
-                        map.category || currentCategory,
-                        mockMapData[map.category || currentCategory].maps.findIndex((m) => m.id === map.id)
-                      )
-                    }
-                    className={`flex items-center p-4 border-b border-gray-100 last:border-b-0 cursor-pointer hover:bg-gray-50 transition-all duration-300 ${
-                      shouldHighlight ? "bg-blue-50 ring-2 ring-blue-500 ring-inset" : ""
-                    }`}
-                  >
-                    <img
-                      src={map.thumbnail || "/placeholder.svg"}
-                      alt={map.title}
-                      className="w-16 h-12 object-cover rounded mr-4 flex-shrink-0"
-                    />
-                    <div className="flex-1 min-w-0">
-                      <p className="text-sm font-medium text-black truncate">{map.title}</p>
-                    </div>
-                    <button
-                      onClick={(e) => {
-                        e.stopPropagation()
-                        toggleFavorite(map.id)
-                      }}
-                      className="ml-2 flex-shrink-0"
-                    >
-                      <Star
-                        className={`w-4 h-4 ${favorites.has(map.id) ? "text-yellow-500 fill-current" : "text-gray-400"}`}
-                      />
-                    </button>
-                  </div>
-                )
-              })}
-            </div>
-          )}
-
-          {viewMode === "largeList" && (
-            <div className="space-y-6">
-              {/* Map Title List */}
-              <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-4">
-                <div className="space-y-2">
-                  {maps.map((map, index) => (
-                    <div key={`map-${map.id}`} className="flex items-start gap-2 pr-4">
-                      <div className="w-4 text-sm text-gray-600 font-mono shrink-0 leading-5 tabular-nums">{index + 1}
-                      </div>
-                      <div className="text-sm text-gray-600 mr-1">:
-                      </div>
-                      <div className="min-w-0 flex-1">
-                        <div className="text-sm text-black leading-5 truncate">{map.title}</div>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </div>
-
-              {/* Large Thumbnails - Long Tile Container */}
-              <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-4">
-                {maps.map((map, index) => {
-                  const isActiveMap = activeMap && map.id === activeMap.id
-                  const shouldHighlight = highlightActiveMap && isActiveMap
-                  return (
-                    <div key={map.id} className={index > 0 ? "mt-4" : ""}>
-                      <div
-                        onClick={() =>
-                          openMapViewer(
-                            map.category || currentCategory,
-                            mockMapData[map.category || currentCategory].maps.findIndex((m) => m.id === map.id)
-                          )
-                        }
-                        className={`bg-white rounded-lg shadow-sm overflow-hidden cursor-pointer hover:opacity-90 transition-all duration-300 ${
-                          shouldHighlight ? "ring-4 ring-blue-500 ring-opacity-75 shadow-lg" : ""
-                        }`}
-                      >
-                        <div className="relative">
-                          <img
-                            src={map.thumbnail || "/placeholder.svg"}
-                            alt={map.title}
-                            className="w-full h-auto object-contain"
-                            style={{ maxHeight: "none" }}
-                          />
-                          <button
-                            onClick={(e) => {
-                              e.stopPropagation()
-                              toggleFavorite(map.id)
-                            }}
-                            className="absolute top-2 right-2"
-                          >
-                            <Star
-                              className={`w-5 h-5 ${favorites.has(map.id) ? "text-yellow-500 fill-current" : "text-gray-400"}`}
-                            />
-                          </button>
-                        </div>
-                        <div className="p-3">
-                          <div className="flex justify-between items-center">
-                            <p className="text-sm font-medium text-black truncate flex-1">{map.title}</p>
-                            <div className="bg-blue-500 text-white text-xs px-2 py-1 rounded-full ml-2">#{index + 1}</div>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  )
-                })}
-              </div>
-            </div>
-          )}
-        </div>
-      </div>
-      
-      {/* Bottom Bar - Fixed with proper positioning */}
-      <div className="fixed bottom-0 left-0 right-0 h-14 shadow-sm border-t border-stone-200 flex-shrink-0 z-50" style={{ backgroundColor: '#f0f1f2'}}>                 
-        <div className="flex items-center justify-center h-14">
-          {/* Button Container with equal spacing */}
-          <div className="flex items-center justify-between w-full max-w-md px-16">
-            {/* Search Button */}
-            <button
-              onClick={() => {
-                setActiveTab("search")
-                setSearchFromContext(currentCategory)
-                setSearchFromViewMode(viewMode)
-                setCurrentScreen("search")
-              }}
-              className="flex flex-col items-center w-16"
-            >
-              <Search className="h-5 w-5 text-stone-700" />
-              <span className={`text-xs mt-1 ${activeTab === "search" ? "text-indigo-600" : "text-gray-400"}`}>
-                Search
-              </span>
-            </button>
-
-            {/* Favorites Button */}
-            <button
-              onClick={() => {
-                setActiveTab("favorites")
-                setFavoriteFromContext(currentCategory)
-                setFavoriteFromViewMode(viewMode)
-                setCurrentScreen("favorites")
-              }}
-              className="flex flex-col items-center w-16"
-            >
-              <Star className="h-5 w-5 text-stone-700" />
-              <span className={`text-xs mt-1 ${activeTab === "favorites" ? "text-indigo-600" : "text-gray-400"}`}>
-                Favorites
-              </span>
-            </button>
-          </div>
-        </div>
-      </div>
-
-    </div>
-  )
-}
-
-// Category Screen
-if (currentScreen === "category") {
-  const maps = getFilteredMaps()
-  const displayTitle = showFavorites ? "Favorites" : currentCategory
-  const Icon = showFavorites ? Star : mockMapData[currentCategory]?.icon || BookIcon
-
-  return (
-    <div className="h-screen flex flex-col bg-gray-50 relative overflow-hidden">
-      {showTitlePopup && <TitlePopup title={popupTitle} onClose={() => setShowTitlePopup(false)} />}
-
-      {/* Status Bar Pad - Fixed */}
-      <div className="bg-lime-800 w-full py-4 flex-shrink-0 relative z-50"></div>
+      <div className="bg-lime-800 w-full h-10 flex-shrink-0 relative z-50"></div>
 
       {/* Header - Fixed */}
       <div className="bg-gray-100 px-4 py-4 flex items-center justify-between flex-shrink-0 relative z-50">
@@ -2011,10 +1760,51 @@ if (currentScreen === "category") {
 
 // Map Viewer
 if (currentScreen === "mapViewer" && activeMap) {
+  // Swipe handling state
+  const [touchStart, setTouchStart] = useState(null)
+  const [touchEnd, setTouchEnd] = useState(null)
+  const [currentScale, setCurrentScale] = useState(1)
+  const [canSwipe, setCanSwipe] = useState(true)
+
+  // Minimum swipe distance (in px)
+  const minSwipeDistance = 50
+
+  const onTouchStart = (e) => {
+    setTouchEnd(null) // otherwise the swipe is fired even with usual touch events
+    setTouchStart(e.targetTouches[0].clientX)
+  }
+
+  const onTouchMove = (e) => setTouchEnd(e.targetTouches[0].clientX)
+
+  const onTouchEnd = () => {
+    if (!touchStart || !touchEnd) return
+    if (!canSwipe || currentScale > 1.1) return // Only allow swipe when at fit-to-page scale
+    
+    const distance = touchStart - touchEnd
+    const isLeftSwipe = distance > minSwipeDistance
+    const isRightSwipe = distance < -minSwipeDistance
+
+    if (isLeftSwipe && currentMapIndex < mockMapData[currentCategory].maps.length - 1) {
+      // Swipe left - next image
+      const newIndex = currentMapIndex + 1
+      setCurrentMapIndex(newIndex)
+      setActiveMap(mockMapData[currentCategory].maps[newIndex])
+      setShowControls(true)
+    }
+
+    if (isRightSwipe && currentMapIndex > 0) {
+      // Swipe right - previous image
+      const newIndex = currentMapIndex - 1
+      setCurrentMapIndex(newIndex)
+      setActiveMap(mockMapData[currentCategory].maps[newIndex])
+      setShowControls(true)
+    }
+  }
+
   return (
     <div className={`fixed inset-0 ${mapViewerTheme === "light" ? "bg-slate-50" : "bg-black"}`}>
-      {/* Fixed Status Bar area - image can pan over this, but system icons stay on top */}
-      <div className={`fixed top-0 left-0 right-0 h-12 z-10 ${mapViewerTheme === "light" ? "bg-slate-200" : "bg-gray-900"}`}></div>
+      {/* Fixed Status Bar area - transparent to show map background */}
+      <div className="fixed top-0 left-0 right-0 h-10 z-50 bg-transparent"></div>
       
       <TransformWrapper
         initialScale={1}
@@ -2023,10 +1813,24 @@ if (currentScreen === "mapViewer" && activeMap) {
         limitToBounds={true}
         onTransformed={(ref, state) => {
           if (state && typeof state.scale === 'number') {
+            setCurrentScale(state.scale)
             setIsAtFitToPage(state.scale <= 1.1)
             setIsSystemNavVisible(state.scale > 1.2)
+            setCanSwipe(state.scale <= 1.1) // Enable swipe only at fit-to-page scale
           }
-          setShowControls(true)
+          // Don't show controls during panning/transforming
+          setShowControls(false)
+        }}
+        onPanning={() => {
+          // Hide controls while panning
+          setShowControls(false)
+          setCanSwipe(false) // Disable swipe during panning
+        }}
+        onPanningStop={() => {
+          // Keep controls hidden after panning stops
+          setShowControls(false)
+          // Re-enable swipe if at fit-to-page scale
+          setCanSwipe(currentScale <= 1.1)
         }}
       >
         {({ zoomIn, zoomOut, resetTransform }) => (
@@ -2042,7 +1846,15 @@ if (currentScreen === "mapViewer" && activeMap) {
                 <img
                   src={activeMap.fullImage || "/placeholder.svg"}
                   alt={activeMap.title}
-                  onClick={() => setShowControls(true)}
+                  onClick={() => {
+                    // Show controls on single tap/click
+                    setShowControls(true)
+                    // Auto-hide after 3 seconds
+                    setTimeout(() => setShowControls(false), 3000)
+                  }}
+                  onTouchStart={onTouchStart}
+                  onTouchMove={onTouchMove}
+                  onTouchEnd={onTouchEnd}
                   onError={(e) => { e.target.src = "/placeholder.svg" }}
                   style={{
                     maxWidth: '100%',
@@ -2055,8 +1867,8 @@ if (currentScreen === "mapViewer" && activeMap) {
             </TransformComponent>
 
             {/* Controls Overlay */}
-            <div className={`absolute inset-0 pointer-events-none transition-opacity duration-500 z-50 ${
-              showControls ? "opacity-100" : "opacity-20"
+            <div className={`absolute inset-0 pointer-events-none transition-opacity duration-700 ease-out z-10 ${
+              showControls ? "opacity-100" : "opacity-0"
             }`}>
               
               {/* Top Left Controls */}
@@ -2067,23 +1879,27 @@ if (currentScreen === "mapViewer" && activeMap) {
                     setCurrentScreen("category")
                     setTimeout(() => setHighlightActiveMap(false), 2000)
                   }}
-                  className={`p-1.5 backdrop-blur-sm rounded-lg shadow-lg w-fit ${
+                  className={`p-1.5 backdrop-blur-sm rounded-lg shadow-lg w-fit transition-all duration-200 ${
                     mapViewerTheme === "light" 
-                      ? "bg-white/90 text-gray-800 hover:bg-white" 
-                      : "bg-black/70 text-white hover:bg-black/80"
+                      ? "bg-white/30 hover:bg-white/50" 
+                      : "bg-black/30 hover:bg-black/50"
                   }`}
                 >
-                  <ArrowLeft className="w-5 h-5" />
+                  <ArrowLeft className={`w-5 h-5 ${
+                    mapViewerTheme === "light" ? "text-slate-500" : "text-slate-400"
+                  }`} />
                 </button>
                 <div 
                   onClick={() => handleLongPress(activeMap.title)}
-                  className={`text-sm backdrop-blur-sm px-3 py-1.5 rounded-lg shadow-lg cursor-pointer ${
+                  className={`text-sm backdrop-blur-sm px-3 py-1.5 rounded-lg shadow-lg cursor-pointer transition-all duration-200 ${
                     mapViewerTheme === "light" 
-                      ? "bg-white/90 text-gray-800 hover:bg-white" 
-                      : "bg-black/70 text-white hover:bg-black/80"
+                      ? "bg-white/30 hover:bg-white/50" 
+                      : "bg-black/30 hover:bg-black/50"
                   }`}
                 >
-                  <p className="truncate font-medium">{activeMap.title}</p>
+                  <p className={`truncate font-medium ${
+                    mapViewerTheme === "light" ? "text-slate-700" : "text-slate-200"
+                  }`}>{activeMap.title}</p>
                 </div>
               </div>
 
@@ -2092,18 +1908,18 @@ if (currentScreen === "mapViewer" && activeMap) {
                 {/* Theme Toggle */}
                 <button
                   onClick={() => setMapViewerTheme(mapViewerTheme === "light" ? "dark" : "light")}
-                  className={`p-1.5 backdrop-blur-sm rounded-lg shadow-lg ${
+                  className={`p-1.5 backdrop-blur-sm rounded-lg shadow-lg transition-all duration-200 ${
                     mapViewerTheme === "light" 
-                      ? "bg-white/90 text-gray-800 hover:bg-white" 
-                      : "bg-black/70 text-white hover:bg-black/80"
+                      ? "bg-white/30 hover:bg-white/50" 
+                      : "bg-black/30 hover:bg-black/50"
                   }`}
                 >
                   {mapViewerTheme === "light" ? (
-                    <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                    <svg className={`w-5 h-5 text-slate-600`} fill="currentColor" viewBox="0 0 20 20">
                       <path d="M17.293 13.293A8 8 0 716.707 2.707a8.001 8.001 0 1010.586 10.586z" />
                     </svg>
                   ) : (
-                    <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                    <svg className={`w-5 h-5 text-slate-400`} fill="currentColor" viewBox="0 0 20 20">
                       <path fillRule="evenodd" d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.706.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 6.464A1 1 0 106.465 5.05l-.708-.707a1 1 0 00-1.414 1.414l.707.707zm1.414 8.486l-.707.707a1 1 0 01-1.414-1.414l.707-.707a1 1 0 011.414 1.414zM4 11a1 1 0 100-2H3a1 1 0 000 2h1z" clipRule="evenodd" />
                     </svg>
                   )}
@@ -2112,13 +1928,19 @@ if (currentScreen === "mapViewer" && activeMap) {
                 {/* Favorite Button */}
                 <button
                   onClick={() => toggleFavorite(activeMap.id)}
-                  className={`p-1.5 backdrop-blur-sm rounded-lg shadow-lg ${
+                  className={`p-1.5 backdrop-blur-sm rounded-lg shadow-lg transition-all duration-200 ${
                     mapViewerTheme === "light" 
-                      ? "bg-white/90 hover:bg-white" 
-                      : "bg-black/70 hover:bg-black/80"
+                      ? "bg-white/30 hover:bg-white/50" 
+                      : "bg-black/30 hover:bg-black/50"
                   }`}
                 >
-                  <Star className={`w-5 h-5 ${favorites.has(activeMap.id) ? "text-yellow-500 fill-current" : mapViewerTheme === "light" ? "text-gray-600" : "text-white"}`} />
+                  <Star className={`w-5 h-5 ${
+                    favorites.has(activeMap.id) 
+                      ? "text-yellow-500 fill-current" 
+                      : mapViewerTheme === "light" 
+                        ? "text-slate-600" 
+                        : "text-slate-300"
+                  }`} />
                 </button>
               </div>
 
@@ -2131,13 +1953,15 @@ if (currentScreen === "mapViewer" && activeMap) {
                     setActiveMap(mockMapData[currentCategory].maps[newIndex])
                     setShowControls(true)
                   }}
-                  className={`absolute left-4 top-1/2 transform -translate-y-1/2 p-1.5 backdrop-blur-sm rounded-lg shadow-lg pointer-events-auto ${
+                  className={`absolute left-4 top-1/2 transform -translate-y-1/2 p-1.5 backdrop-blur-sm rounded-lg shadow-lg pointer-events-auto transition-all duration-200 ${
                     mapViewerTheme === "light" 
-                      ? "bg-white/90 text-gray-800 hover:bg-white" 
-                      : "bg-black/70 text-white hover:bg-black/80"
+                      ? "bg-white/30 hover:bg-white/50" 
+                      : "bg-black/30 hover:bg-black/50"
                   }`}
                 >
-                  <ChevronLeft className="w-6 h-6" />
+                  <ChevronLeft className={`w-6 h-6 ${
+                    mapViewerTheme === "light" ? "text-slate-600" : "text-slate-300"
+                  }`} />
                 </button>
               )}
 
@@ -2149,26 +1973,30 @@ if (currentScreen === "mapViewer" && activeMap) {
                     setActiveMap(mockMapData[currentCategory].maps[newIndex])
                     setShowControls(true)
                   }}
-                  className={`absolute right-4 top-1/2 transform -translate-y-1/2 p-1.5 backdrop-blur-sm rounded-lg shadow-lg pointer-events-auto ${
+                  className={`absolute right-4 top-1/2 transform -translate-y-1/2 p-1.5 backdrop-blur-sm rounded-lg shadow-lg pointer-events-auto transition-all duration-200 ${
                     mapViewerTheme === "light" 
-                      ? "bg-white/90 text-gray-800 hover:bg-white" 
-                      : "bg-black/70 text-white hover:bg-black/80"
+                      ? "bg-white/30 hover:bg-white/50" 
+                      : "bg-black/30 hover:bg-black/50"
                   }`}
                 >
-                  <ChevronRight className="w-6 h-6" />
+                  <ChevronRight className={`w-6 h-6 ${
+                    mapViewerTheme === "light" ? "text-slate-600" : "text-slate-300"
+                  }`} />
                 </button>
               )}
 
               {/* Home Button */}
               <button
                 onClick={() => setCurrentScreen("home")}
-                className={`absolute bottom-6 left-1/2 transform -translate-x-1/2 p-2 backdrop-blur-sm rounded-lg shadow-lg pointer-events-auto ${
+                className={`absolute bottom-6 left-1/2 transform -translate-x-1/2 p-2 backdrop-blur-sm rounded-lg shadow-lg pointer-events-auto transition-all duration-200 ${
                   mapViewerTheme === "light" 
-                    ? "bg-white/90 text-gray-800 hover:bg-white" 
-                    : "bg-black/70 text-white hover:bg-black/80"
+                    ? "bg-white/30 hover:bg-white/50" 
+                    : "bg-black/30 hover:bg-black/50"
                 }`}
               >
-                <Home className="w-5 h-5" />
+                <Home className={`w-5 h-5 ${
+                  mapViewerTheme === "light" ? "text-slate-600" : "text-slate-300"
+                }`} />
               </button>
             </div>
           </>
