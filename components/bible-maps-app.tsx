@@ -1815,7 +1815,7 @@ if (currentScreen === "mapViewer" && activeMap) {
       onTouchEnd={onTouchEnd}
     >
       {/* Fixed Status Bar area - transparent to show map background */}
-      <div className="fixed top-0 left-0 right-0 h-10 z-50 bg-transparent"></div>
+      <div className="fixed top-0 left-0 right-0 h-14 z-50 bg-transparent"></div>
       
       <TransformWrapper
         initialScale={1}
