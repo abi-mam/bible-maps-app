@@ -840,7 +840,7 @@ if (currentScreen === "home") {
       {showTitlePopup && <TitlePopup title={popupTitle} onClose={() => setShowTitlePopup(false)} />}
   
       {/* Status Bar Pad - Fixed */}
-      <div className="bg-lime-800 w-full py-2 flex-shrink-0"></div>
+      <div className="bg-lime-800 w-full py-3 flex-shrink-0"></div>
       
       {/* Header - Fixed */}
       <div className={`transition-all duration-300 ${isSearchingFromHome ? 'bg-stone-100' : 'bg-gradient-to-r from-slate-100 to-stone-100'} px-5 py-6 shadow-sm flex-shrink-0`}>
@@ -981,7 +981,7 @@ if (currentScreen === "home") {
         ) : (
           <>
             {/* Category Cards */}
-            <div className="px-5 py-6 space-y-4">
+            <div className="px-5 py-6 space-y-4 mb-16">
               {filteredCategories.map(([category, data]) => {
                 const Icon = data.icon
                 return (
@@ -1062,14 +1062,14 @@ if (currentScreen === "search") {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50" style={{ paddingBottom: isSystemNavVisible ? '4rem' : '0' }}>
+    <div className="h-screen flex flex-col bg-gray-50">
       {showTitlePopup && <TitlePopup title={popupTitle} onClose={() => setShowTitlePopup(false)} />}
 
-      {/* Status Bar Pad */}
-      <div className="bg-lime-800 w-full py-2"></div>
+      {/* Status Bar Pad - Fixed */}
+      <div className="bg-lime-800 w-full py-3 flex-shrink-0"></div>
 
-      {/* Header */}
-      <div className="bg-gray-100 px-4 py-4">
+      {/* Header - Fixed */}
+      <div className="bg-gray-100 px-4 py-4 flex-shrink-0">
         {/* Row 1: Category icon + Title */}
         <div className="flex items-center mb-4">
           <button 
@@ -1139,8 +1139,8 @@ if (currentScreen === "search") {
         </div>
       </div>
 
-      {/* Search Results */}
-      <div className="px-4 py-4">
+      {/* Search Results - Scrollable */}
+      <div className="flex-1 overflow-y-auto px-4 py-4">
         {searchResults.length === 0 ? (
           <div className="flex flex-col items-center justify-center py-12">
             <Search className="w-12 h-12 text-gray-400 mb-4" />
@@ -1221,7 +1221,7 @@ if (currentScreen === "search") {
             {viewMode === "largeList" && (
               <div className="space-y-6">
                 {/* Map Titles */}
-                <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-4 mb-8">
+                <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-4">
                   <div className="space-y-2">
                     {searchResults.map((map, index) => (
                       <div key={`title-${map.id}`} className="flex items-start gap-2 pr-4">
@@ -1292,14 +1292,14 @@ if (currentScreen === "favorites") {
   const favoritesList = getAllMaps().filter((map) => favorites.has(map.id))
  
   return (
-    <div className="min-h-screen bg-gray-50" style={{ paddingBottom: isSystemNavVisible ? '4rem' : '0' }}>
+    <div className="h-screen flex flex-col bg-gray-50">
       {showTitlePopup && <TitlePopup title={popupTitle} onClose={() => setShowTitlePopup(false)} />}
 
-      {/* Status Bar Pad */}
-      <div className="bg-lime-800 w-full py-2"></div>
+      {/* Status Bar Pad - Fixed */}
+      <div className="bg-lime-800 w-full py-3 flex-shrink-0"></div>
 
-      {/* Header */}
-      <div className="bg-gray-100 px-4 py-4">
+      {/* Header - Fixed */}
+      <div className="bg-gray-100 px-4 py-4 flex-shrink-0">
         {/* Row 1: Category icon + Title */}
         <div className="flex items-center mb-4">
           <button 
@@ -1358,8 +1358,8 @@ if (currentScreen === "favorites") {
         </div>
       </div>
 
-      {/* Content */}
-      <div className="px-4 py-4 pb-20">
+      {/* Content - Scrollable */}
+      <div className="flex-1 overflow-y-auto px-4 py-4">
         {favoritesList.length === 0 ? (
           <div className="flex flex-col items-center justify-center py-12">
             <Star className="w-12 h-12 text-gray-400 mb-4" />
@@ -1508,14 +1508,14 @@ if (currentScreen === "category") {
   const Icon = showFavorites ? Star : mockMapData[currentCategory]?.icon || BookIcon
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="h-screen flex flex-col bg-gray-50">
       {showTitlePopup && <TitlePopup title={popupTitle} onClose={() => setShowTitlePopup(false)} />}
 
-      {/* Status Bar Pad */}
-      <div className="bg-lime-800 w-full py-2"></div>
+      {/* Status Bar Pad - Fixed */}
+      <div className="bg-lime-800 w-full py-3 flex-shrink-0"></div>
 
-      {/* Header */}
-      <div className="bg-gray-100 px-4 py-4 flex items-center justify-between">
+      {/* Header - Fixed */}
+      <div className="bg-gray-100 px-4 py-4 flex items-center justify-between flex-shrink-0">
         <div className="flex items-center">
           <button onClick={() => setCurrentScreen("home")} className="mr-3">
             <LayeredSquaresIcon className="w-6 h-6 text-blue-600" />
@@ -1545,8 +1545,8 @@ if (currentScreen === "category") {
         </div>
       </div>
 
-      {/* Content */}
-      <div className="px-4 py-4">
+      {/* Content - Scrollable */}
+      <div className="flex-1 overflow-y-auto px-4 py-4 mb-16">
         {viewMode === "grid" && (
           <div className="grid grid-cols-2 gap-4">
             {maps.map((map) => {
@@ -1706,8 +1706,8 @@ if (currentScreen === "category") {
         )}
       </div>
       
-      {/* Bottom Bar - Fixed at bottom */}
-      <div className="fixed bottom-0 left-0 right-0 h-14 shadow-sm border-t border-stone-200 z-10" style={{ backgroundColor: '#f0f1f2'}}>
+      {/* Bottom Bar - Fixed */}
+      <div className="h-14 shadow-sm border-t border-stone-200 flex-shrink-0" style={{ backgroundColor: '#f0f1f2'}}>                 
         <div className="flex items-center justify-center h-14">
           {/* Button Container with equal spacing */}
           <div className="flex items-center justify-between w-full max-w-md px-12">
@@ -1752,8 +1752,13 @@ if (currentScreen === "category") {
 
 // Map Viewer
 if (currentScreen === "mapViewer" && activeMap) {
+  
   return (
     <div className={`map-viewer-container ${mapViewerTheme === "light" ? "bg-slate-50" : "bg-black"}`}>
+      
+      {/* Status Bar */}
+      <div className={`w-full py-3 flex-shrink-0 ${mapViewerTheme === "light" ? "bg-slate-200" : "bg-gray-900"}`}/>
+
       <TransformWrapper
         initialScale={1}
         minScale={0.5}
@@ -1922,4 +1927,3 @@ if (currentScreen === "mapViewer" && activeMap) {
 }
 
 export default BibleMapsApp
-
