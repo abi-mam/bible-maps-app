@@ -650,6 +650,10 @@ const BibleMapsApp = () => {
   const [showControls, setShowControls] = useState(false);
   const [isAtFitToPage, setIsAtFitToPage] = useState(true);
   const [mapViewerTheme, setMapViewerTheme] = useState("light")
+  const [touchStart, setTouchStart] = useState(null)
+  const [touchEnd, setTouchEnd] = useState(null)
+  const [currentScale, setCurrentScale] = useState(1)
+  const [canSwipe, setCanSwipe] = useState(true)
   const currentScreenRef = useRef(currentScreen);
   const searchFromContextRef = useRef(searchFromContext);
   const favoriteFromContextRef = useRef(favoriteFromContext);
@@ -1763,32 +1767,31 @@ if (currentScreen === "category") {
 
 // Map Viewer
 if (currentScreen === "mapViewer" && activeMap) {
-  // Swipe handling state
-  const [touchStart, setTouchStart] = useState(null)
-  const [touchEnd, setTouchEnd] = useState(null)
-  const [currentScale, setCurrentScale] = useState(1)
-  const [canSwipe, setCanSwipe] = useState(true)
-
   // Minimum swipe distance (in px)
   const minSwipeDistance = 50
 
   const onTouchStart = (e) => {
-    setTouchEnd(null) // otherwise the swipe is fired even with usual touch events
-    setTouchStart(e.targetTouches[0].clientX)
+    // Only handle swipe when not zoomed in
+    if (currentScale > 1.1) return
+    setTouchEnd(null)
+    setTouchStart(e.touches[0].clientX)
   }
 
-  const onTouchMove = (e) => setTouchEnd(e.targetTouches[0].clientX)
+  const onTouchMove = (e) => {
+    // Only handle swipe when not zoomed in
+    if (currentScale > 1.1) return
+    setTouchEnd(e.touches[0].clientX)
+  }
 
-  const onTouchEnd = () => {
-    if (!touchStart || !touchEnd) return
-    if (!canSwipe || currentScale > 1.1) return // Only allow swipe when at fit-to-page scale
+  const onTouchEnd = (e) => {
+    if (!touchStart || !touchEnd || currentScale > 1.1) return
     
     const distance = touchStart - touchEnd
     const isLeftSwipe = distance > minSwipeDistance
     const isRightSwipe = distance < -minSwipeDistance
 
     if (isLeftSwipe && currentMapIndex < mockMapData[currentCategory].maps.length - 1) {
-      // Swipe left - next image
+      e.preventDefault()
       const newIndex = currentMapIndex + 1
       setCurrentMapIndex(newIndex)
       setActiveMap(mockMapData[currentCategory].maps[newIndex])
@@ -1796,7 +1799,7 @@ if (currentScreen === "mapViewer" && activeMap) {
     }
 
     if (isRightSwipe && currentMapIndex > 0) {
-      // Swipe right - previous image
+      e.preventDefault()
       const newIndex = currentMapIndex - 1
       setCurrentMapIndex(newIndex)
       setActiveMap(mockMapData[currentCategory].maps[newIndex])
@@ -1805,7 +1808,12 @@ if (currentScreen === "mapViewer" && activeMap) {
   }
 
   return (
-    <div className={`fixed inset-0 ${mapViewerTheme === "light" ? "bg-slate-50" : "bg-black"}`}>
+    <div 
+      className={`fixed inset-0 ${mapViewerTheme === "light" ? "bg-slate-50" : "bg-black"}`}
+      onTouchStart={onTouchStart}
+      onTouchMove={onTouchMove}
+      onTouchEnd={onTouchEnd}
+    >
       {/* Fixed Status Bar area - transparent to show map background */}
       <div className="fixed top-0 left-0 right-0 h-10 z-50 bg-transparent"></div>
       
@@ -1819,20 +1827,16 @@ if (currentScreen === "mapViewer" && activeMap) {
             setCurrentScale(state.scale)
             setIsAtFitToPage(state.scale <= 1.1)
             setIsSystemNavVisible(state.scale > 1.2)
-            setCanSwipe(state.scale <= 1.1) // Enable swipe only at fit-to-page scale
+            setCanSwipe(state.scale <= 1.1)
           }
-          // Don't show controls during panning/transforming
           setShowControls(false)
         }}
         onPanning={() => {
-          // Hide controls while panning
           setShowControls(false)
-          setCanSwipe(false) // Disable swipe during panning
+          setCanSwipe(false)
         }}
         onPanningStop={() => {
-          // Keep controls hidden after panning stops
           setShowControls(false)
-          // Re-enable swipe if at fit-to-page scale
           setCanSwipe(currentScale <= 1.1)
         }}
       >
@@ -1850,14 +1854,9 @@ if (currentScreen === "mapViewer" && activeMap) {
                   src={activeMap.fullImage || "/placeholder.svg"}
                   alt={activeMap.title}
                   onClick={() => {
-                    // Show controls on single tap/click
                     setShowControls(true)
-                    // Auto-hide after 3 seconds
                     setTimeout(() => setShowControls(false), 3000)
                   }}
-                  onTouchStart={onTouchStart}
-                  onTouchMove={onTouchMove}
-                  onTouchEnd={onTouchEnd}
                   onError={(e) => { e.target.src = "/placeholder.svg" }}
                   style={{
                     maxWidth: '100%',
