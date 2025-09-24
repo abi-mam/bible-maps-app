@@ -850,7 +850,7 @@ if (currentScreen === "home") {
       {showTitlePopup && <TitlePopup title={popupTitle} onClose={() => setShowTitlePopup(false)} />}
   
       {/* Status Bar Pad - Fixed */}
-      <div className="bg-lime-800 w-full h-10 flex-shrink-0"></div>
+      <div className="bg-lime-700 w-full h-10 flex-shrink-0"></div>
       
       {/* Main Header - Fixed */}
       <div className={`transition-all duration-300 ${isSearchingFromHome ? 'bg-stone-100' : 'bg-gradient-to-r from-slate-100 to-stone-100'} px-5 py-4 shadow-sm flex-shrink-0`}>
@@ -1031,7 +1031,7 @@ if (currentScreen === "home") {
             </div>
 
             {/* Footer Section */}
-            <div className="bg-gradient-to-r from-stone-700 to-stone-800 flex flex-col items-center justify-center px-6 py-12 shadow-lg">
+            <div className="bg-gradient-to-r from-stone-600 to-stone-700 flex flex-col items-center justify-center px-6 py-12 shadow-lg border-t border-lime-700">
               <div className="flex items-center justify-center mb-6">
                 <div className="p-2 bg-white/10 rounded-lg mr-3 shadow-sm">
                   <div className="w-6 h-6" style={{ filter: 'brightness(0) saturate(100%) invert(98%) sepia(4%) saturate(339%) hue-rotate(202deg) brightness(106%) contrast(96%)' }}>
@@ -1079,7 +1079,7 @@ if (currentScreen === "search") {
       {showTitlePopup && <TitlePopup title={popupTitle} onClose={() => setShowTitlePopup(false)} />}
 
       {/* Status Bar Pad - Fixed */}
-      <div className="bg-lime-800 w-full h-10 flex-shrink-0"></div>
+      <div className="bg-lime-700 w-full h-10 flex-shrink-0"></div>
 
       {/* Header - Fixed */}
       <div className="bg-gray-100 px-4 py-4 flex-shrink-0">
@@ -1309,7 +1309,7 @@ if (currentScreen === "favorites") {
       {showTitlePopup && <TitlePopup title={popupTitle} onClose={() => setShowTitlePopup(false)} />}
 
       {/* Status Bar Pad - Fixed */}
-      <div className="bg-lime-800 w-full h-10 flex-shrink-0"></div>
+      <div className="bg-lime-700 w-full h-10 flex-shrink-0"></div>
 
       {/* Header - Fixed */}
       <div className="bg-gray-100 px-4 py-4 flex-shrink-0">
@@ -1525,7 +1525,7 @@ if (currentScreen === "category") {
       {showTitlePopup && <TitlePopup title={popupTitle} onClose={() => setShowTitlePopup(false)} />}
 
       {/* Status Bar Pad - Fixed */}
-      <div className="bg-lime-800 w-full h-10 flex-shrink-0 relative z-50"></div>
+      <div className="bg-lime-700 w-full h-10 flex-shrink-0 relative z-50"></div>
 
       {/* Header - Fixed */}
       <div className="bg-gray-100 px-4 py-4 flex items-center justify-between flex-shrink-0 relative z-50">
@@ -1722,7 +1722,7 @@ if (currentScreen === "category") {
       </div>
       
       {/* Bottom Bar - Fixed with proper positioning */}
-      <div className="fixed bottom-0 left-0 right-0 h-14 shadow-sm border-t border-stone-200 flex-shrink-0 z-50" style={{ backgroundColor: '#f0f1f2'}}>                 
+      <div className="fixed bottom-0 left-0 right-0 h-14 shadow-sm border-t border-lime-700 flex-shrink-0 z-50" style={{ backgroundColor: '#f0f1f2'}}>                 
         <div className="flex items-center justify-center h-14">
           {/* Button Container with equal spacing */}
           <div className="flex items-center justify-between w-full max-w-md px-12">
@@ -1843,20 +1843,22 @@ if (currentScreen === "mapViewer" && activeMap) {
         {({ zoomIn, zoomOut, resetTransform }) => (
           <>
             <TransformComponent>
-              <div style={{ 
-                width: '100vw', 
-                height: '100vh', 
-                display: 'flex', 
-                alignItems: 'center', 
-                justifyContent: 'center' 
-              }}>
+              <div 
+                style={{ 
+                  width: '100vw', 
+                  height: '100vh', 
+                  display: 'flex', 
+                  alignItems: 'center', 
+                  justifyContent: 'center' 
+                }}
+                onClick={() => {
+                  setShowControls(true)
+                  setTimeout(() => setShowControls(false), 3000)
+                }}
+              >
                 <img
                   src={activeMap.fullImage || "/placeholder.svg"}
                   alt={activeMap.title}
-                  onClick={() => {
-                    setShowControls(true)
-                    setTimeout(() => setShowControls(false), 3000)
-                  }}
                   onError={(e) => { e.target.src = "/placeholder.svg" }}
                   style={{
                     maxWidth: '100%',
@@ -1917,11 +1919,11 @@ if (currentScreen === "mapViewer" && activeMap) {
                   }`}
                 >
                   {mapViewerTheme === "light" ? (
-                    <svg className={`w-5 h-5 text-slate-600`} fill="currentColor" viewBox="0 0 20 20">
+                    <svg className={`w-5 h-5 text-slate-800`} fill="currentColor" viewBox="0 0 20 20">
                       <path d="M17.293 13.293A8 8 0 716.707 2.707a8.001 8.001 0 1010.586 10.586z" />
                     </svg>
                   ) : (
-                    <svg className={`w-5 h-5 text-slate-400`} fill="currentColor" viewBox="0 0 20 20">
+                    <svg className={`w-5 h-5 text-slate-200`} fill="currentColor" viewBox="0 0 20 20">
                       <path fillRule="evenodd" d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.706.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 6.464A1 1 0 106.465 5.05l-.708-.707a1 1 0 00-1.414 1.414l.707.707zm1.414 8.486l-.707.707a1 1 0 01-1.414-1.414l.707-.707a1 1 0 011.414 1.414zM4 11a1 1 0 100-2H3a1 1 0 000 2h1z" clipRule="evenodd" />
                     </svg>
                   )}
