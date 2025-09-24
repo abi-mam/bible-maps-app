@@ -1771,26 +1771,27 @@ if (currentScreen === "mapViewer" && activeMap) {
   const minSwipeDistance = 50
 
   const onTouchStart = (e) => {
-    // Only handle swipe when not zoomed in
-    if (currentScale > 1.1) return
+    // Always capture touch start for swipe detection
     setTouchEnd(null)
     setTouchStart(e.touches[0].clientX)
   }
 
   const onTouchMove = (e) => {
-    // Only handle swipe when not zoomed in
-    if (currentScale > 1.1) return
+    // Always capture touch move for swipe detection
     setTouchEnd(e.touches[0].clientX)
   }
 
   const onTouchEnd = (e) => {
-    if (!touchStart || !touchEnd || currentScale > 1.1) return
+    if (!touchStart || !touchEnd) return
     
     const distance = touchStart - touchEnd
     const isLeftSwipe = distance > minSwipeDistance
     const isRightSwipe = distance < -minSwipeDistance
+    
+    // Only allow swipes when at fit-to-page scale or when panned to edge
+    const allowSwipe = currentScale <= 1.1 || canSwipe
 
-    if (isLeftSwipe && currentMapIndex < mockMapData[currentCategory].maps.length - 1) {
+    if (allowSwipe && isLeftSwipe && currentMapIndex < mockMapData[currentCategory].maps.length - 1) {
       e.preventDefault()
       const newIndex = currentMapIndex + 1
       setCurrentMapIndex(newIndex)
@@ -1798,7 +1799,7 @@ if (currentScreen === "mapViewer" && activeMap) {
       setShowControls(true)
     }
 
-    if (isRightSwipe && currentMapIndex > 0) {
+    if (allowSwipe && isRightSwipe && currentMapIndex > 0) {
       e.preventDefault()
       const newIndex = currentMapIndex - 1
       setCurrentMapIndex(newIndex)
@@ -1848,6 +1849,10 @@ if (currentScreen === "mapViewer" && activeMap) {
                   alignItems: 'center', 
                   justifyContent: 'center' 
                 }}
+                onClick={() => {
+                  setShowControls(true)
+                  setTimeout(() => setShowControls(false), 4000)
+                }}
               >
                 <img
                   src={activeMap.fullImage || "/placeholder.svg"}
@@ -1864,15 +1869,9 @@ if (currentScreen === "mapViewer" && activeMap) {
             </TransformComponent>
 
             {/* Controls Overlay */}
-            <div 
-              className={`absolute inset-0 transition-opacity duration-700 ease-out z-10 ${
-                showControls ? "opacity-100" : "opacity-0"
-              }`}
-              onClick={() => {
-                setShowControls(true)
-                setTimeout(() => setShowControls(false), 3000)
-              }}
-            >
+            <div className={`absolute inset-0 pointer-events-none transition-opacity duration-700 ease-out z-10 ${
+              showControls ? "opacity-100" : "opacity-0"
+            }`}>
               
               {/* Top Left Controls (pushed down below status bar) */}
               <div className="absolute top-10 left-0 right-0 flex justify-start px-4 gap-3 pointer-events-auto">
