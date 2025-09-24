@@ -850,7 +850,7 @@ if (currentScreen === "home") {
       {showTitlePopup && <TitlePopup title={popupTitle} onClose={() => setShowTitlePopup(false)} />}
   
       {/* Status Bar Pad - Fixed */}
-      <div className="bg-lime-700 w-full h-10 flex-shrink-0"></div>
+      <div className="bg-lime-700 w-full h-8 flex-shrink-0"></div>
       
       {/* Main Header - Fixed */}
       <div className={`transition-all duration-300 ${isSearchingFromHome ? 'bg-stone-100' : 'bg-gradient-to-r from-slate-100 to-stone-100'} px-5 py-4 shadow-sm flex-shrink-0`}>
@@ -1079,7 +1079,7 @@ if (currentScreen === "search") {
       {showTitlePopup && <TitlePopup title={popupTitle} onClose={() => setShowTitlePopup(false)} />}
 
       {/* Status Bar Pad - Fixed */}
-      <div className="bg-lime-700 w-full h-10 flex-shrink-0"></div>
+      <div className="bg-lime-700 w-full h-8 flex-shrink-0"></div>
 
       {/* Header - Fixed */}
       <div className="bg-gray-100 px-4 py-4 flex-shrink-0">
@@ -1309,7 +1309,7 @@ if (currentScreen === "favorites") {
       {showTitlePopup && <TitlePopup title={popupTitle} onClose={() => setShowTitlePopup(false)} />}
 
       {/* Status Bar Pad - Fixed */}
-      <div className="bg-lime-700 w-full h-10 flex-shrink-0"></div>
+      <div className="bg-lime-700 w-full h-8 flex-shrink-0"></div>
 
       {/* Header - Fixed */}
       <div className="bg-gray-100 px-4 py-4 flex-shrink-0">
@@ -1525,7 +1525,7 @@ if (currentScreen === "category") {
       {showTitlePopup && <TitlePopup title={popupTitle} onClose={() => setShowTitlePopup(false)} />}
 
       {/* Status Bar Pad - Fixed */}
-      <div className="bg-lime-700 w-full h-10 flex-shrink-0 relative z-50"></div>
+      <div className="bg-lime-700 w-full h-8 flex-shrink-0 relative z-50"></div>
 
       {/* Header - Fixed */}
       <div className="bg-gray-100 px-4 py-4 flex items-center justify-between flex-shrink-0 relative z-50">
@@ -1560,7 +1560,7 @@ if (currentScreen === "category") {
 
       {/* Content - Scrollable with proper containment */}
       <div className="flex-1 relative z-10" style={{ overflowY: 'auto', overscrollBehavior: 'contain' }}>
-        <div className="px-4 py-4 pb-20">{/* Added pb-20 for bottom bar clearance */}
+        <div className="px-4 py-4 pb-18">{/* Added pb-20 for bottom bar clearance */}
           {viewMode === "grid" && (
             <div className="grid grid-cols-2 gap-4">
               {maps.map((map) => {
@@ -1848,10 +1848,6 @@ if (currentScreen === "mapViewer" && activeMap) {
                   alignItems: 'center', 
                   justifyContent: 'center' 
                 }}
-                onClick={() => {
-                  setShowControls(true)
-                  setTimeout(() => setShowControls(false), 3000)
-                }}
               >
                 <img
                   src={activeMap.fullImage || "/placeholder.svg"}
@@ -1868,9 +1864,15 @@ if (currentScreen === "mapViewer" && activeMap) {
             </TransformComponent>
 
             {/* Controls Overlay */}
-            <div className={`absolute inset-0 pointer-events-none transition-opacity duration-700 ease-out z-10 ${
-              showControls ? "opacity-100" : "opacity-0"
-            }`}>
+            <div 
+              className={`absolute inset-0 transition-opacity duration-700 ease-out z-10 ${
+                showControls ? "opacity-100" : "opacity-0"
+              }`}
+              onClick={() => {
+                setShowControls(true)
+                setTimeout(() => setShowControls(false), 3000)
+              }}
+            >
               
               {/* Top Left Controls (pushed down below status bar) */}
               <div className="absolute top-10 left-0 right-0 flex justify-start px-4 gap-3 pointer-events-auto">
@@ -1909,8 +1911,8 @@ if (currentScreen === "mapViewer" && activeMap) {
                   onClick={() => setMapViewerTheme(mapViewerTheme === "light" ? "dark" : "light")}
                   className={`p-1.5 backdrop-blur-sm rounded-lg shadow-lg transition-all duration-200 ${
                     mapViewerTheme === "light" 
-                      ? "bg-white/30 hover:bg-white/50 text-slate-600" 
-                      : "bg-black/30 hover:bg-black/50 text-slate-300"
+                      ? "bg-white/30 hover:bg-white/50" 
+                      : "bg-black/30 hover:bg-black/50"
                   }`}
                 >
                   {mapViewerTheme === "light" ? (
@@ -1919,7 +1921,7 @@ if (currentScreen === "mapViewer" && activeMap) {
                     </svg>
                   ) : (
                     <svg className={`w-5 h-5 text-slate-200`} fill="currentColor" viewBox="0 0 20 20">
-                      <path fillRule="evenodd" d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.706.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 6.464A1 1 0 106.465 5.05l-.708-.707a1 1 0 00-1.414 1.414l.707.707zm1.414 8.486l-.707.707a1 1 0 01-1.414-1.414l.707-.707a1 1 0 011.414 1.414zM4 11a1 1 0 100-2H3a1 1 0 000 2h1z" clipRule="evenodd" />
+                        <path fillRule="evenodd" d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.706.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 6.464A1 1 0 106.465 5.05l-.708-.707a1 1 0 00-1.414 1.414l.707.707zm1.414 8.486l-.707.707a1 1 0 01-1.414-1.414l.707-.707a1 1 0 011.414 1.414zM4 11a1 1 0 100-2H3a1 1 0 000 2h1z" clipRule="evenodd" />
                     </svg>
                   )}
                 </button>
