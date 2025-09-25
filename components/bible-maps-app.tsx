@@ -850,7 +850,7 @@ if (currentScreen === "home") {
       {showTitlePopup && <TitlePopup title={popupTitle} onClose={() => setShowTitlePopup(false)} />}
   
       {/* Status Bar Pad - Fixed */}
-      <div className="bg-lime-800/30 w-full h-8 flex-shrink-0"></div>
+      <div className="bg-lime-800/50 w-full h-8 flex-shrink-0"></div>
       
       {/* Main Header - Fixed */}
       <div className={`transition-all duration-300 ${isSearchingFromHome ? 'bg-stone-100' : 'bg-gradient-to-r from-slate-100 to-stone-100'} px-5 py-4 shadow-sm flex-shrink-0`}>
@@ -1031,7 +1031,7 @@ if (currentScreen === "home") {
             </div>
 
             {/* Footer Section */}
-            <div className="bg-gradient-to-r from-stone-700/20 to-stone-800/20 flex flex-col items-center justify-center px-6 py-12 shadow-lg border-t border-lime-700">
+            <div className="bg-gradient-to-r from-stone-700/40 to-stone-800/50 flex flex-col items-center justify-center px-6 py-12 shadow-lg border-t border-lime-700">
               <div className="flex items-center justify-center mb-6">
                 <div className="p-2 bg-white/10 rounded-lg mr-3 shadow-sm">
                   <div className="w-6 h-6" style={{ filter: 'brightness(0) saturate(100%) invert(98%) sepia(4%) saturate(339%) hue-rotate(202deg) brightness(106%) contrast(96%)' }}>
@@ -1079,7 +1079,7 @@ if (currentScreen === "search") {
       {showTitlePopup && <TitlePopup title={popupTitle} onClose={() => setShowTitlePopup(false)} />}
 
       {/* Status Bar Pad - Fixed */}
-      <div className="bg-lime-800/30 w-full h-8 flex-shrink-0"></div>
+      <div className="bg-lime-800/50 w-full h-8 flex-shrink-0"></div>
 
       {/* Header - Fixed */}
       <div className="bg-gray-100 px-4 py-4 flex-shrink-0">
@@ -1309,7 +1309,7 @@ if (currentScreen === "favorites") {
       {showTitlePopup && <TitlePopup title={popupTitle} onClose={() => setShowTitlePopup(false)} />}
 
       {/* Status Bar Pad - Fixed */}
-      <div className="bg-lime-800/30 w-full h-8 flex-shrink-0"></div>
+      <div className="bg-lime-800/50 w-full h-8 flex-shrink-0"></div>
 
       {/* Header - Fixed */}
       <div className="bg-gray-100 px-4 py-4 flex-shrink-0">
@@ -1525,7 +1525,7 @@ if (currentScreen === "category") {
       {showTitlePopup && <TitlePopup title={popupTitle} onClose={() => setShowTitlePopup(false)} />}
 
       {/* Status Bar Pad - Fixed */}
-      <div className="bg-lime-800/30 w-full h-8 flex-shrink-0 relative z-50"></div>
+      <div className="bg-lime-800/50 w-full h-8 flex-shrink-0 relative z-50"></div>
 
       {/* Header - Fixed */}
       <div className="bg-gray-100 px-4 py-4 flex items-center justify-between flex-shrink-0 relative z-50">
@@ -1722,7 +1722,7 @@ if (currentScreen === "category") {
       </div>
       
       {/* Bottom Bar - Fixed with proper positioning */}
-      <div className="fixed bottom-0 left-0 right-0 h-14 shadow-sm flex-shrink-0 z-50 bg-stone-800/20">                 
+      <div className="fixed bottom-0 left-0 right-0 h-14 shadow-sm flex-shrink-0 z-50 bg-stone-800/40">                 
         <div className="flex items-center justify-center h-14">
           {/* Button Container with equal spacing */}
           <div className="flex items-center justify-between w-full max-w-md px-12">
@@ -1769,6 +1769,9 @@ if (currentScreen === "category") {
 if (currentScreen === "mapViewer" && activeMap) {
   // Minimum swipe distance (in px)
   const minSwipeDistance = 50
+  const [isAtLeftEdge, setIsAtLeftEdge] = useState(false)
+  const [isAtRightEdge, setIsAtRightEdge] = useState(false)
+  const [lastPanDirection, setLastPanDirection] = useState(null)
 
   const onTouchStart = (e) => {
     // Always capture touch start for swipe detection
@@ -1788,8 +1791,9 @@ if (currentScreen === "mapViewer" && activeMap) {
     const isLeftSwipe = distance > minSwipeDistance
     const isRightSwipe = distance < -minSwipeDistance
     
-    // Only allow swipes when at fit-to-page scale or when panned to edge
-    const allowSwipe = currentScale <= 1.1 || canSwipe
+    // Only allow navigation swipes when at fit-to-page scale
+    // For zoomed out, navigation happens in onPanningStop
+    const allowSwipe = currentScale <= 1.1 && currentScale >= 1.0
 
     if (allowSwipe && isLeftSwipe && currentMapIndex < mockMapData[currentCategory].maps.length - 1) {
       e.preventDefault()
@@ -1825,23 +1829,79 @@ if (currentScreen === "mapViewer" && activeMap) {
             setCurrentScale(state.scale)
             setIsAtFitToPage(state.scale <= 1.1)
             setIsSystemNavVisible(state.scale > 1.2)
-            setCanSwipe(state.scale <= 1.1)
+            
+            // Check if we're at edges for swipe detection
+            if (ref && ref.instance && ref.instance.transformState) {
+              const { positionX } = ref.instance.transformState
+              const containerWidth = ref.instance.wrapperComponent?.offsetWidth || window.innerWidth
+              const contentWidth = ref.instance.contentComponent?.offsetWidth || 0
+              const scaledContentWidth = contentWidth * state.scale
+              
+              // Calculate edge positions
+              const maxPanX = Math.max(0, (scaledContentWidth - containerWidth) / 2)
+              
+              setIsAtLeftEdge(positionX >= maxPanX - 10) // 10px tolerance
+              setIsAtRightEdge(positionX <= -maxPanX + 10) // 10px tolerance
+            }
           }
-          setShowControls(false)
         }}
-        onPanning={() => {
-          setShowControls(false)
-          setCanSwipe(false)
+        onPanning={(ref, event) => {
+          // Track panning direction for zoomed out navigation
+          if (ref && ref.instance && ref.instance.transformState) {
+            const { positionX } = ref.instance.transformState
+            const previousX = ref.instance.previousState?.positionX || positionX
+            
+            if (positionX > previousX) {
+              setLastPanDirection('right') // Panning right (showing left content)
+            } else if (positionX < previousX) {
+              setLastPanDirection('left') // Panning left (showing right content)
+            }
+          }
         }}
-        onPanningStop={() => {
-          setShowControls(false)
-          setCanSwipe(currentScale <= 1.1)
+        onPanningStop={(ref, event) => {
+          // Check edge positions after panning stops
+          if (ref && ref.instance && ref.instance.transformState) {
+            const { positionX, scale } = ref.instance.transformState
+            const containerWidth = ref.instance.wrapperComponent?.offsetWidth || window.innerWidth
+            const contentWidth = ref.instance.contentComponent?.offsetWidth || 0
+            const scaledContentWidth = contentWidth * scale
+            
+            const maxPanX = Math.max(0, (scaledContentWidth - containerWidth) / 2)
+            
+            const atLeftEdge = positionX >= maxPanX - 10
+            const atRightEdge = positionX <= -maxPanX + 10
+            
+            setIsAtLeftEdge(atLeftEdge)
+            setIsAtRightEdge(atRightEdge)
+            
+            // Navigation logic for zoomed out images
+            if (scale < 1.0) {
+              // If panned to left edge and was panning left, go to next image
+              if (atRightEdge && lastPanDirection === 'left' && currentMapIndex < mockMapData[currentCategory].maps.length - 1) {
+                const newIndex = currentMapIndex + 1
+                setCurrentMapIndex(newIndex)
+                setActiveMap(mockMapData[currentCategory].maps[newIndex])
+                setShowControls(true)
+              }
+              // If panned to right edge and was panning right, go to previous image  
+              else if (atLeftEdge && lastPanDirection === 'right' && currentMapIndex > 0) {
+                const newIndex = currentMapIndex - 1
+                setCurrentMapIndex(newIndex)
+                setActiveMap(mockMapData[currentCategory].maps[newIndex])
+                setShowControls(true)
+              }
+            }
+            
+            setLastPanDirection(null)
+          }
         }}
         onZoomStop={() => {
-          setShowControls(false)
+          // Controls can be hidden after zoom stops
+          setTimeout(() => setShowControls(false), 1000)
         }}
         onPinchingStop={() => {
-          setShowControls(false)
+          // Controls can be hidden after pinching stops  
+          setTimeout(() => setShowControls(false), 1000)
         }}
       >
         {({ zoomIn, zoomOut, resetTransform }) => (
@@ -1870,17 +1930,17 @@ if (currentScreen === "mapViewer" && activeMap) {
               </div>
             </TransformComponent>
 
-            {/* Click Detection Overlay - Only active when controls are hidden */}
-            {!showControls && (
-              <div 
-                className="absolute inset-0 z-5"
-                onClick={() => {
-                  setShowControls(true)
-                  setTimeout(() => setShowControls(false), 4000)
-                }}
-                style={{ pointerEvents: 'auto' }}
-              />
-            )}
+            {/* Click Detection Overlay - Always active, but only shows controls when hidden */}
+            <div 
+              className="absolute inset-0 z-5"
+              onClick={() => {
+                setShowControls(true)
+                setTimeout(() => setShowControls(false), 4000)
+              }}
+              style={{ 
+                pointerEvents: showControls ? 'none' : 'auto'
+              }}
+            />
 
             {/* Controls Overlay */}
             <div className={`absolute inset-0 pointer-events-none transition-opacity duration-700 ease-out z-10 ${
