@@ -857,15 +857,15 @@ if (currentScreen === "home") {
       {showTitlePopup && <TitlePopup title={popupTitle} onClose={() => setShowTitlePopup(false)} />}
   
       {/* Status Bar Pad - Fixed */}
-      <div className="bg-lime-700/60 w-full h-8 flex-shrink-0"></div>
+      <div className="bg-green-700/30 w-full h-8 flex-shrink-0"></div>
       
       {/* Main Header - Fixed */}
       <div className={`transition-all duration-300 ${isSearchingFromHome ? 'bg-stone-100' : 'bg-gradient-to-r from-slate-100 to-stone-100'} px-5 py-4 shadow-sm flex-shrink-0`}>
         <div className="flex items-center justify-center">
-          <div className="p-2 bg-gradient-to-br from-sky-800 to-sky-900 rounded-lg mr-3 shadow-md">
+          <div className="p-2 bg-gradient-to-br from-sky-800 to-sky-950 rounded-lg mr-3 shadow-md">
             <SimpleBookIcon className="w-6 h-6 brightness-0 invert opacity-95" />
           </div>
-          <h1 className="text-xl font-semibold text-sky-900 tracking-tight">Bible Maps</h1>
+          <h1 className="text-xl font-semibold text-sky-950 tracking-tight">Bible Maps</h1>
         </div>
       </div>
 
@@ -895,9 +895,9 @@ if (currentScreen === "home") {
                     setCurrentScreen("search")
                     setActiveTab("search")
                   }}
-                  className="w-full px-4 py-2.5 bg-white border border-stone-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-stone-400 focus:border-stone-400 shadow-sm text-sm placeholder-sky-500"
+                  className="w-full px-4 py-2.5 bg-white border border-stone-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-stone-400 focus:border-stone-400 shadow-sm text-sm placeholder-sky-700/90"
                 />
-                <Search className="absolute right-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-stone-400" />
+                <Search className="absolute right-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-stone-700/90" />
               </div>
             </div>
             <button
@@ -911,7 +911,7 @@ if (currentScreen === "home") {
               }}
               className="p-2.5 bg-white border border-stone-200 rounded-lg hover:bg-stone-50 hover:shadow-md transition-all duration-200 shadow-sm"
             >
-              <Star className="w-4 h-4 text-sky-600" />
+              <Star className="w-4 h-4 text-sky-700/90" />
             </button>
           </div>
 
@@ -1021,7 +1021,7 @@ if (currentScreen === "home") {
                       </div>
                       <div className="flex-1">
                         <h3 className="text-lg font-semibold text-sky-800 group-hover:text-sky-950 transition-colors">{category}</h3>
-                        <p className="text-sm text-sky-700 font-medium">{data.count} maps available</p>
+                        <p className="text-sm text-sky-700/90 font-medium">{data.count} maps available</p>
                       </div>
                     </div>
                     <div className="flex justify-end">
@@ -1038,7 +1038,7 @@ if (currentScreen === "home") {
             </div>
 
             {/* Footer Section */}
-            <div className="bg-gradient-to-r from-slate-700 to-slate-800/90 flex flex-col items-center justify-center px-6 py-12 shadow-lg">
+            <div className="bg-gradient-to-r from-slate-700/80 to-slate-800/90 flex flex-col items-center justify-center px-6 py-12 shadow-lg">
               <div className="flex items-center justify-center mb-6">
                 <div className="p-2 bg-white/10 rounded-lg mr-3 shadow-sm">
                   <div className="w-6 h-6" style={{ filter: 'brightness(0) saturate(100%) invert(98%) sepia(4%) saturate(339%) hue-rotate(202deg) brightness(106%) contrast(96%)' }}>
@@ -1086,7 +1086,7 @@ if (currentScreen === "search") {
       {showTitlePopup && <TitlePopup title={popupTitle} onClose={() => setShowTitlePopup(false)} />}
 
       {/* Status Bar Pad - Fixed */}
-      <div className="bg-lime-700/60 w-full h-8 flex-shrink-0"></div>
+      <div className="bg-green-700/30 w-full h-8 flex-shrink-0"></div>
 
       {/* Header - Fixed */}
       <div className="bg-gray-100 px-4 py-4 flex-shrink-0">
@@ -1316,7 +1316,7 @@ if (currentScreen === "favorites") {
       {showTitlePopup && <TitlePopup title={popupTitle} onClose={() => setShowTitlePopup(false)} />}
 
       {/* Status Bar Pad - Fixed */}
-      <div className="bg-lime-700/60 w-full h-8 flex-shrink-0"></div>
+      <div className="bg-green-700/30 w-full h-8 flex-shrink-0"></div>
 
       {/* Header - Fixed */}
       <div className="bg-gray-100 px-4 py-4 flex-shrink-0">
@@ -1532,7 +1532,7 @@ if (currentScreen === "category") {
       {showTitlePopup && <TitlePopup title={popupTitle} onClose={() => setShowTitlePopup(false)} />}
 
       {/* Status Bar Pad - Fixed */}
-      <div className="bg-lime-700/60 w-full h-8 flex-shrink-0 relative z-50"></div>
+      <div className="bg-green-700/30 w-full h-8 flex-shrink-0 relative z-50"></div>
 
       {/* Header - Fixed */}
       <div className="bg-gray-100 px-4 py-4 flex items-center justify-between flex-shrink-0 relative z-50">
@@ -1729,7 +1729,7 @@ if (currentScreen === "category") {
       </div>
       
       {/* Bottom Bar - Fixed with proper positioning */}
-      <div className="fixed bottom-0 left-0 right-0 h-14 shadow-sm flex-shrink-0 z-50 bg-slate-100/50">                 
+      <div className="fixed bottom-0 left-0 right-0 h-14 shadow-sm flex-shrink-0 z-50 bg-slate-100/60">                 
         <div className="flex items-center justify-center h-14">
           {/* Button Container with equal spacing */}
           <div className="flex items-center justify-between w-full max-w-md px-12">
@@ -1814,7 +1814,7 @@ if (currentScreen === "mapViewer" && activeMap) {
 
   return (
     <div 
-      className={`fixed inset-0 ${mapViewerTheme === "light" ? "bg-slate-50" : "bg-gray-800"}`}
+      className={`fixed inset-0 ${mapViewerTheme === "light" ? "bg-slate-50" : "bg-stone-800"}`}
       onTouchStart={onTouchStart}
       onTouchMove={onTouchMove}
       onTouchEnd={onTouchEnd}
@@ -1949,6 +1949,12 @@ if (currentScreen === "mapViewer" && activeMap) {
         minScale={0.5}
         maxScale={3}
         limitToBounds={true}
+        onInit={(ref) => {
+          if (ref?.state?.scale) {
+            setCurrentScale(ref.state.scale)
+            setIsAtFitToPage(ref.state.scale <= 1.1)
+          }
+        }}
         onTransformed={(ref, state) => {
           if (state && typeof state.scale === 'number') {
             setCurrentScale(state.scale)
