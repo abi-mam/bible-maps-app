@@ -1729,7 +1729,7 @@ if (currentScreen === "category") {
       </div>
       
       {/* Bottom Bar - Fixed with proper positioning */}
-      <div className="fixed bottom-0 left-0 right-0 h-14 shadow-sm flex-shrink-0 z-50 bg-slate-100/50">                 
+      <div className="fixed bottom-0 left-0 right-0 h-14 shadow-sm flex-shrink-0 z-50 bg-lime-100/50">                 
         <div className="flex items-center justify-center h-14">
           {/* Button Container with equal spacing */}
           <div className="flex items-center justify-between w-full max-w-md px-12">
