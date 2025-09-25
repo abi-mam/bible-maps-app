@@ -1934,39 +1934,16 @@ if (currentScreen === "category") {
                 </div>
               </TransformComponent>
 
-              {/* Click Detection Overlay - Always active, allows clicks but not touch gestures */}
+              {/* Click Detection Overlay - Shows controls when clicked, blocks library when controls visible */}
               <div 
                 className="absolute inset-0 z-5"
-                onPointerDown={(e) => {
-                  // Only handle single pointer clicks, not multi-touch or gestures
-                  if (e.pointerType === 'touch' && e.isPrimary) {
-                    // Check if this is a simple tap (not start of a gesture)
-                    const startTime = Date.now()
-                    const startX = e.clientX
-                    const startY = e.clientY
-                    
-                    const handlePointerUp = (upEvent) => {
-                      const endTime = Date.now()
-                      const endX = upEvent.clientX
-                      const endY = upEvent.clientY
-                      const timeDiff = endTime - startTime
-                      const distance = Math.sqrt(Math.pow(endX - startX, 2) + Math.pow(endY - startY, 2))
-                      
-                      // If it's a quick tap with minimal movement, show controls
-                      if (timeDiff < 200 && distance < 10) {
-                        setShowControls(true)
-                        setTimeout(() => setShowControls(false), 4000)
-                      }
-                      
-                      document.removeEventListener('pointerup', handlePointerUp)
-                    }
-                    
-                    document.addEventListener('pointerup', handlePointerUp)
-                  }
+                onClick={() => {
+                  setShowControls(true)
+                  setTimeout(() => setShowControls(false), 4000)
                 }}
                 style={{ 
-                  pointerEvents: 'auto',
-                  touchAction: 'none'
+                  pointerEvents: showControls ? 'auto' : 'auto',
+                  background: showControls ? 'rgba(0,0,0,0.01)' : 'transparent'
                 }}
               />
 
