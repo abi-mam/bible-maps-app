@@ -857,7 +857,7 @@ if (currentScreen === "home") {
       {showTitlePopup && <TitlePopup title={popupTitle} onClose={() => setShowTitlePopup(false)} />}
   
       {/* Status Bar Pad - Fixed */}
-      <div className="bg-lime-800/70 w-full h-8 flex-shrink-0"></div>
+      <div className="bg-lime-800/80 w-full h-8 flex-shrink-0"></div>
       
       {/* Main Header - Fixed */}
       <div className={`transition-all duration-300 ${isSearchingFromHome ? 'bg-stone-100' : 'bg-gradient-to-r from-slate-100 to-stone-100'} px-5 py-4 shadow-sm flex-shrink-0`}>
@@ -1038,7 +1038,7 @@ if (currentScreen === "home") {
             </div>
 
             {/* Footer Section */}
-            <div className="bg-gradient-to-r from-slate-700/60 to-slate-800/70 flex flex-col items-center justify-center px-6 py-12 shadow-lg">
+            <div className="bg-gradient-to-r from-stone-700/60 to-slate-stone/70 flex flex-col items-center justify-center px-6 py-12 shadow-lg">
               <div className="flex items-center justify-center mb-6">
                 <div className="p-2 bg-white/10 rounded-lg mr-3 shadow-sm">
                   <div className="w-6 h-6" style={{ filter: 'brightness(0) saturate(100%) invert(98%) sepia(4%) saturate(339%) hue-rotate(202deg) brightness(106%) contrast(96%)' }}>
@@ -1086,7 +1086,7 @@ if (currentScreen === "search") {
       {showTitlePopup && <TitlePopup title={popupTitle} onClose={() => setShowTitlePopup(false)} />}
 
       {/* Status Bar Pad - Fixed */}
-      <div className="bg-lime-800/70 w-full h-8 flex-shrink-0"></div>
+      <div className="bg-lime-800/80 w-full h-8 flex-shrink-0"></div>
 
       {/* Header - Fixed */}
       <div className="bg-gray-100 px-4 py-4 flex-shrink-0">
@@ -1316,7 +1316,7 @@ if (currentScreen === "favorites") {
       {showTitlePopup && <TitlePopup title={popupTitle} onClose={() => setShowTitlePopup(false)} />}
 
       {/* Status Bar Pad - Fixed */}
-      <div className="bg-lime-800/70 w-full h-8 flex-shrink-0"></div>
+      <div className="bg-lime-800/80 w-full h-8 flex-shrink-0"></div>
 
       {/* Header - Fixed */}
       <div className="bg-gray-100 px-4 py-4 flex-shrink-0">
@@ -1532,7 +1532,7 @@ if (currentScreen === "category") {
       {showTitlePopup && <TitlePopup title={popupTitle} onClose={() => setShowTitlePopup(false)} />}
 
       {/* Status Bar Pad - Fixed */}
-      <div className="bg-lime-800/70 w-full h-8 flex-shrink-0 relative z-50"></div>
+      <div className="bg-lime-800/80 w-full h-8 flex-shrink-0 relative z-50"></div>
 
       {/* Header - Fixed */}
       <div className="bg-gray-100 px-4 py-4 flex items-center justify-between flex-shrink-0 relative z-50">
@@ -1729,7 +1729,7 @@ if (currentScreen === "category") {
       </div>
       
       {/* Bottom Bar - Fixed with proper positioning */}
-      <div className="fixed bottom-0 left-0 right-0 h-14 shadow-sm flex-shrink-0 z-50 bg-slate-800/70">                 
+      <div className="fixed bottom-0 left-0 right-0 h-14 shadow-sm flex-shrink-0 z-50 bg-stone-800/70">                 
         <div className="flex items-center justify-center h-14">
           {/* Button Container with equal spacing */}
           <div className="flex items-center justify-between w-full max-w-md px-12">
@@ -1934,15 +1934,39 @@ if (currentScreen === "category") {
                 </div>
               </TransformComponent>
 
-              {/* Click Detection Overlay - Always active, but only shows controls when hidden */}
+              {/* Click Detection Overlay - Always active, allows clicks but not touch gestures */}
               <div 
                 className="absolute inset-0 z-5"
-                onClick={() => {
-                  setShowControls(true)
-                  setTimeout(() => setShowControls(false), 4000)
+                onPointerDown={(e) => {
+                  // Only handle single pointer clicks, not multi-touch or gestures
+                  if (e.pointerType === 'touch' && e.isPrimary) {
+                    // Check if this is a simple tap (not start of a gesture)
+                    const startTime = Date.now()
+                    const startX = e.clientX
+                    const startY = e.clientY
+                    
+                    const handlePointerUp = (upEvent) => {
+                      const endTime = Date.now()
+                      const endX = upEvent.clientX
+                      const endY = upEvent.clientY
+                      const timeDiff = endTime - startTime
+                      const distance = Math.sqrt(Math.pow(endX - startX, 2) + Math.pow(endY - startY, 2))
+                      
+                      // If it's a quick tap with minimal movement, show controls
+                      if (timeDiff < 200 && distance < 10) {
+                        setShowControls(true)
+                        setTimeout(() => setShowControls(false), 4000)
+                      }
+                      
+                      document.removeEventListener('pointerup', handlePointerUp)
+                    }
+                    
+                    document.addEventListener('pointerup', handlePointerUp)
+                  }
                 }}
                 style={{ 
-                  pointerEvents: 'none'
+                  pointerEvents: 'auto',
+                  touchAction: 'none'
                 }}
               />
 
