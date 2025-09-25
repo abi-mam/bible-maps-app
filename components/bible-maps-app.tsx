@@ -1038,7 +1038,7 @@ if (currentScreen === "home") {
             </div>
 
             {/* Footer Section */}
-            <div className="bg-gradient-to-r from-stone-700/60 to-slate-stone/70 flex flex-col items-center justify-center px-6 py-12 shadow-lg">
+            <div className="bg-gradient-to-r from-slate-400/70 to-slate-400/80 flex flex-col items-center justify-center px-6 py-12 shadow-lg">
               <div className="flex items-center justify-center mb-6">
                 <div className="p-2 bg-white/10 rounded-lg mr-3 shadow-sm">
                   <div className="w-6 h-6" style={{ filter: 'brightness(0) saturate(100%) invert(98%) sepia(4%) saturate(339%) hue-rotate(202deg) brightness(106%) contrast(96%)' }}>
@@ -1086,7 +1086,7 @@ if (currentScreen === "search") {
       {showTitlePopup && <TitlePopup title={popupTitle} onClose={() => setShowTitlePopup(false)} />}
 
       {/* Status Bar Pad - Fixed */}
-      <div className="bg-lime-800/80 w-full h-8 flex-shrink-0"></div>
+      <div className="bg-green-800/10 w-full h-8 flex-shrink-0"></div>
 
       {/* Header - Fixed */}
       <div className="bg-gray-100 px-4 py-4 flex-shrink-0">
@@ -1316,7 +1316,7 @@ if (currentScreen === "favorites") {
       {showTitlePopup && <TitlePopup title={popupTitle} onClose={() => setShowTitlePopup(false)} />}
 
       {/* Status Bar Pad - Fixed */}
-      <div className="bg-lime-800/80 w-full h-8 flex-shrink-0"></div>
+      <div className="bg-lime-800/10 w-full h-8 flex-shrink-0"></div>
 
       {/* Header - Fixed */}
       <div className="bg-gray-100 px-4 py-4 flex-shrink-0">
@@ -1532,7 +1532,7 @@ if (currentScreen === "category") {
       {showTitlePopup && <TitlePopup title={popupTitle} onClose={() => setShowTitlePopup(false)} />}
 
       {/* Status Bar Pad - Fixed */}
-      <div className="bg-lime-800/80 w-full h-8 flex-shrink-0 relative z-50"></div>
+      <div className="bg-lime-800/10 w-full h-8 flex-shrink-0 relative z-50"></div>
 
       {/* Header - Fixed */}
       <div className="bg-gray-100 px-4 py-4 flex items-center justify-between flex-shrink-0 relative z-50">
@@ -1729,7 +1729,7 @@ if (currentScreen === "category") {
       </div>
       
       {/* Bottom Bar - Fixed with proper positioning */}
-      <div className="fixed bottom-0 left-0 right-0 h-14 shadow-sm flex-shrink-0 z-50 bg-stone-800/70">                 
+      <div className="fixed bottom-0 left-0 right-0 h-14 shadow-sm flex-shrink-0 z-50 bg-slate-100/50">                 
         <div className="flex items-center justify-center h-14">
           {/* Button Container with equal spacing */}
           <div className="flex items-center justify-between w-full max-w-md px-12">
