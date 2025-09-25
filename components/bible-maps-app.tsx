@@ -857,7 +857,7 @@ if (currentScreen === "home") {
       {showTitlePopup && <TitlePopup title={popupTitle} onClose={() => setShowTitlePopup(false)} />}
   
       {/* Status Bar Pad - Fixed */}
-      <div className="bg-sky-800/80 w-full h-8 flex-shrink-0"></div>
+      <div className="bg-blue-900/80 w-full h-8 flex-shrink-0"></div>
       
       {/* Main Header - Fixed */}
       <div className={`transition-all duration-300 ${isSearchingFromHome ? 'bg-stone-100' : 'bg-gradient-to-r from-slate-100 to-stone-100'} px-5 py-4 shadow-sm flex-shrink-0`}>
@@ -1021,11 +1021,11 @@ if (currentScreen === "home") {
                       </div>
                       <div className="flex-1">
                         <h3 className="text-lg font-semibold text-green-800 group-hover:text-green-900 transition-colors">{category}</h3>
-                        <p className="text-sm text-green-500 font-medium">{data.count} maps available</p>
+                        <p className="text-sm text-green-800 font-medium">{data.count} maps available</p>
                       </div>
                     </div>
                     <div className="flex justify-end">
-                      <span className="text-xs text-sky-600 font-semibold group-hover:text-sky-700 transition-colors flex items-center">
+                      <span className="text-xs text-blue-800 font-semibold group-hover:text-blue-900 transition-colors flex items-center">
                         Explore Maps 
                         <svg className="w-3 h-3 ml-1.5 transition-transform group-hover:translate-x-0.5" fill="currentColor" viewBox="0 0 20 20">
                           <path fillRule="evenodd" d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z" clipRule="evenodd" />
@@ -1038,7 +1038,7 @@ if (currentScreen === "home") {
             </div>
 
             {/* Footer Section */}
-            <div className="bg-gradient-to-r from-green-700/80 to-green-800/90 flex flex-col items-center justify-center px-6 py-12 shadow-lg">
+            <div className="bg-gradient-to-r from-green-800 to-green-900 flex flex-col items-center justify-center px-6 py-12 shadow-lg">
               <div className="flex items-center justify-center mb-6">
                 <div className="p-2 bg-white/10 rounded-lg mr-3 shadow-sm">
                   <div className="w-6 h-6" style={{ filter: 'brightness(0) saturate(100%) invert(98%) sepia(4%) saturate(339%) hue-rotate(202deg) brightness(106%) contrast(96%)' }}>
@@ -1086,7 +1086,7 @@ if (currentScreen === "search") {
       {showTitlePopup && <TitlePopup title={popupTitle} onClose={() => setShowTitlePopup(false)} />}
 
       {/* Status Bar Pad - Fixed */}
-      <div className="bg-sky-800/80 w-full h-8 flex-shrink-0"></div>
+      <div className="bg-blue-900/80 w-full h-8 flex-shrink-0"></div>
 
       {/* Header - Fixed */}
       <div className="bg-gray-100 px-4 py-4 flex-shrink-0">
@@ -1316,7 +1316,7 @@ if (currentScreen === "favorites") {
       {showTitlePopup && <TitlePopup title={popupTitle} onClose={() => setShowTitlePopup(false)} />}
 
       {/* Status Bar Pad - Fixed */}
-      <div className="bg-sky-800/80 w-full h-8 flex-shrink-0"></div>
+      <div className="bg-blue-900/80 w-full h-8 flex-shrink-0"></div>
 
       {/* Header - Fixed */}
       <div className="bg-gray-100 px-4 py-4 flex-shrink-0">
@@ -1532,7 +1532,7 @@ if (currentScreen === "category") {
       {showTitlePopup && <TitlePopup title={popupTitle} onClose={() => setShowTitlePopup(false)} />}
 
       {/* Status Bar Pad - Fixed */}
-      <div className="bg-sky-800/80 w-full h-8 flex-shrink-0 relative z-50"></div>
+      <div className="bg-blue-900/80 w-full h-8 flex-shrink-0 relative z-50"></div>
 
       {/* Header - Fixed */}
       <div className="bg-gray-100 px-4 py-4 flex items-center justify-between flex-shrink-0 relative z-50">
@@ -1814,7 +1814,7 @@ if (currentScreen === "mapViewer" && activeMap) {
 
   return (
     <div 
-      className={`fixed inset-0 ${mapViewerTheme === "light" ? "bg-slate-50" : "bg-slate-800"}`}
+      className={`fixed inset-0 ${mapViewerTheme === "light" ? "bg-slate-50" : "bg-slate-950"}`}
       onTouchStart={onTouchStart}
       onTouchMove={onTouchMove}
       onTouchEnd={onTouchEnd}
