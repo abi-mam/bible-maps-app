@@ -654,12 +654,19 @@ const BibleMapsApp = () => {
   const [touchEnd, setTouchEnd] = useState(null)
   const [currentScale, setCurrentScale] = useState(1)
   const [canSwipe, setCanSwipe] = useState(true)
+   
+  // ADD THESE MOVED HOOKS HERE - at the top level
+  const [isAtLeftEdge, setIsAtLeftEdge] = useState(false)
+  const [isAtRightEdge, setIsAtRightEdge] = useState(false)
+  const [lastPanDirection, setLastPanDirection] = useState(null)
+  
+  // All your useRef hooks
   const currentScreenRef = useRef(currentScreen);
   const searchFromContextRef = useRef(searchFromContext);
   const favoriteFromContextRef = useRef(favoriteFromContext);
   const searchFromViewModeRef = useRef(searchFromViewMode);
   const favoriteFromViewModeRef = useRef(favoriteFromViewMode);
- 
+
   // Handle long press for title popup
   const handleLongPress = (title) => {
     setPopupTitle(title)
@@ -1765,314 +1772,311 @@ if (currentScreen === "category") {
   )
 }
 
-// Map Viewer
-if (currentScreen === "mapViewer" && activeMap) {
-  // Minimum swipe distance (in px)
-  const minSwipeDistance = 50
-  const [isAtLeftEdge, setIsAtLeftEdge] = useState(false)
-  const [isAtRightEdge, setIsAtRightEdge] = useState(false)
-  const [lastPanDirection, setLastPanDirection] = useState(null)
+  // Map Viewer - FIXED VERSION
+  if (currentScreen === "mapViewer" && activeMap) {
+    // Minimum swipe distance (in px) - this is just a constant, not a hook
+    const minSwipeDistance = 50
 
-  const onTouchStart = (e) => {
-    // Always capture touch start for swipe detection
-    setTouchEnd(null)
-    setTouchStart(e.touches[0].clientX)
-  }
-
-  const onTouchMove = (e) => {
-    // Always capture touch move for swipe detection
-    setTouchEnd(e.touches[0].clientX)
-  }
-
-  const onTouchEnd = (e) => {
-    if (!touchStart || !touchEnd) return
-    
-    const distance = touchStart - touchEnd
-    const isLeftSwipe = distance > minSwipeDistance
-    const isRightSwipe = distance < -minSwipeDistance
-    
-    // Only allow navigation swipes when at fit-to-page scale
-    // For zoomed out, navigation happens in onPanningStop
-    const allowSwipe = currentScale <= 1.1 && currentScale >= 1.0
-
-    if (allowSwipe && isLeftSwipe && currentMapIndex < mockMapData[currentCategory].maps.length - 1) {
-      e.preventDefault()
-      const newIndex = currentMapIndex + 1
-      setCurrentMapIndex(newIndex)
-      setActiveMap(mockMapData[currentCategory].maps[newIndex])
-      setShowControls(true)
+    const onTouchStart = (e) => {
+      // Always capture touch start for swipe detection
+      setTouchEnd(null)
+      setTouchStart(e.touches[0].clientX)
     }
 
-    if (allowSwipe && isRightSwipe && currentMapIndex > 0) {
-      e.preventDefault()
-      const newIndex = currentMapIndex - 1
-      setCurrentMapIndex(newIndex)
-      setActiveMap(mockMapData[currentCategory].maps[newIndex])
-      setShowControls(true)
+    const onTouchMove = (e) => {
+      // Always capture touch move for swipe detection
+      setTouchEnd(e.touches[0].clientX)
     }
-  }
 
-  return (
-    <div 
-      className={`fixed inset-0 ${mapViewerTheme === "light" ? "bg-slate-50" : "bg-black"}`}
-      onTouchStart={onTouchStart}
-      onTouchMove={onTouchMove}
-      onTouchEnd={onTouchEnd}
-    >
-      <TransformWrapper
-        initialScale={1}
-        minScale={0.5}
-        maxScale={3}
-        limitToBounds={true}
-        onTransformed={(ref, state) => {
-          if (state && typeof state.scale === 'number') {
-            setCurrentScale(state.scale)
-            setIsAtFitToPage(state.scale <= 1.1)
-            setIsSystemNavVisible(state.scale > 1.2)
-            
-            // Check if we're at edges for swipe detection
+    const onTouchEnd = (e) => {
+      if (!touchStart || !touchEnd) return
+      
+      const distance = touchStart - touchEnd
+      const isLeftSwipe = distance > minSwipeDistance
+      const isRightSwipe = distance < -minSwipeDistance
+      
+      // Only allow navigation swipes when at fit-to-page scale
+      // For zoomed out, navigation happens in onPanningStop
+      const allowSwipe = currentScale <= 1.1 && currentScale >= 1.0
+
+      if (allowSwipe && isLeftSwipe && currentMapIndex < mockMapData[currentCategory].maps.length - 1) {
+        e.preventDefault()
+        const newIndex = currentMapIndex + 1
+        setCurrentMapIndex(newIndex)
+        setActiveMap(mockMapData[currentCategory].maps[newIndex])
+        setShowControls(true)
+      }
+
+      if (allowSwipe && isRightSwipe && currentMapIndex > 0) {
+        e.preventDefault()
+        const newIndex = currentMapIndex - 1
+        setCurrentMapIndex(newIndex)
+        setActiveMap(mockMapData[currentCategory].maps[newIndex])
+        setShowControls(true)
+      }
+    }
+
+    return (
+      <div 
+        className={`fixed inset-0 ${mapViewerTheme === "light" ? "bg-slate-50" : "bg-black"}`}
+        onTouchStart={onTouchStart}
+        onTouchMove={onTouchMove}
+        onTouchEnd={onTouchEnd}
+      >
+        <TransformWrapper
+          initialScale={1}
+          minScale={0.5}
+          maxScale={3}
+          limitToBounds={true}
+          onTransformed={(ref, state) => {
+            if (state && typeof state.scale === 'number') {
+              setCurrentScale(state.scale)
+              setIsAtFitToPage(state.scale <= 1.1)
+              setIsSystemNavVisible(state.scale > 1.2)
+              
+              // Check if we're at edges for swipe detection
+              if (ref && ref.instance && ref.instance.transformState) {
+                const { positionX } = ref.instance.transformState
+                const containerWidth = ref.instance.wrapperComponent?.offsetWidth || window.innerWidth
+                const contentWidth = ref.instance.contentComponent?.offsetWidth || 0
+                const scaledContentWidth = contentWidth * state.scale
+                
+                // Calculate edge positions
+                const maxPanX = Math.max(0, (scaledContentWidth - containerWidth) / 2)
+                
+                setIsAtLeftEdge(positionX >= maxPanX - 10) // 10px tolerance
+                setIsAtRightEdge(positionX <= -maxPanX + 10) // 10px tolerance
+              }
+            }
+          }}
+          onPanning={(ref, event) => {
+            // Track panning direction for zoomed out navigation
             if (ref && ref.instance && ref.instance.transformState) {
               const { positionX } = ref.instance.transformState
-              const containerWidth = ref.instance.wrapperComponent?.offsetWidth || window.innerWidth
-              const contentWidth = ref.instance.contentComponent?.offsetWidth || 0
-              const scaledContentWidth = contentWidth * state.scale
+              const previousX = ref.instance.previousState?.positionX || 0
               
-              // Calculate edge positions
+              if (positionX > previousX + 5) {
+                setLastPanDirection('right') // Panning right (showing left content)
+              } else if (positionX < previousX - 5) {
+                setLastPanDirection('left') // Panning left (showing right content)
+              }
+            }
+          }}
+          onPanningStop={(ref, event) => {
+            // Check edge positions after panning stops
+            if (ref && ref.instance && ref.instance.transformState) {
+              const { positionX, scale } = ref.instance.transformState
+              const containerWidth = ref.instance.wrapperComponent?.offsetWidth || window.innerWidth
+              const contentWidth = ref.instance.contentComponent?.offsetWidth || containerWidth
+              const scaledContentWidth = contentWidth * scale
+              
               const maxPanX = Math.max(0, (scaledContentWidth - containerWidth) / 2)
               
-              setIsAtLeftEdge(positionX >= maxPanX - 10) // 10px tolerance
-              setIsAtRightEdge(positionX <= -maxPanX + 10) // 10px tolerance
-            }
-          }
-        }}
-        onPanning={(ref, event) => {
-          // Track panning direction for zoomed out navigation
-          if (ref && ref.instance && ref.instance.transformState) {
-            const { positionX } = ref.instance.transformState
-            const previousX = ref.instance.previousState?.positionX || 0
-            
-            if (positionX > previousX + 5) {
-              setLastPanDirection('right') // Panning right (showing left content)
-            } else if (positionX < previousX - 5) {
-              setLastPanDirection('left') // Panning left (showing right content)
-            }
-          }
-        }}
-        onPanningStop={(ref, event) => {
-          // Check edge positions after panning stops
-          if (ref && ref.instance && ref.instance.transformState) {
-            const { positionX, scale } = ref.instance.transformState
-            const containerWidth = ref.instance.wrapperComponent?.offsetWidth || window.innerWidth
-            const contentWidth = ref.instance.contentComponent?.offsetWidth || containerWidth
-            const scaledContentWidth = contentWidth * scale
-            
-            const maxPanX = Math.max(0, (scaledContentWidth - containerWidth) / 2)
-            
-            const atLeftEdge = positionX >= maxPanX - 10
-            const atRightEdge = positionX <= -maxPanX + 10
-            
-            setIsAtLeftEdge(atLeftEdge)
-            setIsAtRightEdge(atRightEdge)
-            
-            // Navigation logic for zoomed out images
-            if (scale < 1.0) {
-              // If panned to right edge and was panning left, go to next image
-              if (atRightEdge && lastPanDirection === 'left' && currentMapIndex < mockMapData[currentCategory].maps.length - 1) {
-                const newIndex = currentMapIndex + 1
-                setCurrentMapIndex(newIndex)
-                setActiveMap(mockMapData[currentCategory].maps[newIndex])
-                setShowControls(true)
-              }
-              // If panned to left edge and was panning right, go to previous image  
-              else if (atLeftEdge && lastPanDirection === 'right' && currentMapIndex > 0) {
-                const newIndex = currentMapIndex - 1
-                setCurrentMapIndex(newIndex)
-                setActiveMap(mockMapData[currentCategory].maps[newIndex])
-                setShowControls(true)
-              }
-            }
-            
-            setLastPanDirection(null)
-          }
-        }}
-        onZoomStop={() => {
-          // Controls can be hidden after zoom stops
-          setTimeout(() => setShowControls(false), 1000)
-        }}
-        onPinchingStop={() => {
-          // Controls can be hidden after pinching stops  
-          setTimeout(() => setShowControls(false), 1000)
-        }}
-      >
-        {({ zoomIn, zoomOut, resetTransform }) => (
-          <>
-            <TransformComponent>
-              <div 
-                style={{ 
-                  width: '100vw', 
-                  height: '100vh', 
-                  display: 'flex', 
-                  alignItems: 'center', 
-                  justifyContent: 'center' 
-                }}
-              >
-                <img
-                  src={activeMap.fullImage || "/placeholder.svg"}
-                  alt={activeMap.title}
-                  onError={(e) => { e.target.src = "/placeholder.svg" }}
-                  style={{
-                    maxWidth: '100%',
-                    maxHeight: '100%',
-                    objectFit: 'contain',
-                    display: 'block'
-                  }}
-                />
-              </div>
-            </TransformComponent>
-
-            {/* Click Detection Overlay - Always active, but only shows controls when hidden */}
-            <div 
-              className="absolute inset-0 z-5"
-              onClick={() => {
-                setShowControls(true)
-                setTimeout(() => setShowControls(false), 4000)
-              }}
-              style={{ 
-                pointerEvents: showControls ? 'none' : 'auto'
-              }}
-            />
-
-            {/* Controls Overlay */}
-            <div className={`absolute inset-0 pointer-events-none transition-opacity duration-700 ease-out z-10 ${
-              showControls ? "opacity-100" : "opacity-0"
-            }`}>
+              const atLeftEdge = positionX >= maxPanX - 10
+              const atRightEdge = positionX <= -maxPanX + 10
               
-              {/* Top Left Controls (pushed down below status bar) */}
-              <div className="absolute top-10 left-0 right-0 flex justify-start px-4 gap-3 pointer-events-auto">
-                <div className="flex flex-col gap-3">
-                  <button
-                    onClick={() => {
-                      setHighlightActiveMap(true)
-                      setCurrentScreen("category")
-                      setTimeout(() => setHighlightActiveMap(false), 2000)
+              setIsAtLeftEdge(atLeftEdge)
+              setIsAtRightEdge(atRightEdge)
+              
+              // Navigation logic for zoomed out images
+              if (scale < 1.0) {
+                // If panned to right edge and was panning left, go to next image
+                if (atRightEdge && lastPanDirection === 'left' && currentMapIndex < mockMapData[currentCategory].maps.length - 1) {
+                  const newIndex = currentMapIndex + 1
+                  setCurrentMapIndex(newIndex)
+                  setActiveMap(mockMapData[currentCategory].maps[newIndex])
+                  setShowControls(true)
+                }
+                // If panned to left edge and was panning right, go to previous image  
+                else if (atLeftEdge && lastPanDirection === 'right' && currentMapIndex > 0) {
+                  const newIndex = currentMapIndex - 1
+                  setCurrentMapIndex(newIndex)
+                  setActiveMap(mockMapData[currentCategory].maps[newIndex])
+                  setShowControls(true)
+                }
+              }
+              
+              setLastPanDirection(null)
+            }
+          }}
+          onZoomStop={() => {
+            // Controls can be hidden after zoom stops
+            setTimeout(() => setShowControls(false), 1000)
+          }}
+          onPinchingStop={() => {
+            // Controls can be hidden after pinching stops  
+            setTimeout(() => setShowControls(false), 1000)
+          }}
+        >
+          {({ zoomIn, zoomOut, resetTransform }) => (
+            <>
+              <TransformComponent>
+                <div 
+                  style={{ 
+                    width: '100vw', 
+                    height: '100vh', 
+                    display: 'flex', 
+                    alignItems: 'center', 
+                    justifyContent: 'center' 
+                  }}
+                >
+                  <img
+                    src={activeMap.fullImage || "/placeholder.svg"}
+                    alt={activeMap.title}
+                    onError={(e) => { e.target.src = "/placeholder.svg" }}
+                    style={{
+                      maxWidth: '100%',
+                      maxHeight: '100%',
+                      objectFit: 'contain',
+                      display: 'block'
                     }}
-                    className={`p-1.5 backdrop-blur-sm rounded-lg shadow-lg w-fit transition-all duration-200 ${
-                      mapViewerTheme === "light" 
-                        ? "bg-white/30 hover:bg-white/50" 
-                        : "bg-black/30 hover:bg-black/50"
-                    }`}
-                  >
-                    <ArrowLeft className={`w-5 h-5 ${mapViewerTheme === "light" ? "text-slate-500" : "text-slate-400"}`} />
-                  </button>
-                  <div 
-                    onClick={() => handleLongPress(activeMap.title)}
-                    className={`text-sm backdrop-blur-sm px-3 py-1.5 rounded-lg shadow-lg cursor-pointer transition-all duration-200 ${
-                      mapViewerTheme === "light" 
-                        ? "bg-white/30 hover:bg-white/50" 
-                        : "bg-black/30 hover:bg-black/50"
-                    }`}
-                  >
-                    <p className={`truncate font-medium ${mapViewerTheme === "light" ? "text-slate-700" : "text-slate-200"}`}>{activeMap.title}</p>
+                  />
+                </div>
+              </TransformComponent>
+
+              {/* Click Detection Overlay - Always active, but only shows controls when hidden */}
+              <div 
+                className="absolute inset-0 z-5"
+                onClick={() => {
+                  setShowControls(true)
+                  setTimeout(() => setShowControls(false), 4000)
+                }}
+                style={{ 
+                  pointerEvents: showControls ? 'none' : 'auto'
+                }}
+              />
+
+              {/* Controls Overlay */}
+              <div className={`absolute inset-0 pointer-events-none transition-opacity duration-700 ease-out z-10 ${
+                showControls ? "opacity-100" : "opacity-0"
+              }`}>
+                
+                {/* Top Left Controls (pushed down below status bar) */}
+                <div className="absolute top-10 left-0 right-0 flex justify-start px-4 gap-3 pointer-events-auto">
+                  <div className="flex flex-col gap-3">
+                    <button
+                      onClick={() => {
+                        setHighlightActiveMap(true)
+                        setCurrentScreen("category")
+                        setTimeout(() => setHighlightActiveMap(false), 2000)
+                      }}
+                      className={`p-1.5 backdrop-blur-sm rounded-lg shadow-lg w-fit transition-all duration-200 ${
+                        mapViewerTheme === "light" 
+                          ? "bg-white/30 hover:bg-white/50" 
+                          : "bg-black/30 hover:bg-black/50"
+                      }`}
+                    >
+                      <ArrowLeft className={`w-5 h-5 ${mapViewerTheme === "light" ? "text-slate-500" : "text-slate-400"}`} />
+                    </button>
+                    <div 
+                      onClick={() => handleLongPress(activeMap.title)}
+                      className={`text-sm backdrop-blur-sm px-3 py-1.5 rounded-lg shadow-lg cursor-pointer transition-all duration-200 ${
+                        mapViewerTheme === "light" 
+                          ? "bg-white/30 hover:bg-white/50" 
+                          : "bg-black/30 hover:bg-black/50"
+                      }`}
+                    >
+                      <p className={`truncate font-medium ${mapViewerTheme === "light" ? "text-slate-700" : "text-slate-200"}`}>{activeMap.title}</p>
+                    </div>
                   </div>
                 </div>
+
+                {/* Top Right Controls (pushed down below status bar) */}
+                <div className="absolute top-10 right-4 flex items-center gap-3 pointer-events-auto">
+                  {/* Theme Toggle */}
+                  <button
+                    onClick={() => setMapViewerTheme(mapViewerTheme === "light" ? "dark" : "light")}
+                    className={`p-1.5 backdrop-blur-sm rounded-lg shadow-lg transition-all duration-200 ${
+                      mapViewerTheme === "light" 
+                        ? "bg-white/30 hover:bg-white/50" 
+                        : "bg-black/30 hover:bg-black/50"
+                    }`}
+                  >
+                    {mapViewerTheme === "light" ? (
+                      <svg className={`w-5 h-5 text-slate-800`} fill="currentColor" viewBox="0 0 20 20">
+                        <path d="M17.293 13.293A8 8 0 716.707 2.707a8.001 8.001 0 1010.586 10.586z" />
+                      </svg>
+                    ) : (
+                      <svg className={`w-5 h-5 text-slate-200`} fill="currentColor" viewBox="0 0 20 20">
+                          <path fillRule="evenodd" d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.706.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 6.464A1 1 0 106.465 5.05l-.708-.707a1 1 0 00-1.414 1.414l.707.707zm1.414 8.486l-.707.707a1 1 0 01-1.414-1.414l.707-.707a1 1 0 011.414 1.414zM4 11a1 1 0 100-2H3a1 1 0 000 2h1z" clipRule="evenodd" />
+                      </svg>
+                    )}
+                  </button>
+
+                  {/* Favorite Button */}
+                  <button
+                    onClick={() => toggleFavorite(activeMap.id)}
+                    className={`p-1.5 backdrop-blur-sm rounded-lg shadow-lg transition-all duration-200 ${
+                      mapViewerTheme === "light" 
+                        ? "bg-white/30 hover:bg-white/50" 
+                        : "bg-black/30 hover:bg-black/50"
+                    }`}
+                  >
+                    <Star className={`w-5 h-5 ${
+                      favorites.has(activeMap.id) 
+                        ? "text-yellow-500 fill-current" 
+                        : mapViewerTheme === "light" 
+                          ? "text-slate-600" 
+                          : "text-slate-300"
+                    }`} />
+                  </button>
+                </div>
+
+                {/* Navigation Arrows */}
+                {currentMapIndex > 0 && (
+                  <button
+                    onClick={() => {
+                      const newIndex = currentMapIndex - 1
+                      setCurrentMapIndex(newIndex)
+                      setActiveMap(mockMapData[currentCategory].maps[newIndex])
+                      setShowControls(true)
+                    }}
+                    className={`absolute left-4 top-1/2 transform -translate-y-1/2 p-1.5 backdrop-blur-sm rounded-lg shadow-lg pointer-events-auto transition-all duration-200 ${
+                      mapViewerTheme === "light" 
+                        ? "bg-white/30 hover:bg-white/50" 
+                        : "bg-black/30 hover:bg-black/50"
+                    }`}
+                  >
+                    <ChevronLeft className={`w-6 h-6 ${mapViewerTheme === "light" ? "text-slate-600" : "text-slate-300"}`} />
+                  </button>
+                )}
+
+                {currentMapIndex < mockMapData[currentCategory].maps.length - 1 && (
+                  <button
+                    onClick={() => {
+                      const newIndex = currentMapIndex + 1
+                      setCurrentMapIndex(newIndex)
+                      setActiveMap(mockMapData[currentCategory].maps[newIndex])
+                      setShowControls(true)
+                    }}
+                    className={`absolute right-4 top-1/2 transform -translate-y-1/2 p-1.5 backdrop-blur-sm rounded-lg shadow-lg pointer-events-auto transition-all duration-200 ${
+                      mapViewerTheme === "light" 
+                        ? "bg-white/30 hover:bg-white/50" 
+                        : "bg-black/30 hover:bg-black/50"
+                    }`}
+                  >
+                    <ChevronRight className={`w-6 h-6 ${mapViewerTheme === "light" ? "text-slate-600" : "text-slate-300"}`} />
+                  </button>
+                )}
+
+                {/* Home Button */}
+                <button
+                  onClick={() => setCurrentScreen("home")}
+                  className={`absolute bottom-6 left-1/2 transform -translate-x-1/2 p-2 backdrop-blur-sm rounded-lg shadow-lg pointer-events-auto transition-all duration-200 ${
+                    mapViewerTheme === "light" 
+                      ? "bg-white/30 hover:bg-white/50" 
+                      : "bg-black/30 hover:bg-black/50"
+                  }`}
+                >
+                  <Home className={`w-5 h-5 ${mapViewerTheme === "light" ? "text-slate-600" : "text-slate-300"}`} />
+                </button>
               </div>
-
-              {/* Top Right Controls (pushed down below status bar) */}
-              <div className="absolute top-10 right-4 flex items-center gap-3 pointer-events-auto">
-                {/* Theme Toggle */}
-                <button
-                  onClick={() => setMapViewerTheme(mapViewerTheme === "light" ? "dark" : "light")}
-                  className={`p-1.5 backdrop-blur-sm rounded-lg shadow-lg transition-all duration-200 ${
-                    mapViewerTheme === "light" 
-                      ? "bg-white/30 hover:bg-white/50" 
-                      : "bg-black/30 hover:bg-black/50"
-                  }`}
-                >
-                  {mapViewerTheme === "light" ? (
-                    <svg className={`w-5 h-5 text-slate-800`} fill="currentColor" viewBox="0 0 20 20">
-                      <path d="M17.293 13.293A8 8 0 716.707 2.707a8.001 8.001 0 1010.586 10.586z" />
-                    </svg>
-                  ) : (
-                    <svg className={`w-5 h-5 text-slate-200`} fill="currentColor" viewBox="0 0 20 20">
-                        <path fillRule="evenodd" d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.706.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 6.464A1 1 0 106.465 5.05l-.708-.707a1 1 0 00-1.414 1.414l.707.707zm1.414 8.486l-.707.707a1 1 0 01-1.414-1.414l.707-.707a1 1 0 011.414 1.414zM4 11a1 1 0 100-2H3a1 1 0 000 2h1z" clipRule="evenodd" />
-                    </svg>
-                  )}
-                </button>
-
-                {/* Favorite Button */}
-                <button
-                  onClick={() => toggleFavorite(activeMap.id)}
-                  className={`p-1.5 backdrop-blur-sm rounded-lg shadow-lg transition-all duration-200 ${
-                    mapViewerTheme === "light" 
-                      ? "bg-white/30 hover:bg-white/50" 
-                      : "bg-black/30 hover:bg-black/50"
-                  }`}
-                >
-                  <Star className={`w-5 h-5 ${
-                    favorites.has(activeMap.id) 
-                      ? "text-yellow-500 fill-current" 
-                      : mapViewerTheme === "light" 
-                        ? "text-slate-600" 
-                        : "text-slate-300"
-                  }`} />
-                </button>
-              </div>
-
-              {/* Navigation Arrows */}
-              {currentMapIndex > 0 && (
-                <button
-                  onClick={() => {
-                    const newIndex = currentMapIndex - 1
-                    setCurrentMapIndex(newIndex)
-                    setActiveMap(mockMapData[currentCategory].maps[newIndex])
-                    setShowControls(true)
-                  }}
-                  className={`absolute left-4 top-1/2 transform -translate-y-1/2 p-1.5 backdrop-blur-sm rounded-lg shadow-lg pointer-events-auto transition-all duration-200 ${
-                    mapViewerTheme === "light" 
-                      ? "bg-white/30 hover:bg-white/50" 
-                      : "bg-black/30 hover:bg-black/50"
-                  }`}
-                >
-                  <ChevronLeft className={`w-6 h-6 ${mapViewerTheme === "light" ? "text-slate-600" : "text-slate-300"}`} />
-                </button>
-              )}
-
-              {currentMapIndex < mockMapData[currentCategory].maps.length - 1 && (
-                <button
-                  onClick={() => {
-                    const newIndex = currentMapIndex + 1
-                    setCurrentMapIndex(newIndex)
-                    setActiveMap(mockMapData[currentCategory].maps[newIndex])
-                    setShowControls(true)
-                  }}
-                  className={`absolute right-4 top-1/2 transform -translate-y-1/2 p-1.5 backdrop-blur-sm rounded-lg shadow-lg pointer-events-auto transition-all duration-200 ${
-                    mapViewerTheme === "light" 
-                      ? "bg-white/30 hover:bg-white/50" 
-                      : "bg-black/30 hover:bg-black/50"
-                  }`}
-                >
-                  <ChevronRight className={`w-6 h-6 ${mapViewerTheme === "light" ? "text-slate-600" : "text-slate-300"}`} />
-                </button>
-              )}
-
-              {/* Home Button */}
-              <button
-                onClick={() => setCurrentScreen("home")}
-                className={`absolute bottom-6 left-1/2 transform -translate-x-1/2 p-2 backdrop-blur-sm rounded-lg shadow-lg pointer-events-auto transition-all duration-200 ${
-                  mapViewerTheme === "light" 
-                    ? "bg-white/30 hover:bg-white/50" 
-                    : "bg-black/30 hover:bg-black/50"
-                }`}
-              >
-                <Home className={`w-5 h-5 ${mapViewerTheme === "light" ? "text-slate-600" : "text-slate-300"}`} />
-              </button>
-            </div>
-          </>
-        )}
-      </TransformWrapper>
-    </div>
-  )
-}
+            </>
+          )}
+        </TransformWrapper>
+      </div>
+    )
+  }
 
   // [Keep all your other screen conditions: home, search, favorites, category...]
 
