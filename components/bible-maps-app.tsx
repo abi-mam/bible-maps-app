@@ -1849,11 +1849,11 @@ if (currentScreen === "mapViewer" && activeMap) {
           // Track panning direction for zoomed out navigation
           if (ref && ref.instance && ref.instance.transformState) {
             const { positionX } = ref.instance.transformState
-            const previousX = ref.instance.previousState?.positionX || positionX
+            const previousX = ref.instance.previousState?.positionX || 0
             
-            if (positionX > previousX) {
+            if (positionX > previousX + 5) {
               setLastPanDirection('right') // Panning right (showing left content)
-            } else if (positionX < previousX) {
+            } else if (positionX < previousX - 5) {
               setLastPanDirection('left') // Panning left (showing right content)
             }
           }
@@ -1863,7 +1863,7 @@ if (currentScreen === "mapViewer" && activeMap) {
           if (ref && ref.instance && ref.instance.transformState) {
             const { positionX, scale } = ref.instance.transformState
             const containerWidth = ref.instance.wrapperComponent?.offsetWidth || window.innerWidth
-            const contentWidth = ref.instance.contentComponent?.offsetWidth || 0
+            const contentWidth = ref.instance.contentComponent?.offsetWidth || containerWidth
             const scaledContentWidth = contentWidth * scale
             
             const maxPanX = Math.max(0, (scaledContentWidth - containerWidth) / 2)
@@ -1876,14 +1876,14 @@ if (currentScreen === "mapViewer" && activeMap) {
             
             // Navigation logic for zoomed out images
             if (scale < 1.0) {
-              // If panned to left edge and was panning left, go to next image
+              // If panned to right edge and was panning left, go to next image
               if (atRightEdge && lastPanDirection === 'left' && currentMapIndex < mockMapData[currentCategory].maps.length - 1) {
                 const newIndex = currentMapIndex + 1
                 setCurrentMapIndex(newIndex)
                 setActiveMap(mockMapData[currentCategory].maps[newIndex])
                 setShowControls(true)
               }
-              // If panned to right edge and was panning right, go to previous image  
+              // If panned to left edge and was panning right, go to previous image  
               else if (atLeftEdge && lastPanDirection === 'right' && currentMapIndex > 0) {
                 const newIndex = currentMapIndex - 1
                 setCurrentMapIndex(newIndex)
