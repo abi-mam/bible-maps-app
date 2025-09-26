@@ -654,6 +654,8 @@ const BibleMapsApp = () => {
   const [touchEnd, setTouchEnd] = useState(null)
   const [currentScale, setCurrentScale] = useState(1)
   const [canSwipe, setCanSwipe] = useState(true)
+  const [lastTap, setLastTap] = useState(0)
+  const [isAtMaxZoom, setIsAtMaxZoom] = useState(false)
    
   // ADD THESE MOVED HOOKS HERE - at the top level
   const [isAtLeftEdge, setIsAtLeftEdge] = useState(false)
@@ -1772,7 +1774,6 @@ if (currentScreen === "category") {
   )
 }
 
-// Map Viewer - Fixed with Double-Tap Reset
 if (currentScreen === "mapViewer" && activeMap) {
   // Minimum swipe distance (in px)
   const minSwipeDistance = 50
