@@ -656,7 +656,8 @@ const BibleMapsApp = () => {
   const [canSwipe, setCanSwipe] = useState(true)
   const [lastTap, setLastTap] = useState(0)
   const [isAtMaxZoom, setIsAtMaxZoom] = useState(false)
-   
+  const [tapTimeout, setTapTimeout] = useState(null)
+ 
   // ADD THESE MOVED HOOKS HERE - at the top level
   const [isAtLeftEdge, setIsAtLeftEdge] = useState(false)
   const [isAtRightEdge, setIsAtRightEdge] = useState(false)
@@ -1815,18 +1816,44 @@ if (currentScreen === "mapViewer" && activeMap) {
     }
   }
 
-  // Double-tap detection for reset when at max zoom
-  const handleDoubleTap = (resetTransform) => {
+  // Separate tap handling to avoid conflicts
+  const [tapTimeout, setTapTimeout] = useState(null)
+  
+  const handleTap = (resetTransform) => {
     const now = Date.now()
     const DOUBLE_TAP_DELAY = 300
     
+    // Check for double-tap
     if (now - lastTap < DOUBLE_TAP_DELAY && isAtMaxZoom) {
-      // Reset to fit-to-page when double-tapping at max zoom
+      // Clear any pending single-tap action
+      if (tapTimeout) {
+        clearTimeout(tapTimeout)
+        setTapTimeout(null)
+      }
+      
+      // Execute double-tap reset
       resetTransform()
       setShowControls(true)
       setTimeout(() => setShowControls(false), 3000)
+      setLastTap(0) // Reset to prevent triple-tap issues
+      return
     }
     
+    // Set up single-tap with delay to allow double-tap detection
+    if (tapTimeout) {
+      clearTimeout(tapTimeout)
+    }
+    
+    const newTimeout = setTimeout(() => {
+      // Execute single-tap action (show controls)
+      if (!showControls) {
+        setShowControls(true)
+        setTimeout(() => setShowControls(false), 4000)
+      }
+      setTapTimeout(null)
+    }, DOUBLE_TAP_DELAY)
+    
+    setTapTimeout(newTimeout)
     setLastTap(now)
   }
   
@@ -2056,14 +2083,7 @@ if (currentScreen === "mapViewer" && activeMap) {
                 pointerEvents: showControls ? 'none' : 'auto'
               }}
               onClick={(e) => {
-                // Always handle double-tap detection first
-                handleDoubleTap(resetTransform)
-                
-                // Then show controls if they're not visible
-                if (!showControls) {
-                  setShowControls(true)
-                  setTimeout(() => setShowControls(false), 4000)
-                }
+                handleTap(resetTransform)
               }}
             >
               <img
