@@ -1816,45 +1816,28 @@ if (currentScreen === "mapViewer" && activeMap) {
     }
   }
 
-  // Separate tap handling to avoid conflicts
-  const [tapTimeout, setTapTimeout] = useState(null)
-  
-  const handleTap = (resetTransform) => {
+  // Handle double-tap for reset to fit-to-page
+  const handleDoubleTap = (resetTransform) => {
     const now = Date.now()
     const DOUBLE_TAP_DELAY = 300
     
-    // Check for double-tap
     if (now - lastTap < DOUBLE_TAP_DELAY && isAtMaxZoom) {
-      // Clear any pending single-tap action
+      // Clear any pending timeout
       if (tapTimeout) {
         clearTimeout(tapTimeout)
         setTapTimeout(null)
       }
       
-      // Execute double-tap reset
+      // Reset to fit-to-page
       resetTransform()
       setShowControls(true)
       setTimeout(() => setShowControls(false), 3000)
-      setLastTap(0) // Reset to prevent triple-tap issues
-      return
+      setLastTap(0)
+      return true
     }
     
-    // Set up single-tap with delay to allow double-tap detection
-    if (tapTimeout) {
-      clearTimeout(tapTimeout)
-    }
-    
-    const newTimeout = setTimeout(() => {
-      // Execute single-tap action (show controls)
-      if (!showControls) {
-        setShowControls(true)
-        setTimeout(() => setShowControls(false), 4000)
-      }
-      setTapTimeout(null)
-    }, DOUBLE_TAP_DELAY)
-    
-    setTapTimeout(newTimeout)
     setLastTap(now)
+    return false
   }
   
   return (
@@ -2083,7 +2066,10 @@ if (currentScreen === "mapViewer" && activeMap) {
                 pointerEvents: showControls ? 'none' : 'auto'
               }}
               onClick={(e) => {
-                handleTap(resetTransform)
+                if (!handleDoubleTap(resetTransform) && !showControls) {
+                  setShowControls(true)
+                  setTimeout(() => setShowControls(false), 4000)
+                }
               }}
             >
               <img
