@@ -1774,6 +1774,7 @@ if (currentScreen === "category") {
   )
 }
 
+// Map Viewer - Fixed with Double-Tap Reset
 if (currentScreen === "mapViewer" && activeMap) {
   // Minimum swipe distance (in px)
   const minSwipeDistance = 50
@@ -2055,12 +2056,13 @@ if (currentScreen === "mapViewer" && activeMap) {
                 pointerEvents: showControls ? 'none' : 'auto'
               }}
               onClick={(e) => {
+                // Always handle double-tap detection first
+                handleDoubleTap(resetTransform)
+                
+                // Then show controls if they're not visible
                 if (!showControls) {
                   setShowControls(true)
                   setTimeout(() => setShowControls(false), 4000)
-                } else {
-                  // Handle double-tap for reset when at max zoom
-                  handleDoubleTap(resetTransform)
                 }
               }}
             >
