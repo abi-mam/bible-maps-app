@@ -857,7 +857,7 @@ if (currentScreen === "home") {
       {showTitlePopup && <TitlePopup title={popupTitle} onClose={() => setShowTitlePopup(false)} />}
   
       {/* Status Bar Pad - Fixed */}
-      <div className="bg-green-200 w-full h-8 flex-shrink-0"></div>
+      <div className="bg-slate-600/70 w-full h-8 flex-shrink-0"></div>
       
       {/* Main Header - Fixed */}
       <div className={`transition-all duration-300 ${isSearchingFromHome ? 'bg-stone-100' : 'bg-gradient-to-r from-slate-100 to-stone-100'} px-5 py-4 shadow-sm flex-shrink-0`}>
@@ -1021,7 +1021,7 @@ if (currentScreen === "home") {
                       </div>
                       <div className="flex-1">
                         <h3 className="text-lg font-semibold text-stone-800 group-hover:text-stone-900 transition-colors">{category}</h3>
-                        <p className="text-sm text-green-700 opacity-75 font-medium">{data.count} maps available</p>
+                        <p className="text-sm text-green-700 opacity-75">{data.count} maps available</p>
                       </div>
                     </div>
                     <div className="flex justify-end">
@@ -1038,7 +1038,7 @@ if (currentScreen === "home") {
             </div>
 
             {/* Footer Section */}
-            <div className="bg-gradient-to-r from-slate-600 to-slate-700 flex flex-col items-center justify-center px-6 py-12 shadow-lg">
+            <div className="bg-gradient-to-r from-slate-600/90 to-slate-700 flex flex-col items-center justify-center px-6 py-12 shadow-lg">
               <div className="flex items-center justify-center mb-6">
                 <div className="p-2 bg-white/10 rounded-lg mr-3 shadow-sm">
                   <div className="w-6 h-6" style={{ filter: 'brightness(0) saturate(100%) invert(98%) sepia(4%) saturate(339%) hue-rotate(202deg) brightness(106%) contrast(96%)' }}>
@@ -1086,7 +1086,7 @@ if (currentScreen === "search") {
       {showTitlePopup && <TitlePopup title={popupTitle} onClose={() => setShowTitlePopup(false)} />}
 
       {/* Status Bar Pad - Fixed */}
-      <div className="bg-green-200 w-full h-8 flex-shrink-0"></div>
+      <div className="bg-slate-600/70 w-full h-8 flex-shrink-0"></div>
 
       {/* Header - Fixed */}
       <div className="bg-gray-100 px-4 py-4 flex-shrink-0">
@@ -1316,7 +1316,7 @@ if (currentScreen === "favorites") {
       {showTitlePopup && <TitlePopup title={popupTitle} onClose={() => setShowTitlePopup(false)} />}
 
       {/* Status Bar Pad - Fixed */}
-      <div className="bg-green-200 w-full h-8 flex-shrink-0"></div>
+      <div className="bg-slate-600/70 w-full h-8 flex-shrink-0"></div>
 
       {/* Header - Fixed */}
       <div className="bg-gray-100 px-4 py-4 flex-shrink-0">
@@ -1532,7 +1532,7 @@ if (currentScreen === "category") {
       {showTitlePopup && <TitlePopup title={popupTitle} onClose={() => setShowTitlePopup(false)} />}
 
       {/* Status Bar Pad - Fixed */}
-      <div className="bg-green-200 w-full h-8 flex-shrink-0 relative z-50"></div>
+      <div className="bg-slate-600/70 w-full h-8 flex-shrink-0 relative z-50"></div>
 
       {/* Header - Fixed */}
       <div className="bg-gray-100 px-4 py-4 flex items-center justify-between flex-shrink-0 relative z-50">
@@ -1793,7 +1793,7 @@ if (currentScreen === "mapViewer" && activeMap) {
     const isLeftSwipe = distance > minSwipeDistance
     const isRightSwipe = distance < -minSwipeDistance
     
-    const allowSwipe = currentScale <= 1.1 && currentScale >= 1.05
+    const allowSwipe = currentScale <= 1.1 && currentScale > 1.1
 
     if (allowSwipe && isLeftSwipe && currentMapIndex < mockMapData[currentCategory].maps.length - 1) {
       e.preventDefault()
