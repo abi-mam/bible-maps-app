@@ -894,7 +894,7 @@ if (currentScreen === "home") {
       {/* Main Header - Fixed */}
       <div className={`transition-all duration-300 ${isSearchingFromHome ? 'bg-stone-100' : 'bg-gradient-to-r from-slate-100 to-stone-100'} px-5 py-4 shadow-sm flex-shrink-0`}>
         <div className="flex items-center justify-center">
-          <div className="p-2 bg-gradient-to-br from-stone-600/70 to-stone-700 rounded-lg mr-3 shadow-md">
+          <div className="p-2 bg-gradient-to-br from-stone-600/90 to-stone-700 rounded-lg mr-3 shadow-md">
             <SimpleBookIcon className="w-6 h-6 brightness-0 invert opacity-95" />
           </div>
           <h1 className="text-xl font-semibold text-stone-800 tracking-tight">Bible Maps</h1>
@@ -1045,10 +1045,10 @@ if (currentScreen === "home") {
                       setCurrentScreen("category")
                       setActiveTab("view")
                     }}
-                    className="bg-white rounded-xl p-5 shadow-sm border border-stone-200 cursor-pointer hover:shadow-md transition-all duration-200 transform hover:-translate-y-1 hover:scale-[1.01] group active:scale-[0.98]"
+                    className="bg-white rounded-xl p-5 shadow-sm border border-sky-200 cursor-pointer hover:shadow-md transition-all duration-200 transform hover:-translate-y-1 hover:scale-[1.01] group active:scale-[0.98]"
                   >
                     <div className="flex items-center mb-4">
-                      <div className="p-2.5 bg-gradient-to-br from-stone-100 to-stone-200 rounded-lg mr-4 shadow-sm group-hover:shadow-md transition-shadow duration-200">
+                      <div className="p-2.5 bg-gradient-to-br from-sky-100 to-sky-200 rounded-lg mr-4 shadow-sm group-hover:shadow-md transition-shadow duration-200">
                         <Icon className="w-8 h-8 transition-transform duration-200 group-hover:scale-105" />
                       </div>
                       <div className="flex-1">
@@ -1070,7 +1070,7 @@ if (currentScreen === "home") {
             </div>
 
             {/* Footer Section */}
-            <div className="bg-gradient-to-r from-slate-500 to-slate-600 flex flex-col items-center justify-center px-6 py-12 shadow-lg">
+            <div className="bg-gradient-to-r from-stone-600 to-stone-700 flex flex-col items-center justify-center px-6 py-12 shadow-lg">
               <div className="flex items-center justify-center mb-6">
                 <div className="p-2 bg-white/10 rounded-lg mr-3 shadow-sm">
                   <div className="w-6 h-6" style={{ filter: 'brightness(0) saturate(100%) invert(98%) sepia(4%) saturate(339%) hue-rotate(202deg) brightness(106%) contrast(96%)' }}>
@@ -2031,7 +2031,7 @@ if (currentScreen === "category") {
       </div>
 
       {/* Bottom Bar - Fixed with proper positioning */}
-      <div className="fixed bottom-0 left-0 right-0 h-14 shadow-sm flex-shrink-0 z-50 bg-lime-100/70">
+      <div className="fixed bottom-0 left-0 right-0 h-14 shadow-sm flex-shrink-0 z-50 bg-stone-100/60">
         <div className="flex items-center justify-center h-14">
           {/* Button Container with equal spacing */}
           <div className="flex items-center justify-between w-full max-w-md px-12">
