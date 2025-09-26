@@ -883,12 +883,12 @@ if (currentScreen === "home") {
       {showTitlePopup && <TitlePopup title={popupTitle} onClose={() => setShowTitlePopup(false)} />}
   
       {/* Status Bar Pad - Fixed */}
-      <div className="bg-blue-700 opacity-75 w-full h-8 flex-shrink-0"></div>
+      <div className="bg-lime-700 opacity-75 w-full h-8 flex-shrink-0"></div>
       
       {/* Main Header - Fixed */}
       <div className={`transition-all duration-300 ${isSearchingFromHome ? 'bg-stone-100' : 'bg-gradient-to-r from-slate-100 to-stone-100'} px-5 py-4 shadow-sm flex-shrink-0`}>
         <div className="flex items-center justify-center">
-          <div className="p-2 bg-gradient-to-br from-stone-600/80 to-stone-700 rounded-lg mr-3 shadow-md">
+          <div className="p-2 bg-gradient-to-br from-stone-600/70 to-stone-700 rounded-lg mr-3 shadow-md">
             <SimpleBookIcon className="w-6 h-6 brightness-0 invert opacity-95" />
           </div>
           <h1 className="text-xl font-semibold text-stone-800 tracking-tight">Bible Maps</h1>
@@ -1064,7 +1064,7 @@ if (currentScreen === "home") {
             </div>
 
             {/* Footer Section */}
-            <div className="bg-gradient-to-r from-green-600 to-green-700/75 flex flex-col items-center justify-center px-6 py-12 shadow-lg">
+            <div className="bg-gradient-to-r from-slate-600 to-slate-700/75 flex flex-col items-center justify-center px-6 py-12 shadow-lg">
               <div className="flex items-center justify-center mb-6">
                 <div className="p-2 bg-white/10 rounded-lg mr-3 shadow-sm">
                   <div className="w-6 h-6" style={{ filter: 'brightness(0) saturate(100%) invert(98%) sepia(4%) saturate(339%) hue-rotate(202deg) brightness(106%) contrast(96%)' }}>
@@ -1127,7 +1127,7 @@ if (currentScreen === "search") {
 )}
 
       {/* Status Bar Pad - Fixed */}
-      <div className="bg-blue-700 opacity-75 w-full h-8 flex-shrink-0"></div>
+      <div className="bg-lime-700 opacity-75 w-full h-8 flex-shrink-0"></div>
 
       {/* Header - Fixed */}
       <div className="bg-gray-100 px-4 py-4 flex-shrink-0">
@@ -1387,7 +1387,7 @@ if (currentScreen === "favorites") {
 )}
 
       {/* Status Bar Pad - Fixed */}
-      <div className="bg-blue-700 opacity-75 w-full h-8 flex-shrink-0"></div>
+      <div className="bg-lime-700 opacity-75 w-full h-8 flex-shrink-0"></div>
 
       {/* Header - Fixed */}
       <div className="bg-gray-100 px-4 py-4 flex-shrink-0">
@@ -1618,7 +1618,7 @@ if (currentScreen === "category") {
       {showTitlePopup && <TitlePopup title={popupTitle} onClose={() => setShowTitlePopup(false)} />}
 
       {/* Status Bar Pad - Fixed */}
-      <div className="bg-blue-700 opacity-75 w-full h-8 flex-shrink-0 relative z-50"></div>
+      <div className="bg-lime-700 opacity-75 w-full h-8 flex-shrink-0 relative z-50"></div>
 
 {showTooltip && (
   <div 
@@ -1634,6 +1634,7 @@ if (currentScreen === "category") {
     </div>
   </div>
 )}
+
       {/* Header - Fixed */}
       <div className="bg-gray-100 px-4 py-4 flex items-center justify-between flex-shrink-0 relative z-50">
         <div className="flex items-center">
@@ -1844,7 +1845,7 @@ if (currentScreen === "category") {
       </div>
       
       {/* Bottom Bar - Fixed with proper positioning */}
-      <div className="fixed bottom-0 left-0 right-0 h-14 shadow-sm flex-shrink-0 z-50 bg-green-100/60">                 
+      <div className="fixed bottom-0 left-0 right-0 h-14 shadow-sm flex-shrink-0 z-50 bg-lime-100/70">                 
         <div className="flex items-center justify-center h-14">
           {/* Button Container with equal spacing */}
           <div className="flex items-center justify-between w-full max-w-md px-12">
