@@ -1775,8 +1775,16 @@ if (currentScreen === "category") {
   )
 }
 
-// Map Viewer - Fixed with Double-Tap Reset
+// Map Viewer - Complete Section with Fixed Double-Tap Reset
 if (currentScreen === "mapViewer" && activeMap) {
+  // Add visual debug state (if not already added at top level)
+  const [debugInfo, setDebugInfo] = useState({ message: '', visible: false })
+
+  const showDebugMessage = (message) => {
+    setDebugInfo({ message, visible: true })
+    setTimeout(() => setDebugInfo(prev => ({ ...prev, visible: false })), 2000)
+  }
+
   // Minimum swipe distance (in px)
   const minSwipeDistance = 50
 
@@ -1796,7 +1804,7 @@ if (currentScreen === "mapViewer" && activeMap) {
     const isLeftSwipe = distance > minSwipeDistance
     const isRightSwipe = distance < -minSwipeDistance
     
-    // Fixed swipe logic - allow navigation when scale <= 1.1
+    // Allow navigation when scale <= 1.1
     const allowSwipe = currentScale <= 1.1
 
     if (allowSwipe && isLeftSwipe && currentMapIndex < mockMapData[currentCategory].maps.length - 1) {
@@ -1814,30 +1822,6 @@ if (currentScreen === "mapViewer" && activeMap) {
       setActiveMap(mockMapData[currentCategory].maps[newIndex])
       setShowControls(true)
     }
-  }
-
-  // Handle double-tap for reset to fit-to-page
-  const handleDoubleTap = (resetTransform) => {
-    const now = Date.now()
-    const DOUBLE_TAP_DELAY = 300
-    
-    if (now - lastTap < DOUBLE_TAP_DELAY && isAtMaxZoom) {
-      // Clear any pending timeout
-      if (tapTimeout) {
-        clearTimeout(tapTimeout)
-        setTapTimeout(null)
-      }
-      
-      // Reset to fit-to-page
-      resetTransform()
-      setShowControls(true)
-      setTimeout(() => setShowControls(false), 3000)
-      setLastTap(0)
-      return true
-    }
-    
-    setLastTap(now)
-    return false
   }
   
   return (
@@ -1971,150 +1955,156 @@ if (currentScreen === "mapViewer" && activeMap) {
         </button>
       </div>
 
+      {/* Visual Debug Overlay */}
+      {debugInfo.visible && (
+        <div className="fixed top-20 left-1/2 transform -translate-x-1/2 z-50 bg-black/80 text-white px-4 py-2 rounded-lg text-sm backdrop-blur-sm">
+          {debugInfo.message}
+        </div>
+      )}
+
       {/* Transform Library Layer - ON TOP (z-index: 10) */}
-<TransformWrapper
-  initialScale={1}
-  minScale={0.5}
-  maxScale={3}
-  limitToBounds={true}
-  // DO NOT modify doubleClick settings - keep library's default behavior
-  onTransformed={(ref, state) => {
-    // Keep all existing onTransformed logic exactly as is
-    if (state && typeof state.scale === 'number') {
-      setCurrentScale(state.scale)
-      setIsAtFitToPage(state.scale <= 1.1)
-      setIsSystemNavVisible(state.scale > 1.2)
-      
-      // Track when we're at maximum zoom for double-tap reset
-      setIsAtMaxZoom(state.scale >= 2.9)
-      
-      if (ref && ref.instance && ref.instance.transformState) {
-        const { positionX } = ref.instance.transformState
-        const containerWidth = ref.instance.wrapperComponent?.offsetWidth || window.innerWidth
-        const contentWidth = ref.instance.contentComponent?.offsetWidth || 0
-        const scaledContentWidth = contentWidth * state.scale
-        
-        const maxPanX = Math.max(0, (scaledContentWidth - containerWidth) / 2)
-        
-        setIsAtLeftEdge(positionX >= maxPanX - 10)
-        setIsAtRightEdge(positionX <= -maxPanX + 10)
-      }
-    }
-  }}
-  // Keep ALL existing handlers - onPanning, onPanningStop, onZoomStop, onPinchingStop
-  onPanning={(ref, event) => {
-    if (ref && ref.instance && ref.instance.transformState) {
-      const { positionX } = ref.instance.transformState
-      const previousX = ref.instance.previousState?.positionX || 0
-      
-      if (positionX > previousX + 5) {
-        setLastPanDirection('right')
-      } else if (positionX < previousX - 5) {
-        setLastPanDirection('left')
-      }
-    }
-  }}
-  onPanningStop={(ref, event) => {
-    // Keep all existing swipe navigation logic
-    if (ref && ref.instance && ref.instance.transformState) {
-      const { positionX, scale } = ref.instance.transformState
-      const containerWidth = ref.instance.wrapperComponent?.offsetWidth || window.innerWidth
-      const contentWidth = ref.instance.contentComponent?.offsetWidth || containerWidth
-      const scaledContentWidth = contentWidth * scale
-      
-      const maxPanX = Math.max(0, (scaledContentWidth - containerWidth) / 2)
-      
-      const atLeftEdge = positionX >= maxPanX - 10
-      const atRightEdge = positionX <= -maxPanX + 10
-      
-      setIsAtLeftEdge(atLeftEdge)
-      setIsAtRightEdge(atRightEdge)
-      
-      // CRITICAL: Keep existing swipe logic - allow navigation when scale <= 1.1
-      if (scale <= 1.1) {
-        if (atRightEdge && lastPanDirection === 'left' && currentMapIndex < mockMapData[currentCategory].maps.length - 1) {
-          const newIndex = currentMapIndex + 1
-          setCurrentMapIndex(newIndex)
-          setActiveMap(mockMapData[currentCategory].maps[newIndex])
-          setShowControls(true)
-        }
-        else if (atLeftEdge && lastPanDirection === 'right' && currentMapIndex > 0) {
-          const newIndex = currentMapIndex - 1
-          setCurrentMapIndex(newIndex)
-          setActiveMap(mockMapData[currentCategory].maps[newIndex])
-          setShowControls(true)
-        }
-      }
-      
-      setLastPanDirection(null)
-    }
-  }}
-  onZoomStop={() => {
-    setTimeout(() => setShowControls(false), 1000)
-  }}
-  onPinchingStop={() => {
-    setTimeout(() => setShowControls(false), 1000)
-  }}
->
-  {({ zoomIn, zoomOut, resetTransform }) => (
-    <TransformComponent>
-      <div 
-        style={{ 
-          width: '100vw', 
-          height: '100vh', 
-          display: 'flex', 
-          alignItems: 'center', 
-          justifyContent: 'center',
-          position: 'relative',
-          zIndex: 10,
-          pointerEvents: showControls ? 'none' : 'auto'
-        }}
-        // KEEP existing touch handlers for swipe functionality
-        onTouchStart={onTouchStart}
-        onTouchMove={onTouchMove}
-        onTouchEnd={onTouchEnd}
-        // SIMPLIFIED click handling - only for showing controls and double-tap reset
-        onClick={(e) => {
-          const now = Date.now()
-          const timeSinceLastTap = now - lastTap
+      <TransformWrapper
+        initialScale={1}
+        minScale={0.5}
+        maxScale={3}
+        limitToBounds={true}
+        onDoubleClick={(ref, event) => {
+          const currentScale = ref.state.scale
           
-          if (timeSinceLastTap < 300) {
-            // This is a double-tap
-            if (isAtMaxZoom) {
-              // Only reset at max zoom - don't interfere with library zoom at other levels
-              e.preventDefault()
-              e.stopPropagation()
-              resetTransform()
-              setShowControls(true)
-              setTimeout(() => setShowControls(false), 3000)
-            }
-            // At other zoom levels, let library handle zoom behavior
-            setLastTap(0) // Reset to prevent triple-tap
+          if (currentScale >= 2.9) {
+            showDebugMessage('Double-tap reset triggered!')
+            event.preventDefault()
+            ref.resetTransform()
+            setShowControls(true)
+            setTimeout(() => setShowControls(false), 3000)
+            return false // Prevent library's zoom behavior
           } else {
-            // Single tap - show controls
-            if (!showControls) {
-              setShowControls(true)
-              setTimeout(() => setShowControls(false), 4000)
-            }
-            setLastTap(now)
+            showDebugMessage(`Double-tap zoom (scale: ${currentScale.toFixed(2)})`)
+            return true // Allow library's zoom behavior
           }
         }}
+        onTransformed={(ref, state) => {
+          if (state && typeof state.scale === 'number') {
+            setCurrentScale(state.scale)
+            setIsAtFitToPage(state.scale <= 1.1)
+            setIsSystemNavVisible(state.scale > 1.2)
+            
+            // Visual feedback when max zoom is reached
+            const wasAtMaxZoom = isAtMaxZoom
+            const newIsAtMaxZoom = state.scale >= 2.9
+            
+            if (!wasAtMaxZoom && newIsAtMaxZoom) {
+              showDebugMessage(`Max zoom reached: ${state.scale.toFixed(2)}`)
+            }
+            
+            setIsAtMaxZoom(newIsAtMaxZoom)
+            
+            if (ref && ref.instance && ref.instance.transformState) {
+              const { positionX } = ref.instance.transformState
+              const containerWidth = ref.instance.wrapperComponent?.offsetWidth || window.innerWidth
+              const contentWidth = ref.instance.contentComponent?.offsetWidth || 0
+              const scaledContentWidth = contentWidth * state.scale
+              
+              const maxPanX = Math.max(0, (scaledContentWidth - containerWidth) / 2)
+              
+              setIsAtLeftEdge(positionX >= maxPanX - 10)
+              setIsAtRightEdge(positionX <= -maxPanX + 10)
+            }
+          }
+        }}
+        onPanning={(ref, event) => {
+          if (ref && ref.instance && ref.instance.transformState) {
+            const { positionX } = ref.instance.transformState
+            const previousX = ref.instance.previousState?.positionX || 0
+            
+            if (positionX > previousX + 5) {
+              setLastPanDirection('right')
+            } else if (positionX < previousX - 5) {
+              setLastPanDirection('left')
+            }
+          }
+        }}
+        onPanningStop={(ref, event) => {
+          if (ref && ref.instance && ref.instance.transformState) {
+            const { positionX, scale } = ref.instance.transformState
+            const containerWidth = ref.instance.wrapperComponent?.offsetWidth || window.innerWidth
+            const contentWidth = ref.instance.contentComponent?.offsetWidth || containerWidth
+            const scaledContentWidth = contentWidth * scale
+            
+            const maxPanX = Math.max(0, (scaledContentWidth - containerWidth) / 2)
+            
+            const atLeftEdge = positionX >= maxPanX - 10
+            const atRightEdge = positionX <= -maxPanX + 10
+            
+            setIsAtLeftEdge(atLeftEdge)
+            setIsAtRightEdge(atRightEdge)
+            
+            // Fixed swipe logic - allow navigation when scale <= 1.1
+            if (scale <= 1.1) {
+              if (atRightEdge && lastPanDirection === 'left' && currentMapIndex < mockMapData[currentCategory].maps.length - 1) {
+                const newIndex = currentMapIndex + 1
+                setCurrentMapIndex(newIndex)
+                setActiveMap(mockMapData[currentCategory].maps[newIndex])
+                setShowControls(true)
+              }
+              else if (atLeftEdge && lastPanDirection === 'right' && currentMapIndex > 0) {
+                const newIndex = currentMapIndex - 1
+                setCurrentMapIndex(newIndex)
+                setActiveMap(mockMapData[currentCategory].maps[newIndex])
+                setShowControls(true)
+              }
+            }
+            
+            setLastPanDirection(null)
+          }
+        }}
+        onZoomStop={() => {
+          setTimeout(() => setShowControls(false), 1000)
+        }}
+        onPinchingStop={() => {
+          setTimeout(() => setShowControls(false), 1000)
+        }}
       >
-        <img
-          src={activeMap.fullImage || "/placeholder.svg"}
-          alt={activeMap.title}
-          onError={(e) => { e.target.src = "/placeholder.svg" }}
-          style={{
-            maxWidth: '100%',
-            maxHeight: '100%',
-            objectFit: 'contain',
-            display: 'block'
-          }}
-        />
-      </div>
-    </TransformComponent>
-  )}
-</TransformWrapper>
+        {({ zoomIn, zoomOut, resetTransform }) => (
+          <TransformComponent>
+            <div 
+              style={{ 
+                width: '100vw', 
+                height: '100vh', 
+                display: 'flex', 
+                alignItems: 'center', 
+                justifyContent: 'center',
+                position: 'relative',
+                zIndex: 10,
+                pointerEvents: showControls ? 'none' : 'auto'
+              }}
+              // Keep existing touch handlers for swipe navigation
+              onTouchStart={onTouchStart}
+              onTouchMove={onTouchMove}
+              onTouchEnd={onTouchEnd}
+              // Simple single-tap for controls
+              onClick={(e) => {
+                if (!showControls) {
+                  setShowControls(true)
+                  setTimeout(() => setShowControls(false), 4000)
+                }
+              }}
+            >
+              <img
+                src={activeMap.fullImage || "/placeholder.svg"}
+                alt={activeMap.title}
+                onError={(e) => { e.target.src = "/placeholder.svg" }}
+                style={{
+                  maxWidth: '100%',
+                  maxHeight: '100%',
+                  objectFit: 'contain',
+                  display: 'block'
+                }}
+              />
+            </div>
+          </TransformComponent>
+        )}
+      </TransformWrapper>
     </div>
   )
 }
