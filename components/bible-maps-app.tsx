@@ -857,12 +857,12 @@ if (currentScreen === "home") {
       {showTitlePopup && <TitlePopup title={popupTitle} onClose={() => setShowTitlePopup(false)} />}
   
       {/* Status Bar Pad - Fixed */}
-      <div className="bg-green-700 opacity-75 w-full h-8 flex-shrink-0"></div>
+      <div className="bg-blue-700 opacity-75 w-full h-8 flex-shrink-0"></div>
       
       {/* Main Header - Fixed */}
       <div className={`transition-all duration-300 ${isSearchingFromHome ? 'bg-stone-100' : 'bg-gradient-to-r from-slate-100 to-stone-100'} px-5 py-4 shadow-sm flex-shrink-0`}>
         <div className="flex items-center justify-center">
-          <div className="p-2 bg-gradient-to-br from-stone-600 to-stone-700 rounded-lg mr-3 shadow-md">
+          <div className="p-2 bg-gradient-to-br from-stone-600/80 to-stone-700 rounded-lg mr-3 shadow-md">
             <SimpleBookIcon className="w-6 h-6 brightness-0 invert opacity-95" />
           </div>
           <h1 className="text-xl font-semibold text-stone-800 tracking-tight">Bible Maps</h1>
@@ -1021,7 +1021,7 @@ if (currentScreen === "home") {
                       </div>
                       <div className="flex-1">
                         <h3 className="text-lg font-semibold text-stone-800 group-hover:text-stone-900 transition-colors">{category}</h3>
-                        <p className="text-sm text-green-700 opacity-75">{data.count} maps available</p>
+                        <p className="text-sm text-stone-500">{data.count} maps available</p>
                       </div>
                     </div>
                     <div className="flex justify-end">
@@ -1038,7 +1038,7 @@ if (currentScreen === "home") {
             </div>
 
             {/* Footer Section */}
-            <div className="bg-gradient-to-r from-slate-600/80 to-slate-700/90 flex flex-col items-center justify-center px-6 py-12 shadow-lg">
+            <div className="bg-gradient-to-r from-green-600 to-green-700/75 flex flex-col items-center justify-center px-6 py-12 shadow-lg">
               <div className="flex items-center justify-center mb-6">
                 <div className="p-2 bg-white/10 rounded-lg mr-3 shadow-sm">
                   <div className="w-6 h-6" style={{ filter: 'brightness(0) saturate(100%) invert(98%) sepia(4%) saturate(339%) hue-rotate(202deg) brightness(106%) contrast(96%)' }}>
@@ -1086,7 +1086,7 @@ if (currentScreen === "search") {
       {showTitlePopup && <TitlePopup title={popupTitle} onClose={() => setShowTitlePopup(false)} />}
 
       {/* Status Bar Pad - Fixed */}
-      <div className="bg-green-700 opacity-75 w-full h-8 flex-shrink-0"></div>
+      <div className="bg-blue-700 opacity-75 w-full h-8 flex-shrink-0"></div>
 
       {/* Header - Fixed */}
       <div className="bg-gray-100 px-4 py-4 flex-shrink-0">
@@ -1316,7 +1316,7 @@ if (currentScreen === "favorites") {
       {showTitlePopup && <TitlePopup title={popupTitle} onClose={() => setShowTitlePopup(false)} />}
 
       {/* Status Bar Pad - Fixed */}
-      <div className="bg-green-700 opacity-75 w-full h-8 flex-shrink-0"></div>
+      <div className="bg-blue-700 opacity-75 w-full h-8 flex-shrink-0"></div>
 
       {/* Header - Fixed */}
       <div className="bg-gray-100 px-4 py-4 flex-shrink-0">
@@ -1532,7 +1532,7 @@ if (currentScreen === "category") {
       {showTitlePopup && <TitlePopup title={popupTitle} onClose={() => setShowTitlePopup(false)} />}
 
       {/* Status Bar Pad - Fixed */}
-      <div className="bg-green-700 opacity-75 w-full h-8 flex-shrink-0 relative z-50"></div>
+      <div className="bg-blue-700 opacity-75 w-full h-8 flex-shrink-0 relative z-50"></div>
 
       {/* Header - Fixed */}
       <div className="bg-gray-100 px-4 py-4 flex items-center justify-between flex-shrink-0 relative z-50">
@@ -1729,7 +1729,7 @@ if (currentScreen === "category") {
       </div>
       
       {/* Bottom Bar - Fixed with proper positioning */}
-      <div className="fixed bottom-0 left-0 right-0 h-14 shadow-sm flex-shrink-0 z-50 bg-slate-100/60">                 
+      <div className="fixed bottom-0 left-0 right-0 h-14 shadow-sm flex-shrink-0 z-50 bg-green-100/60">                 
         <div className="flex items-center justify-center h-14">
           {/* Button Container with equal spacing */}
           <div className="flex items-center justify-between w-full max-w-md px-12">
@@ -1772,7 +1772,7 @@ if (currentScreen === "category") {
   )
 }
 
-// Map Viewer - Fixed Layered Approach
+// Map Viewer - Fixed with Double-Tap Reset
 if (currentScreen === "mapViewer" && activeMap) {
   // Minimum swipe distance (in px)
   const minSwipeDistance = 50
@@ -1793,6 +1793,7 @@ if (currentScreen === "mapViewer" && activeMap) {
     const isLeftSwipe = distance > minSwipeDistance
     const isRightSwipe = distance < -minSwipeDistance
     
+    // Fixed swipe logic - allow navigation when scale <= 1.1
     const allowSwipe = currentScale <= 1.1
 
     if (allowSwipe && isLeftSwipe && currentMapIndex < mockMapData[currentCategory].maps.length - 1) {
@@ -1970,6 +1971,9 @@ if (currentScreen === "mapViewer" && activeMap) {
             setIsAtFitToPage(state.scale <= 1.1)
             setIsSystemNavVisible(state.scale > 1.2)
             
+            // Track when we're at maximum zoom for double-tap reset
+            setIsAtMaxZoom(state.scale >= 2.9)
+            
             if (ref && ref.instance && ref.instance.transformState) {
               const { positionX } = ref.instance.transformState
               const containerWidth = ref.instance.wrapperComponent?.offsetWidth || window.innerWidth
@@ -2010,7 +2014,8 @@ if (currentScreen === "mapViewer" && activeMap) {
             setIsAtLeftEdge(atLeftEdge)
             setIsAtRightEdge(atRightEdge)
             
-            if (scale < 1.0) {
+            // Fixed swipe logic - allow navigation when scale <= 1.1
+            if (scale <= 1.1) {
               if (atRightEdge && lastPanDirection === 'left' && currentMapIndex < mockMapData[currentCategory].maps.length - 1) {
                 const newIndex = currentMapIndex + 1
                 setCurrentMapIndex(newIndex)
@@ -2048,10 +2053,13 @@ if (currentScreen === "mapViewer" && activeMap) {
                 zIndex: 10,
                 pointerEvents: showControls ? 'none' : 'auto'
               }}
-              onClick={() => {
+              onClick={(e) => {
                 if (!showControls) {
                   setShowControls(true)
                   setTimeout(() => setShowControls(false), 4000)
+                } else {
+                  // Handle double-tap for reset when at max zoom
+                  handleDoubleTap(resetTransform)
                 }
               }}
             >
