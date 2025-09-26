@@ -678,13 +678,13 @@ const BibleMapsApp = () => {
     setShowTitlePopup(true)
   } 
 
-  const handleLongPressStart = (e, title) => {
+const handleLongPressStart = (e, title) => {
   const rect = e.currentTarget.getBoundingClientRect()
   const timer = setTimeout(() => {
     setTooltipText(title)
     setTooltipPosition({ 
       x: rect.left + rect.width / 2, 
-      y: rect.top - 10 
+      y: rect.top 
     })
     setShowTooltip(true)
   }, 500)
@@ -1560,13 +1560,13 @@ if (currentScreen === "category") {
       {/* Status Bar Pad - Fixed */}
       <div className="bg-blue-700 opacity-75 w-full h-8 flex-shrink-0 relative z-50"></div>
 
-      {showTooltip && (
+{showTooltip && (
   <div 
     className="fixed z-50 pointer-events-none"
     style={{
       left: tooltipPosition.x,
       top: tooltipPosition.y,
-      transform: 'translateX(-50%) translateY(-100%)'
+      transform: 'translateX(-50%)'
     }}
   >
     <div className="bg-black/80 text-white text-sm px-3 py-1.5 rounded-lg shadow-lg backdrop-blur-sm max-w-xs">
