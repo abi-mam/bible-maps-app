@@ -1773,7 +1773,7 @@ if (currentScreen === "category") {
   )
 }
 
-// Map Viewer - Cleaned Version
+// Map Viewer
 if (currentScreen === "mapViewer" && activeMap) {
   // Minimum swipe distance (in px)
   const minSwipeDistance = 50
@@ -2081,16 +2081,6 @@ if (currentScreen === "mapViewer" && activeMap) {
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
                     </svg>
                   </button>
-                  <div 
-                    onClick={() => handleLongPress(activeMap.title)}
-                    className={`text-sm backdrop-blur-sm px-3 py-1.5 rounded-lg shadow-lg cursor-pointer transition-all duration-200 ${
-                      mapViewerTheme === "light" 
-                        ? "bg-white/30 hover:bg-white/50" 
-                        : "bg-black/30 hover:bg-black/50"
-                    }`}
-                  >
-                    <p className={`truncate font-medium ${mapViewerTheme === "light" ? "text-slate-700" : "text-slate-200"}`}>{activeMap.title}</p>
-                  </div>
                 </div>
               </div>
 
