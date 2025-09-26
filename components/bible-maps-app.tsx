@@ -654,11 +654,8 @@ const BibleMapsApp = () => {
   const [touchEnd, setTouchEnd] = useState(null)
   const [currentScale, setCurrentScale] = useState(1)
   const [canSwipe, setCanSwipe] = useState(true)
-  const [lastTap, setLastTap] = useState(0)
   const [isAtMaxZoom, setIsAtMaxZoom] = useState(false)
-  const [tapTimeout, setTapTimeout] = useState(null)
-  const [debugInfo, setDebugInfo] = useState({ message: '', visible: false })
-
+   
   // ADD THESE MOVED HOOKS HERE - at the top level
   const [isAtLeftEdge, setIsAtLeftEdge] = useState(false)
   const [isAtRightEdge, setIsAtRightEdge] = useState(false)
@@ -1776,15 +1773,8 @@ if (currentScreen === "category") {
   )
 }
 
-// Map Viewer - Complete Section with Fixed Double-Tap Reset
+// Map Viewer - Cleaned Version
 if (currentScreen === "mapViewer" && activeMap) {
-  // Visual debug functions (debugInfo state should be declared at top level)
-  const showDebugMessage = (message) => {
-    // This will use the debugInfo state declared at the top level of the component
-    setDebugInfo({ message, visible: true })
-    setTimeout(() => setDebugInfo(prev => ({ ...prev, visible: false })), 2000)
-  }
-
   // Minimum swipe distance (in px)
   const minSwipeDistance = 50
 
@@ -1831,7 +1821,7 @@ if (currentScreen === "mapViewer" && activeMap) {
       onTouchMove={onTouchMove}
       onTouchEnd={onTouchEnd}
     >
-      {/* Controls Layer - BEHIND everything (z-index: 5) */}
+      {/* Controls Layer */}
       <div className={`absolute inset-0 pointer-events-none transition-opacity duration-700 ease-out z-5 ${
         showControls ? "opacity-100" : "opacity-0"
       }`}>
@@ -1955,49 +1945,18 @@ if (currentScreen === "mapViewer" && activeMap) {
         </button>
       </div>
 
-      {/* Visual Debug Overlay */}
-      {debugInfo.visible && (
-        <div className="fixed top-20 left-1/2 transform -translate-x-1/2 z-50 bg-black/80 text-white px-4 py-2 rounded-lg text-sm backdrop-blur-sm">
-          {debugInfo.message}
-        </div>
-      )}
-
-      {/* Transform Library Layer - ON TOP (z-index: 10) */}
+      {/* Transform Library Layer */}
       <TransformWrapper
         initialScale={1}
         minScale={0.5}
         maxScale={3}
         limitToBounds={true}
-        onDoubleClick={(ref, event) => {
-          const currentScale = ref.state.scale
-          
-          if (currentScale >= 2.9) {
-            showDebugMessage('Double-tap reset triggered!')
-            event.preventDefault()
-            ref.resetTransform()
-            setShowControls(true)
-            setTimeout(() => setShowControls(false), 3000)
-            return false // Prevent library's zoom behavior
-          } else {
-            showDebugMessage(`Double-tap zoom (scale: ${currentScale.toFixed(2)})`)
-            return true // Allow library's zoom behavior
-          }
-        }}
         onTransformed={(ref, state) => {
           if (state && typeof state.scale === 'number') {
             setCurrentScale(state.scale)
             setIsAtFitToPage(state.scale <= 1.1)
             setIsSystemNavVisible(state.scale > 1.2)
-            
-            // Visual feedback when max zoom is reached
-            const wasAtMaxZoom = isAtMaxZoom
-            const newIsAtMaxZoom = state.scale >= 2.9
-            
-            if (!wasAtMaxZoom && newIsAtMaxZoom) {
-              showDebugMessage(`Max zoom reached: ${state.scale.toFixed(2)}`)
-            }
-            
-            setIsAtMaxZoom(newIsAtMaxZoom)
+            setIsAtMaxZoom(state.scale >= 2.9)
             
             if (ref && ref.instance && ref.instance.transformState) {
               const { positionX } = ref.instance.transformState
@@ -2039,7 +1998,7 @@ if (currentScreen === "mapViewer" && activeMap) {
             setIsAtLeftEdge(atLeftEdge)
             setIsAtRightEdge(atRightEdge)
             
-            // Fixed swipe logic - allow navigation when scale <= 1.1
+            // Allow navigation when scale <= 1.1
             if (scale <= 1.1) {
               if (atRightEdge && lastPanDirection === 'left' && currentMapIndex < mockMapData[currentCategory].maps.length - 1) {
                 const newIndex = currentMapIndex + 1
@@ -2066,43 +2025,181 @@ if (currentScreen === "mapViewer" && activeMap) {
         }}
       >
         {({ zoomIn, zoomOut, resetTransform }) => (
-          <TransformComponent>
-            <div 
-              style={{ 
-                width: '100vw', 
-                height: '100vh', 
-                display: 'flex', 
-                alignItems: 'center', 
-                justifyContent: 'center',
-                position: 'relative',
-                zIndex: 10,
-                pointerEvents: showControls ? 'none' : 'auto'
-              }}
-              // Keep existing touch handlers for swipe navigation
-              onTouchStart={onTouchStart}
-              onTouchMove={onTouchMove}
-              onTouchEnd={onTouchEnd}
-              // Simple single-tap for controls
-              onClick={(e) => {
-                if (!showControls) {
-                  setShowControls(true)
-                  setTimeout(() => setShowControls(false), 4000)
-                }
-              }}
-            >
-              <img
-                src={activeMap.fullImage || "/placeholder.svg"}
-                alt={activeMap.title}
-                onError={(e) => { e.target.src = "/placeholder.svg" }}
-                style={{
-                  maxWidth: '100%',
-                  maxHeight: '100%',
-                  objectFit: 'contain',
-                  display: 'block'
-                }}
-              />
+          <>
+            {/* Reset Button Controls */}
+            <div className={`absolute inset-0 pointer-events-none transition-opacity duration-700 ease-out z-5 ${
+              showControls ? "opacity-100" : "opacity-0"
+            }`}>
+              {/* Top Left Controls with Reset Button */}
+              <div className="absolute top-10 left-0 right-0 flex justify-start px-4 gap-3 pointer-events-auto">
+                <div className="flex flex-col gap-3">
+                  <button
+                    onClick={() => {
+                      setHighlightActiveMap(true)
+                      setCurrentScreen("category")
+                      setTimeout(() => setHighlightActiveMap(false), 2000)
+                    }}
+                    className={`p-1.5 backdrop-blur-sm rounded-lg shadow-lg w-fit transition-all duration-200 ${
+                      mapViewerTheme === "light" 
+                        ? "bg-white/30 hover:bg-white/50" 
+                        : "bg-black/30 hover:bg-black/50"
+                    }`}
+                  >
+                    <ArrowLeft className={`w-5 h-5 ${mapViewerTheme === "light" ? "text-slate-500" : "text-slate-400"}`} />
+                  </button>
+                  <div 
+                    onClick={() => handleLongPress(activeMap.title)}
+                    className={`text-sm backdrop-blur-sm px-3 py-1.5 rounded-lg shadow-lg cursor-pointer transition-all duration-200 ${
+                      mapViewerTheme === "light" 
+                        ? "bg-white/30 hover:bg-white/50" 
+                        : "bg-black/30 hover:bg-black/50"
+                    }`}
+                  >
+                    <p className={`truncate font-medium ${mapViewerTheme === "light" ? "text-slate-700" : "text-slate-200"}`}>{activeMap.title}</p>
+                  </div>
+                  <button
+                    onClick={() => {
+                      resetTransform()
+                      setShowControls(true)
+                      setTimeout(() => setShowControls(false), 3000)
+                    }}
+                    className={`p-1.5 backdrop-blur-sm rounded-lg shadow-lg w-fit transition-all duration-200 ${
+                      mapViewerTheme === "light" 
+                        ? "bg-white/30 hover:bg-white/50" 
+                        : "bg-black/30 hover:bg-black/50"
+                    }`}
+                  >
+                    <svg className={`w-5 h-5 ${mapViewerTheme === "light" ? "text-slate-500" : "text-slate-400"}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                    </svg>
+                  </button>
+                </div>
+              </div>
+
+              {/* Other controls (theme, favorite, arrows, home) remain the same */}
+              <div className="absolute top-10 right-4 flex items-center gap-3 pointer-events-auto">
+                <button
+                  onClick={() => setMapViewerTheme(mapViewerTheme === "light" ? "dark" : "light")}
+                  className={`p-1.5 backdrop-blur-sm rounded-lg shadow-lg transition-all duration-200 ${
+                    mapViewerTheme === "light" 
+                      ? "bg-white/30 hover:bg-white/50" 
+                      : "bg-black/30 hover:bg-black/50"
+                  }`}
+                >
+                  {mapViewerTheme === "light" ? (
+                    <svg className={`w-5 h-5 text-slate-500`} fill="currentColor" viewBox="0 0 20 20">
+                      <path fillRule="evenodd" d="M17.293 13.293A8 8 0 0 1 6.707 2.707a8.001 8.001 0 1 0 10.586 10.586z" clipRule="evenodd" />
+                    </svg>
+                  ) : (
+                    <svg className={`w-5 h-5 text-slate-200`} fill="currentColor" viewBox="0 0 20 20">
+                        <path fillRule="evenodd" d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.706.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 6.464A1 1 0 106.465 5.05l-.708-.707a1 1 0 00-1.414 1.414l.707.707zm1.414 8.486l-.707.707a1 1 0 01-1.414-1.414l.707-.707a1 1 0 011.414 1.414zM4 11a1 1 0 100-2H3a1 1 0 000 2h1z" clipRule="evenodd" />
+                    </svg>
+                  )}
+                </button>
+
+                <button
+                  onClick={() => toggleFavorite(activeMap.id)}
+                  className={`p-1.5 backdrop-blur-sm rounded-lg shadow-lg transition-all duration-200 ${
+                    mapViewerTheme === "light" 
+                      ? "bg-white/30 hover:bg-white/50" 
+                      : "bg-black/30 hover:bg-black/50"
+                  }`}
+                >
+                  <Star className={`w-5 h-5 ${
+                    favorites.has(activeMap.id) 
+                      ? "text-yellow-500 fill-current" 
+                      : mapViewerTheme === "light" 
+                        ? "text-slate-600" 
+                        : "text-slate-300"
+                  }`} />
+                </button>
+              </div>
+
+              {/* Navigation arrows and home button */}
+              {currentMapIndex > 0 && (
+                <button
+                  onClick={() => {
+                    const newIndex = currentMapIndex - 1
+                    setCurrentMapIndex(newIndex)
+                    setActiveMap(mockMapData[currentCategory].maps[newIndex])
+                    setShowControls(true)
+                  }}
+                  className={`absolute left-4 top-1/2 transform -translate-y-1/2 p-1.5 backdrop-blur-sm rounded-lg shadow-lg pointer-events-auto transition-all duration-200 ${
+                    mapViewerTheme === "light" 
+                      ? "bg-white/30 hover:bg-white/50" 
+                      : "bg-black/30 hover:bg-black/50"
+                  }`}
+                >
+                  <ChevronLeft className={`w-6 h-6 ${mapViewerTheme === "light" ? "text-slate-600" : "text-slate-300"}`} />
+                </button>
+              )}
+
+              {currentMapIndex < mockMapData[currentCategory].maps.length - 1 && (
+                <button
+                  onClick={() => {
+                    const newIndex = currentMapIndex + 1
+                    setCurrentMapIndex(newIndex)
+                    setActiveMap(mockMapData[currentCategory].maps[newIndex])
+                    setShowControls(true)
+                  }}
+                  className={`absolute right-4 top-1/2 transform -translate-y-1/2 p-1.5 backdrop-blur-sm rounded-lg shadow-lg pointer-events-auto transition-all duration-200 ${
+                    mapViewerTheme === "light" 
+                      ? "bg-white/30 hover:bg-white/50" 
+                      : "bg-black/30 hover:bg-black/50"
+                  }`}
+                >
+                  <ChevronRight className={`w-6 h-6 ${mapViewerTheme === "light" ? "text-slate-600" : "text-slate-300"}`} />
+                </button>
+              )}
+
+              <button
+                onClick={() => setCurrentScreen("home")}
+                className={`absolute bottom-6 left-1/2 transform -translate-x-1/2 p-2 backdrop-blur-sm rounded-lg shadow-lg pointer-events-auto transition-all duration-200 ${
+                  mapViewerTheme === "light" 
+                    ? "bg-white/30 hover:bg-white/50" 
+                    : "bg-black/30 hover:bg-black/50"
+                }`}
+              >
+                <Home className={`w-5 h-5 ${mapViewerTheme === "light" ? "text-slate-600" : "text-slate-300"}`} />
+              </button>
             </div>
-          </TransformComponent>
+
+            <TransformComponent>
+              <div 
+                style={{ 
+                  width: '100vw', 
+                  height: '100vh', 
+                  display: 'flex', 
+                  alignItems: 'center', 
+                  justifyContent: 'center',
+                  position: 'relative',
+                  zIndex: 10,
+                  pointerEvents: showControls ? 'none' : 'auto'
+                }}
+                onTouchStart={onTouchStart}
+                onTouchMove={onTouchMove}
+                onTouchEnd={onTouchEnd}
+                onClick={(e) => {
+                  if (!showControls) {
+                    setShowControls(true)
+                    setTimeout(() => setShowControls(false), 4000)
+                  }
+                }}
+              >
+                <img
+                  src={activeMap.fullImage || "/placeholder.svg"}
+                  alt={activeMap.title}
+                  onError={(e) => { e.target.src = "/placeholder.svg" }}
+                  style={{
+                    maxWidth: '100%',
+                    maxHeight: '100%',
+                    objectFit: 'contain',
+                    display: 'block'
+                  }}
+                />
+              </div>
+            </TransformComponent>
+          </>
         )}
       </TransformWrapper>
     </div>
