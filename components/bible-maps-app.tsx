@@ -929,7 +929,7 @@ if (currentScreen === "home") {
                     setCurrentScreen("search")
                     setActiveTab("search")
                   }}
-                  className="w-full px-4 py-2.5 bg-white border border-stone-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-stone-400 focus:border-stone-400 shadow-sm text-sm placeholder-stone-500"
+                  className="w-full px-4 py-2.5 bg-white border border-sky-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-stone-400 focus:border-sky-400 shadow-sm text-sm placeholder-stone-500"
                 />
                 <Search className="absolute right-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-stone-400" />
               </div>
@@ -943,7 +943,7 @@ if (currentScreen === "home") {
                 setCurrentScreen("favorites")
                 setActiveTab("favorites")
               }}
-              className="p-2.5 bg-white border border-stone-200 rounded-lg hover:bg-stone-50 hover:shadow-md transition-all duration-200 shadow-sm"
+              className="p-2.5 bg-white border border-sky-200 rounded-lg hover:bg-stone-50 hover:shadow-md transition-all duration-200 shadow-sm"
             >
               <Star className="w-4 h-4 text-stone-600" />
             </button>
@@ -952,7 +952,7 @@ if (currentScreen === "home") {
           {/* Show search results count when searching */}
           {isSearchingFromHome && (
             <div className="mt-4">
-              <div className="bg-white/90 rounded-lg px-3 py-1.5 mx-auto w-fit shadow-sm border border-stone-200">
+              <div className="bg-white/90 rounded-lg px-3 py-1.5 mx-auto w-fit shadow-sm border border-sky-200">
                 <p className="text-xs text-stone-600 font-medium text-center">{searchResults.length} Maps Found</p>
               </div>
             </div>
@@ -963,7 +963,7 @@ if (currentScreen === "home") {
           <div className="px-5 py-5 space-y-5">
             {searchResults.length === 0 ? (
               <div className="flex flex-col items-center justify-center py-16">
-                <div className="p-4 bg-white/60 rounded-xl shadow-sm mb-4 border border-stone-200">
+                <div className="p-4 bg-white/60 rounded-xl shadow-sm mb-4 border border-sky-200">
                   <Search className="w-12 h-12 text-stone-400" />
                 </div>
                 <p className="text-stone-600 text-center font-medium">
@@ -1050,7 +1050,7 @@ if (currentScreen === "home") {
                     className="bg-white rounded-xl p-5 shadow-sm border border-sky-200 cursor-pointer hover:shadow-md transition-all duration-200 transform hover:-translate-y-1 hover:scale-[1.01] group active:scale-[0.98]"
                   >
                     <div className="flex items-center mb-4">
-                      <div className="p-2.5 bg-gradient-to-br from-sky-100 to-sky-200 rounded-lg mr-4 shadow-sm group-hover:shadow-md transition-shadow duration-200">
+                      <div className="p-2.5 bg-gradient-to-br from-stone-100 to-stone-200 rounded-lg mr-4 shadow-sm group-hover:shadow-md transition-shadow duration-200">
                         <Icon className="w-8 h-8 transition-transform duration-200 group-hover:scale-105" />
                       </div>
                       <div className="flex-1">
@@ -1072,7 +1072,7 @@ if (currentScreen === "home") {
             </div>
 
             {/* Footer Section */}
-            <div className="bg-gradient-to-r from-stone-600 to-stone-700 flex flex-col items-center justify-center px-6 py-12 shadow-lg">
+            <div className="bg-gradient-to-r from-stone-700 to-stone-800 flex flex-col items-center justify-center px-6 py-12 shadow-lg">
               <div className="flex items-center justify-center mb-6">
                 <div className="p-2 bg-white/10 rounded-lg mr-3 shadow-sm">
                   <div className="w-6 h-6" style={{ filter: 'brightness(0) saturate(100%) invert(98%) sepia(4%) saturate(339%) hue-rotate(202deg) brightness(106%) contrast(96%)' }}>
