@@ -1972,121 +1972,149 @@ if (currentScreen === "mapViewer" && activeMap) {
       </div>
 
       {/* Transform Library Layer - ON TOP (z-index: 10) */}
-      <TransformWrapper
-        initialScale={1}
-        minScale={0.5}
-        maxScale={3}
-        limitToBounds={true}
-        onTransformed={(ref, state) => {
-          if (state && typeof state.scale === 'number') {
-            setCurrentScale(state.scale)
-            setIsAtFitToPage(state.scale <= 1.1)
-            setIsSystemNavVisible(state.scale > 1.2)
-            
-            // Track when we're at maximum zoom for double-tap reset
-            setIsAtMaxZoom(state.scale >= 2.9)
-            
-            if (ref && ref.instance && ref.instance.transformState) {
-              const { positionX } = ref.instance.transformState
-              const containerWidth = ref.instance.wrapperComponent?.offsetWidth || window.innerWidth
-              const contentWidth = ref.instance.contentComponent?.offsetWidth || 0
-              const scaledContentWidth = contentWidth * state.scale
-              
-              const maxPanX = Math.max(0, (scaledContentWidth - containerWidth) / 2)
-              
-              setIsAtLeftEdge(positionX >= maxPanX - 10)
-              setIsAtRightEdge(positionX <= -maxPanX + 10)
+<TransformWrapper
+  initialScale={1}
+  minScale={0.5}
+  maxScale={3}
+  limitToBounds={true}
+  // DO NOT modify doubleClick settings - keep library's default behavior
+  onTransformed={(ref, state) => {
+    // Keep all existing onTransformed logic exactly as is
+    if (state && typeof state.scale === 'number') {
+      setCurrentScale(state.scale)
+      setIsAtFitToPage(state.scale <= 1.1)
+      setIsSystemNavVisible(state.scale > 1.2)
+      
+      // Track when we're at maximum zoom for double-tap reset
+      setIsAtMaxZoom(state.scale >= 2.9)
+      
+      if (ref && ref.instance && ref.instance.transformState) {
+        const { positionX } = ref.instance.transformState
+        const containerWidth = ref.instance.wrapperComponent?.offsetWidth || window.innerWidth
+        const contentWidth = ref.instance.contentComponent?.offsetWidth || 0
+        const scaledContentWidth = contentWidth * state.scale
+        
+        const maxPanX = Math.max(0, (scaledContentWidth - containerWidth) / 2)
+        
+        setIsAtLeftEdge(positionX >= maxPanX - 10)
+        setIsAtRightEdge(positionX <= -maxPanX + 10)
+      }
+    }
+  }}
+  // Keep ALL existing handlers - onPanning, onPanningStop, onZoomStop, onPinchingStop
+  onPanning={(ref, event) => {
+    if (ref && ref.instance && ref.instance.transformState) {
+      const { positionX } = ref.instance.transformState
+      const previousX = ref.instance.previousState?.positionX || 0
+      
+      if (positionX > previousX + 5) {
+        setLastPanDirection('right')
+      } else if (positionX < previousX - 5) {
+        setLastPanDirection('left')
+      }
+    }
+  }}
+  onPanningStop={(ref, event) => {
+    // Keep all existing swipe navigation logic
+    if (ref && ref.instance && ref.instance.transformState) {
+      const { positionX, scale } = ref.instance.transformState
+      const containerWidth = ref.instance.wrapperComponent?.offsetWidth || window.innerWidth
+      const contentWidth = ref.instance.contentComponent?.offsetWidth || containerWidth
+      const scaledContentWidth = contentWidth * scale
+      
+      const maxPanX = Math.max(0, (scaledContentWidth - containerWidth) / 2)
+      
+      const atLeftEdge = positionX >= maxPanX - 10
+      const atRightEdge = positionX <= -maxPanX + 10
+      
+      setIsAtLeftEdge(atLeftEdge)
+      setIsAtRightEdge(atRightEdge)
+      
+      // CRITICAL: Keep existing swipe logic - allow navigation when scale <= 1.1
+      if (scale <= 1.1) {
+        if (atRightEdge && lastPanDirection === 'left' && currentMapIndex < mockMapData[currentCategory].maps.length - 1) {
+          const newIndex = currentMapIndex + 1
+          setCurrentMapIndex(newIndex)
+          setActiveMap(mockMapData[currentCategory].maps[newIndex])
+          setShowControls(true)
+        }
+        else if (atLeftEdge && lastPanDirection === 'right' && currentMapIndex > 0) {
+          const newIndex = currentMapIndex - 1
+          setCurrentMapIndex(newIndex)
+          setActiveMap(mockMapData[currentCategory].maps[newIndex])
+          setShowControls(true)
+        }
+      }
+      
+      setLastPanDirection(null)
+    }
+  }}
+  onZoomStop={() => {
+    setTimeout(() => setShowControls(false), 1000)
+  }}
+  onPinchingStop={() => {
+    setTimeout(() => setShowControls(false), 1000)
+  }}
+>
+  {({ zoomIn, zoomOut, resetTransform }) => (
+    <TransformComponent>
+      <div 
+        style={{ 
+          width: '100vw', 
+          height: '100vh', 
+          display: 'flex', 
+          alignItems: 'center', 
+          justifyContent: 'center',
+          position: 'relative',
+          zIndex: 10,
+          pointerEvents: showControls ? 'none' : 'auto'
+        }}
+        // KEEP existing touch handlers for swipe functionality
+        onTouchStart={onTouchStart}
+        onTouchMove={onTouchMove}
+        onTouchEnd={onTouchEnd}
+        // SIMPLIFIED click handling - only for showing controls and double-tap reset
+        onClick={(e) => {
+          const now = Date.now()
+          const timeSinceLastTap = now - lastTap
+          
+          if (timeSinceLastTap < 300) {
+            // This is a double-tap
+            if (isAtMaxZoom) {
+              // Only reset at max zoom - don't interfere with library zoom at other levels
+              e.preventDefault()
+              e.stopPropagation()
+              resetTransform()
+              setShowControls(true)
+              setTimeout(() => setShowControls(false), 3000)
             }
-          }
-        }}
-        onPanning={(ref, event) => {
-          if (ref && ref.instance && ref.instance.transformState) {
-            const { positionX } = ref.instance.transformState
-            const previousX = ref.instance.previousState?.positionX || 0
-            
-            if (positionX > previousX + 5) {
-              setLastPanDirection('right')
-            } else if (positionX < previousX - 5) {
-              setLastPanDirection('left')
+            // At other zoom levels, let library handle zoom behavior
+            setLastTap(0) // Reset to prevent triple-tap
+          } else {
+            // Single tap - show controls
+            if (!showControls) {
+              setShowControls(true)
+              setTimeout(() => setShowControls(false), 4000)
             }
+            setLastTap(now)
           }
-        }}
-        onPanningStop={(ref, event) => {
-          if (ref && ref.instance && ref.instance.transformState) {
-            const { positionX, scale } = ref.instance.transformState
-            const containerWidth = ref.instance.wrapperComponent?.offsetWidth || window.innerWidth
-            const contentWidth = ref.instance.contentComponent?.offsetWidth || containerWidth
-            const scaledContentWidth = contentWidth * scale
-            
-            const maxPanX = Math.max(0, (scaledContentWidth - containerWidth) / 2)
-            
-            const atLeftEdge = positionX >= maxPanX - 10
-            const atRightEdge = positionX <= -maxPanX + 10
-            
-            setIsAtLeftEdge(atLeftEdge)
-            setIsAtRightEdge(atRightEdge)
-            
-            // Fixed swipe logic - allow navigation when scale <= 1.1
-            if (scale <= 1.1) {
-              if (atRightEdge && lastPanDirection === 'left' && currentMapIndex < mockMapData[currentCategory].maps.length - 1) {
-                const newIndex = currentMapIndex + 1
-                setCurrentMapIndex(newIndex)
-                setActiveMap(mockMapData[currentCategory].maps[newIndex])
-                setShowControls(true)
-              }
-              else if (atLeftEdge && lastPanDirection === 'right' && currentMapIndex > 0) {
-                const newIndex = currentMapIndex - 1
-                setCurrentMapIndex(newIndex)
-                setActiveMap(mockMapData[currentCategory].maps[newIndex])
-                setShowControls(true)
-              }
-            }
-            
-            setLastPanDirection(null)
-          }
-        }}
-        onZoomStop={() => {
-          setTimeout(() => setShowControls(false), 1000)
-        }}
-        onPinchingStop={() => {
-          setTimeout(() => setShowControls(false), 1000)
         }}
       >
-        {({ zoomIn, zoomOut, resetTransform }) => (
-          <TransformComponent>
-            <div 
-              style={{ 
-                width: '100vw', 
-                height: '100vh', 
-                display: 'flex', 
-                alignItems: 'center', 
-                justifyContent: 'center',
-                position: 'relative',
-                zIndex: 10,
-                pointerEvents: showControls ? 'none' : 'auto'
-              }}
-              onClick={(e) => {
-                if (!handleDoubleTap(resetTransform) && !showControls) {
-                  setShowControls(true)
-                  setTimeout(() => setShowControls(false), 4000)
-                }
-              }}
-            >
-              <img
-                src={activeMap.fullImage || "/placeholder.svg"}
-                alt={activeMap.title}
-                onError={(e) => { e.target.src = "/placeholder.svg" }}
-                style={{
-                  maxWidth: '100%',
-                  maxHeight: '100%',
-                  objectFit: 'contain',
-                  display: 'block'
-                }}
-              />
-            </div>
-          </TransformComponent>
-        )}
-      </TransformWrapper>
+        <img
+          src={activeMap.fullImage || "/placeholder.svg"}
+          alt={activeMap.title}
+          onError={(e) => { e.target.src = "/placeholder.svg" }}
+          style={{
+            maxWidth: '100%',
+            maxHeight: '100%',
+            objectFit: 'contain',
+            display: 'block'
+          }}
+        />
+      </div>
+    </TransformComponent>
+  )}
+</TransformWrapper>
     </div>
   )
 }
