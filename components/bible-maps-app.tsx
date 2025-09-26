@@ -1105,34 +1105,36 @@ if (currentScreen === "home") {
 if (currentScreen === "search") {
   // For search screen, always show all maps when no query is entered
   let searchResults = getAllMaps()
-  
+
   // Apply search filter only if there's a query
   if (searchQuery.trim()) {
-    searchResults = searchResults.filter((map) => 
+    searchResults = searchResults.filter((map) =>
       map.title.toLowerCase().includes(searchQuery.toLowerCase())
     )
   }
 
   return (
     <div className="h-screen flex flex-col bg-gray-50">
-      {showTitlePopup && <TitlePopup title={popupTitle} onClose={() => setShowTitlePopup(false)} />}
+      {showTitlePopup && (
+        <TitlePopup title={popupTitle} onClose={() => setShowTitlePopup(false)} />
+      )}
 
-{showTooltip && (
-  <div 
-    className="fixed z-50 pointer-events-none"
-    style={{
-      left: tooltipPosition.x,
-      top: tooltipPosition.y,
-      transform: tooltipPosition.showBelow 
-        ? 'translateX(-50%)' 
-        : 'translateX(-50%) translateY(-100%)'
-    }}
-  >
-    <div className="bg-black/80 text-white text-sm px-3 py-1.5 rounded-lg shadow-lg backdrop-blur-sm max-w-xs">
-      <p className="font-medium">{tooltipText}</p>
-    </div>
-  </div>
-)}
+      {showTooltip && (
+        <div
+          className="fixed z-50 pointer-events-none"
+          style={{
+            left: tooltipPosition.x,
+            top: tooltipPosition.y,
+            transform: tooltipPosition.showBelow
+              ? "translateX(-50%)"
+              : "translateX(-50%) translateY(-100%)",
+          }}
+        >
+          <div className="bg-black/80 text-white text-sm px-3 py-1.5 rounded-lg shadow-lg backdrop-blur-sm max-w-xs">
+            <p className="font-medium">{tooltipText}</p>
+          </div>
+        </div>
+      )}
 
       {/* Status Bar Pad - Fixed */}
       <div className="bg-lime-700 opacity-90 w-full h-8 flex-shrink-0"></div>
@@ -1141,7 +1143,7 @@ if (currentScreen === "search") {
       <div className="bg-gray-100 px-4 py-4 flex-shrink-0">
         {/* Row 1: Category icon + Title */}
         <div className="flex items-center mb-4">
-          <button 
+          <button
             onClick={() => {
               // Always navigate to home
               setCurrentScreen("home")
@@ -1159,7 +1161,9 @@ if (currentScreen === "search") {
               <Search className="w-4 h-4 text-blue-600 mr-1" />
               <h2 className="text-lg font-bold text-black">Search Maps</h2>
             </div>
-            <p className="text-sm text-green-700 opacity-75">{searchResults.length} Results</p>
+            <p className="text-sm text-green-700 opacity-75">
+              {searchResults.length} Results
+            </p>
           </div>
         </div>
 
@@ -1167,7 +1171,7 @@ if (currentScreen === "search") {
         <div className="flex items-center justify-between">
           <div className="w-10">
             {searchFromContext && searchFromContext !== "home" && (
-              <button 
+              <button
                 onClick={() => {
                   // Return to category screen with original view mode
                   setCurrentScreen("category")
@@ -1194,13 +1198,25 @@ if (currentScreen === "search") {
           <div className="flex items-center bg-white rounded-lg p-1">
             <button
               onClick={() => setViewMode("grid")}
-              className={`p-2 rounded ${viewMode === "grid" ? "bg-blue-100 text-blue-600" : "text-gray-600"}`}
+              className={`p-2 rounded ${
+                viewMode === "grid"
+                  ? "bg-blue-100 text-blue-600"
+                  : "text-gray-600"
+              }`}
             >
               <Grid3X3 className="w-4 h-4" />
             </button>
             <button
-              onClick={() => setViewMode(viewMode === "smallList" ? "largeList" : "smallList")}
-              className={`p-2 rounded ml-1 ${viewMode.includes("List") ? "bg-blue-100 text-blue-600" : "text-gray-600"}`}
+              onClick={() =>
+                setViewMode(
+                  viewMode === "smallList" ? "largeList" : "smallList"
+                )
+              }
+              className={`p-2 rounded ml-1 ${
+                viewMode.includes("List")
+                  ? "bg-blue-100 text-blue-600"
+                  : "text-gray-600"
+              }`}
             >
               <List className="w-4 h-4" />
             </button>
@@ -1220,11 +1236,18 @@ if (currentScreen === "search") {
         ) : (
           <>
             {viewMode === "grid" && (
-             <div className="grid grid-cols-2 gap-4">
+              <div className="grid grid-cols-2 gap-4">
                 {searchResults.map((map, index) => (
                   <div
                     key={map.id}
-                    onClick={() => openMapViewer(map.category, mockMapData[map.category].maps.findIndex(m => m.id === map.id))}
+                    onClick={() =>
+                      openMapViewer(
+                        map.category,
+                        mockMapData[map.category].maps.findIndex(
+                          (m) => m.id === map.id
+                        )
+                      )
+                    }
                     className="bg-white rounded-lg shadow-sm overflow-hidden cursor-pointer hover:shadow-md transition-shadow"
                   >
                     <div className="relative">
@@ -1241,12 +1264,18 @@ if (currentScreen === "search") {
                         className="absolute top-2 right-2"
                       >
                         <Star
-                          className={`w-5 h-5 ${favorites.has(map.id) ? "text-yellow-500 fill-current" : "text-gray-400"}`}
+                          className={`w-5 h-5 ${
+                            favorites.has(map.id)
+                              ? "text-yellow-500 fill-current"
+                              : "text-gray-400"
+                          }`}
                         />
                       </button>
                     </div>
                     <div className="p-3">
-                      <p className="text-sm font-medium text-black line-clamp-2">{map.title}</p>
+                      <p className="text-sm font-medium text-black line-clamp-2">
+                        {map.title}
+                      </p>
                       <p className="text-xs text-gray-500 mt-1">{map.category}</p>
                     </div>
                   </div>
@@ -1257,24 +1286,33 @@ if (currentScreen === "search") {
             {viewMode === "smallList" && (
               <div className="bg-white rounded-lg shadow-sm border border-gray-200">
                 {searchResults.map((map, index) => (
-<div
-  key={map.id}
-  onClick={() => openMapViewer(map.category, mockMapData[map.category].maps.findIndex(m => m.id === map.id))}
-  onTouchStart={(e) => handleLongPressStart(e, map.title)}
-  onTouchEnd={handleLongPressEnd}
-  onTouchCancel={handleLongPressEnd}
-  onMouseDown={(e) => handleLongPressStart(e, map.title)}
-  onMouseUp={handleLongPressEnd}
-  onMouseLeave={handleLongPressEnd}
-  className="flex items-center p-4 border-b border-gray-100 last:border-b-0 cursor-pointer hover:bg-gray-50"
->
+                  <div
+                    key={map.id}
+                    onClick={() =>
+                      openMapViewer(
+                        map.category,
+                        mockMapData[map.category].maps.findIndex(
+                          (m) => m.id === map.id
+                        )
+                      )
+                    }
+                    onTouchStart={(e) => handleLongPressStart(e, map.title)}
+                    onTouchEnd={handleLongPressEnd}
+                    onTouchCancel={handleLongPressEnd}
+                    onMouseDown={(e) => handleLongPressStart(e, map.title)}
+                    onMouseUp={handleLongPressEnd}
+                    onMouseLeave={handleLongPressEnd}
+                    className="flex items-center p-4 border-b border-gray-100 last:border-b-0 cursor-pointer hover:bg-gray-50"
+                  >
                     <img
                       src={map.thumbnail || "/placeholder.svg"}
                       alt={map.title}
                       className="w-16 h-12 object-cover rounded mr-4 flex-shrink-0"
                     />
                     <div className="flex-1 min-w-0">
-                      <p className="text-sm font-medium text-black truncate">{map.title}</p>
+                      <p className="text-sm font-medium text-black truncate">
+                        {map.title}
+                      </p>
                       <p className="text-xs text-gray-500">{map.category}</p>
                     </div>
                     <button
@@ -1285,7 +1323,11 @@ if (currentScreen === "search") {
                       className="ml-2 flex-shrink-0"
                     >
                       <Star
-                        className={`w-4 h-4 ${favorites.has(map.id) ? "text-yellow-500 fill-current" : "text-gray-400"}`}
+                        className={`w-4 h-4 ${
+                          favorites.has(map.id)
+                            ? "text-yellow-500 fill-current"
+                            : "text-gray-400"
+                        }`}
                       />
                     </button>
                   </div>
@@ -1298,27 +1340,35 @@ if (currentScreen === "search") {
                 {/* Map Titles */}
                 <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-4">
                   <div className="space-y-2">
-{searchResults.map((map, index) => (
-  <div 
-    key={`title-${map.id}`} 
-    className="flex items-start gap-2 pr-4 cursor-pointer hover:bg-gray-50 rounded p-1 -m-1"
-    onTouchStart={(e) => handleLongPressStart(e, map.title)}
-    onTouchEnd={handleLongPressEnd}
-    onTouchCancel={handleLongPressEnd}
-    onMouseDown={(e) => handleLongPressStart(e, map.title)}
-    onMouseUp={handleLongPressEnd}
-    onMouseLeave={handleLongPressEnd}
-  >
-    <div className="w-4 text-sm text-gray-600 font-mono shrink-0 leading-5 tabular-nums">{index + 1}
-    </div>
-    <div className="text-sm text-gray-600 mr-1">:
-    </div>
-    <div className="min-w-0 flex-1">
-      <div className="text-sm text-black leading-5 truncate">{map.title}</div>
-      <div className="text-xs text-gray-500">{map.category}</div>
-    </div>
-  </div>
-))}
+                    {searchResults.map((map, index) => (
+                      <div
+                        key={`title-${map.id}`}
+                        className="flex items-start gap-2 pr-4 cursor-pointer hover:bg-gray-50 rounded p-1 -m-1"
+                        onTouchStart={(e) =>
+                          handleLongPressStart(e, map.title)
+                        }
+                        onTouchEnd={handleLongPressEnd}
+                        onTouchCancel={handleLongPressEnd}
+                        onMouseDown={(e) =>
+                          handleLongPressStart(e, map.title)
+                        }
+                        onMouseUp={handleLongPressEnd}
+                        onMouseLeave={handleLongPressEnd}
+                      >
+                        <div className="w-4 text-sm text-gray-600 font-mono shrink-0 leading-5 tabular-nums">
+                          {index + 1}
+                        </div>
+                        <div className="text-sm text-gray-600 mr-1">:</div>
+                        <div className="min-w-0 flex-1">
+                          <div className="text-sm text-black leading-5 truncate">
+                            {map.title}
+                          </div>
+                          <div className="text-xs text-gray-500">
+                            {map.category}
+                          </div>
+                        </div>
+                      </div>
+                    ))}
                   </div>
                 </div>
 
@@ -1327,7 +1377,14 @@ if (currentScreen === "search") {
                   {searchResults.map((map, index) => (
                     <div key={map.id} className={index > 0 ? "mt-4" : ""}>
                       <div
-                        onClick={() => openMapViewer(map.category, mockMapData[map.category].maps.findIndex(m => m.id === map.id))}
+                        onClick={() =>
+                          openMapViewer(
+                            map.category,
+                            mockMapData[map.category].maps.findIndex(
+                              (m) => m.id === map.id
+                            )
+                          )
+                        }
                         className="bg-white rounded-lg shadow-sm overflow-hidden cursor-pointer hover:opacity-90 transition-opacity"
                       >
                         <div className="relative">
@@ -1345,17 +1402,27 @@ if (currentScreen === "search") {
                             className="absolute top-2 right-2"
                           >
                             <Star
-                              className={`w-5 h-5 ${favorites.has(map.id) ? "text-yellow-500 fill-current" : "text-gray-400"}`}
+                              className={`w-5 h-5 ${
+                                favorites.has(map.id)
+                                  ? "text-yellow-500 fill-current"
+                                  : "text-gray-400"
+                              }`}
                             />
                           </button>
                         </div>
                         <div className="p-3">
                           <div className="flex justify-between items-center">
                             <div>
-                              <p className="text-sm font-medium text-black truncate">{map.title}</p>
-                              <p className="text-xs text-gray-500">{map.category}</p>
+                              <p className="text-sm font-medium text-black truncate">
+                                {map.title}
+                              </p>
+                              <p className="text-xs text-gray-500">
+                                {map.category}
+                              </p>
                             </div>
-                            <div className="bg-blue-500 text-white text-xs px-2 py-1 rounded-full ml-2">#{index + 1}</div>
+                            <div className="bg-blue-500 text-white text-xs px-2 py-1 rounded-full ml-2">
+                              #{index + 1}
+                            </div>
                           </div>
                         </div>
                       </div>
@@ -1374,27 +1441,29 @@ if (currentScreen === "search") {
 // Favorites Screen
 if (currentScreen === "favorites") {
   const favoritesList = getAllMaps().filter((map) => favorites.has(map.id))
- 
+
   return (
     <div className="h-screen flex flex-col bg-gray-50">
-      {showTitlePopup && <TitlePopup title={popupTitle} onClose={() => setShowTitlePopup(false)} />}
+      {showTitlePopup && (
+        <TitlePopup title={popupTitle} onClose={() => setShowTitlePopup(false)} />
+      )}
 
-{showTooltip && (
-  <div 
-    className="fixed z-50 pointer-events-none"
-    style={{
-      left: tooltipPosition.x,
-      top: tooltipPosition.y,
-      transform: tooltipPosition.showBelow 
-        ? 'translateX(-50%)' 
-        : 'translateX(-50%) translateY(-100%)'
-    }}
-  >
-    <div className="bg-black/80 text-white text-sm px-3 py-1.5 rounded-lg shadow-lg backdrop-blur-sm max-w-xs">
-      <p className="font-medium">{tooltipText}</p>
-    </div>
-  </div>
-)}
+      {showTooltip && (
+        <div
+          className="fixed z-50 pointer-events-none"
+          style={{
+            left: tooltipPosition.x,
+            top: tooltipPosition.y,
+            transform: tooltipPosition.showBelow
+              ? "translateX(-50%)"
+              : "translateX(-50%) translateY(-100%)",
+          }}
+        >
+          <div className="bg-black/80 text-white text-sm px-3 py-1.5 rounded-lg shadow-lg backdrop-blur-sm max-w-xs">
+            <p className="font-medium">{tooltipText}</p>
+          </div>
+        </div>
+      )}
 
       {/* Status Bar Pad - Fixed */}
       <div className="bg-lime-700 opacity-90 w-full h-8 flex-shrink-0"></div>
@@ -1403,7 +1472,7 @@ if (currentScreen === "favorites") {
       <div className="bg-gray-100 px-4 py-4 flex-shrink-0">
         {/* Row 1: Category icon + Title */}
         <div className="flex items-center mb-4">
-          <button 
+          <button
             onClick={() => {
               // Always navigate to home
               setCurrentScreen("home")
@@ -1419,7 +1488,9 @@ if (currentScreen === "favorites") {
               <Star className="w-4 h-4 text-blue-600 mr-1" />
               <h2 className="text-lg font-bold text-black">Favorite Maps</h2>
             </div>
-            <p className="text-sm text-green-700 opacity-75">{favoritesList.length} Maps</p>
+            <p className="text-sm text-green-700 opacity-75">
+              {favoritesList.length} Maps
+            </p>
           </div>
         </div>
 
@@ -1427,7 +1498,7 @@ if (currentScreen === "favorites") {
         <div className="flex items-center justify-between">
           <div className="w-10">
             {favoriteFromContext && favoriteFromContext !== "home" && (
-              <button 
+              <button
                 onClick={() => {
                   // Return to category screen with original view mode
                   setCurrentScreen("category")
@@ -1445,13 +1516,25 @@ if (currentScreen === "favorites") {
           <div className="flex items-center bg-white rounded-lg p-1">
             <button
               onClick={() => setViewMode("grid")}
-              className={`p-2 rounded ${viewMode === "grid" ? "bg-blue-100 text-blue-600" : "text-gray-600"}`}
+              className={`p-2 rounded ${
+                viewMode === "grid"
+                  ? "bg-blue-100 text-blue-600"
+                  : "text-gray-600"
+              }`}
             >
               <Grid3X3 className="w-4 h-4" />
             </button>
             <button
-              onClick={() => setViewMode(viewMode === "smallList" ? "largeList" : "smallList")}
-              className={`p-2 rounded ml-1 ${viewMode.includes("List") ? "bg-blue-100 text-blue-600" : "text-gray-600"}`}
+              onClick={() =>
+                setViewMode(
+                  viewMode === "smallList" ? "largeList" : "smallList"
+                )
+              }
+              className={`p-2 rounded ml-1 ${
+                viewMode.includes("List")
+                  ? "bg-blue-100 text-blue-600"
+                  : "text-gray-600"
+              }`}
             >
               <List className="w-4 h-4" />
             </button>
@@ -1476,7 +1559,14 @@ if (currentScreen === "favorites") {
                 {favoritesList.map((map, index) => (
                   <div
                     key={map.id}
-                    onClick={() => openMapViewer(map.category, mockMapData[map.category].maps.findIndex(m => m.id === map.id))}
+                    onClick={() =>
+                      openMapViewer(
+                        map.category,
+                        mockMapData[map.category].maps.findIndex(
+                          (m) => m.id === map.id
+                        )
+                      )
+                    }
                     className="bg-white rounded-lg shadow-sm overflow-hidden cursor-pointer hover:shadow-md transition-shadow"
                   >
                     <div className="relative">
@@ -1496,7 +1586,9 @@ if (currentScreen === "favorites") {
                       </button>
                     </div>
                     <div className="p-3">
-                      <p className="text-sm font-medium text-black line-clamp-2">{map.title}</p>
+                      <p className="text-sm font-medium text-black line-clamp-2">
+                        {map.title}
+                      </p>
                       <p className="text-xs text-gray-500 mt-1">{map.category}</p>
                     </div>
                   </div>
@@ -1505,26 +1597,35 @@ if (currentScreen === "favorites") {
             )}
 
             {viewMode === "smallList" && (
-             <div className="bg-white rounded-lg shadow-sm border border-gray-200">
+              <div className="bg-white rounded-lg shadow-sm border border-gray-200">
                 {favoritesList.map((map, index) => (
-<div
-  key={map.id}
-  onClick={() => openMapViewer(map.category, mockMapData[map.category].maps.findIndex(m => m.id === map.id))}
-  onTouchStart={(e) => handleLongPressStart(e, map.title)}
-  onTouchEnd={handleLongPressEnd}
-  onTouchCancel={handleLongPressEnd}
-  onMouseDown={(e) => handleLongPressStart(e, map.title)}
-  onMouseUp={handleLongPressEnd}
-  onMouseLeave={handleLongPressEnd}
-  className="flex items-center p-4 border-b border-gray-100 last:border-b-0 cursor-pointer hover:bg-gray-50"
->
+                  <div
+                    key={map.id}
+                    onClick={() =>
+                      openMapViewer(
+                        map.category,
+                        mockMapData[map.category].maps.findIndex(
+                          (m) => m.id === map.id
+                        )
+                      )
+                    }
+                    onTouchStart={(e) => handleLongPressStart(e, map.title)}
+                    onTouchEnd={handleLongPressEnd}
+                    onTouchCancel={handleLongPressEnd}
+                    onMouseDown={(e) => handleLongPressStart(e, map.title)}
+                    onMouseUp={handleLongPressEnd}
+                    onMouseLeave={handleLongPressEnd}
+                    className="flex items-center p-4 border-b border-gray-100 last:border-b-0 cursor-pointer hover:bg-gray-50"
+                  >
                     <img
                       src={map.thumbnail || "/placeholder.svg"}
                       alt={map.title}
                       className="w-16 h-12 object-cover rounded mr-4 flex-shrink-0"
                     />
                     <div className="flex-1 min-w-0">
-                      <p className="text-sm font-medium text-black truncate">{map.title}</p>
+                      <p className="text-sm font-medium text-black truncate">
+                        {map.title}
+                      </p>
                       <p className="text-xs text-gray-500">{map.category}</p>
                     </div>
                     <button
@@ -1546,27 +1647,35 @@ if (currentScreen === "favorites") {
                 {/* Map Title List */}
                 <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-4">
                   <div className="space-y-2">
-{favoritesList.map((map, index) => (
-  <div 
-    key={`favorite-${map.id}`} 
-    className="flex items-start gap-2 pr-4 cursor-pointer hover:bg-gray-50 rounded p-1 -m-1"
-    onTouchStart={(e) => handleLongPressStart(e, map.title)}
-    onTouchEnd={handleLongPressEnd}
-    onTouchCancel={handleLongPressEnd}
-    onMouseDown={(e) => handleLongPressStart(e, map.title)}
-    onMouseUp={handleLongPressEnd}
-    onMouseLeave={handleLongPressEnd}
-  >
-    <div className="w-4 text-sm text-gray-600 font-mono shrink-0 leading-5 tabular-nums">{index + 1}
-    </div>
-    <div className="text-sm text-gray-600 mr-1">:
-    </div>
-    <div className="min-w-0 flex-1">
-      <div className="text-sm text-black leading-5 truncate">{map.title}</div>
-      <div className="text-xs text-gray-500">{map.category}</div>
-    </div>
-  </div>
-))}
+                    {favoritesList.map((map, index) => (
+                      <div
+                        key={`favorite-${map.id}`}
+                        className="flex items-start gap-2 pr-4 cursor-pointer hover:bg-gray-50 rounded p-1 -m-1"
+                        onTouchStart={(e) =>
+                          handleLongPressStart(e, map.title)
+                        }
+                        onTouchEnd={handleLongPressEnd}
+                        onTouchCancel={handleLongPressEnd}
+                        onMouseDown={(e) =>
+                          handleLongPressStart(e, map.title)
+                        }
+                        onMouseUp={handleLongPressEnd}
+                        onMouseLeave={handleLongPressEnd}
+                      >
+                        <div className="w-4 text-sm text-gray-600 font-mono shrink-0 leading-5 tabular-nums">
+                          {index + 1}
+                        </div>
+                        <div className="text-sm text-gray-600 mr-1">:</div>
+                        <div className="min-w-0 flex-1">
+                          <div className="text-sm text-black leading-5 truncate">
+                            {map.title}
+                          </div>
+                          <div className="text-xs text-gray-500">
+                            {map.category}
+                          </div>
+                        </div>
+                      </div>
+                    ))}
                   </div>
                 </div>
 
@@ -1575,7 +1684,14 @@ if (currentScreen === "favorites") {
                   {favoritesList.map((map, index) => (
                     <div key={map.id} className={index > 0 ? "mt-4" : ""}>
                       <div
-                        onClick={() => openMapViewer(map.category, mockMapData[map.category].maps.findIndex(m => m.id === map.id))}
+                        onClick={() =>
+                          openMapViewer(
+                            map.category,
+                            mockMapData[map.category].maps.findIndex(
+                              (m) => m.id === map.id
+                            )
+                          )
+                        }
                         className="bg-white rounded-lg shadow-sm overflow-hidden cursor-pointer hover:opacity-90 transition-opacity"
                       >
                         <div className="relative">
@@ -1598,10 +1714,16 @@ if (currentScreen === "favorites") {
                         <div className="p-3">
                           <div className="flex justify-between items-center">
                             <div>
-                              <p className="text-sm font-medium text-black truncate">{map.title}</p>
-                              <p className="text-xs text-gray-500">{map.category}</p>
+                              <p className="text-sm font-medium text-black truncate">
+                                {map.title}
+                              </p>
+                              <p className="text-xs text-gray-500">
+                                {map.category}
+                              </p>
                             </div>
-                            <div className="bg-blue-500 text-white text-xs px-2 py-1 rounded-full ml-2">#{index + 1}</div>
+                            <div className="bg-blue-500 text-white text-xs px-2 py-1 rounded-full ml-2">
+                              #{index + 1}
+                            </div>
                           </div>
                         </div>
                       </div>
@@ -1625,27 +1747,29 @@ if (currentScreen === "category") {
 
   return (
     <div className="h-screen flex flex-col bg-gray-50 relative overflow-hidden">
-      {showTitlePopup && <TitlePopup title={popupTitle} onClose={() => setShowTitlePopup(false)} />}
+      {showTitlePopup && (
+        <TitlePopup title={popupTitle} onClose={() => setShowTitlePopup(false)} />
+      )}
 
       {/* Status Bar Pad - Fixed */}
       <div className="bg-lime-700 opacity-90 w-full h-8 flex-shrink-0 relative z-50"></div>
 
-{showTooltip && (
-  <div 
-    className="fixed z-50 pointer-events-none"
-    style={{
-      left: tooltipPosition.x,
-      top: tooltipPosition.y,
-      transform: tooltipPosition.showBelow 
-        ? 'translateX(-50%)' 
-        : 'translateX(-50%) translateY(-100%)'
-    }}
-  >
-    <div className="bg-black/80 text-white text-sm px-3 py-1.5 rounded-lg shadow-lg backdrop-blur-sm max-w-xs">
-      <p className="font-medium">{tooltipText}</p>
-    </div>
-  </div>
-)}
+      {showTooltip && (
+        <div
+          className="fixed z-50 pointer-events-none"
+          style={{
+            left: tooltipPosition.x,
+            top: tooltipPosition.y,
+            transform: tooltipPosition.showBelow
+              ? "translateX(-50%)"
+              : "translateX(-50%) translateY(-100%)",
+          }}
+        >
+          <div className="bg-black/80 text-white text-sm px-3 py-1.5 rounded-lg shadow-lg backdrop-blur-sm max-w-xs">
+            <p className="font-medium">{tooltipText}</p>
+          </div>
+        </div>
+      )}
 
       {/* Header - Fixed */}
       <div className="bg-gray-100 px-4 py-4 flex items-center justify-between flex-shrink-0 relative z-50">
@@ -1664,13 +1788,25 @@ if (currentScreen === "category") {
           <div className="flex items-center bg-white rounded-lg p-1">
             <button
               onClick={() => setViewMode("grid")}
-              className={`p-2 rounded ${viewMode === "grid" ? "bg-blue-100 text-blue-600" : "text-gray-600"}`}
+              className={`p-2 rounded ${
+                viewMode === "grid"
+                  ? "bg-blue-100 text-blue-600"
+                  : "text-gray-600"
+              }`}
             >
               <Grid3X3 className="w-4 h-4" />
             </button>
             <button
-              onClick={() => setViewMode(viewMode === "smallList" ? "largeList" : "smallList")}
-              className={`p-2 rounded ml-1 ${viewMode.includes("List") ? "bg-blue-100 text-blue-600" : "text-gray-600"}`}
+              onClick={() =>
+                setViewMode(
+                  viewMode === "smallList" ? "largeList" : "smallList"
+                )
+              }
+              className={`p-2 rounded ml-1 ${
+                viewMode.includes("List")
+                  ? "bg-blue-100 text-blue-600"
+                  : "text-gray-600"
+              }`}
             >
               <List className="w-4 h-4" />
             </button>
@@ -1679,8 +1815,12 @@ if (currentScreen === "category") {
       </div>
 
       {/* Content - Scrollable with proper containment */}
-      <div className="flex-1 relative z-10" style={{ overflowY: 'auto', overscrollBehavior: 'contain' }}>
-        <div className="px-4 py-4 pb-18">{/* Added pb-20 for bottom bar clearance */}
+      <div
+        className="flex-1 relative z-10"
+        style={{ overflowY: "auto", overscrollBehavior: "contain" }}
+      >
+        <div className="px-4 py-4 pb-18">
+          {/* Added pb-20 for bottom bar clearance */}
           {viewMode === "grid" && (
             <div className="grid grid-cols-2 gap-4">
               {maps.map((map) => {
@@ -1692,11 +1832,15 @@ if (currentScreen === "category") {
                     onClick={() =>
                       openMapViewer(
                         map.category || currentCategory,
-                        mockMapData[map.category || currentCategory].maps.findIndex((m) => m.id === map.id)
+                        mockMapData[map.category || currentCategory].maps.findIndex(
+                          (m) => m.id === map.id
+                        )
                       )
                     }
                     className={`bg-white rounded-lg shadow-sm overflow-hidden cursor-pointer hover:shadow-md transition-all duration-300 ${
-                      shouldHighlight ? "ring-4 ring-blue-500 ring-opacity-75 shadow-lg scale-105" : ""
+                      shouldHighlight
+                        ? "ring-4 ring-blue-500 ring-opacity-75 shadow-lg scale-105"
+                        : ""
                     }`}
                   >
                     <div className="relative">
@@ -1713,12 +1857,18 @@ if (currentScreen === "category") {
                         className="absolute top-2 right-2"
                       >
                         <Star
-                          className={`w-5 h-5 ${favorites.has(map.id) ? "text-yellow-500 fill-current" : "text-gray-400"}`}
+                          className={`w-5 h-5 ${
+                            favorites.has(map.id)
+                              ? "text-yellow-500 fill-current"
+                              : "text-gray-400"
+                          }`}
                         />
                       </button>
                     </div>
                     <div className="p-3">
-                      <p className="text-sm font-medium text-black line-clamp-2">{map.title}</p>
+                      <p className="text-sm font-medium text-black line-clamp-2">
+                        {map.title}
+                      </p>
                     </div>
                   </div>
                 )
@@ -1732,31 +1882,37 @@ if (currentScreen === "category") {
                 const isActiveMap = activeMap && map.id === activeMap.id
                 const shouldHighlight = highlightActiveMap && isActiveMap
                 return (
-<div
-  key={map.id}
-  onClick={() =>
-    openMapViewer(
-      map.category || currentCategory,
-      mockMapData[map.category || currentCategory].maps.findIndex((m) => m.id === map.id)
-    )
-  }
-  onTouchStart={(e) => handleLongPressStart(e, map.title)}
-  onTouchEnd={handleLongPressEnd}
-  onTouchCancel={handleLongPressEnd}
-  onMouseDown={(e) => handleLongPressStart(e, map.title)}
-  onMouseUp={handleLongPressEnd}
-  onMouseLeave={handleLongPressEnd}
-  className={`flex items-center p-4 border-b border-gray-100 last:border-b-0 cursor-pointer hover:bg-gray-50 transition-all duration-300 ${
-    shouldHighlight ? "bg-blue-50 ring-2 ring-blue-500 ring-inset" : ""
-  }`}
->
+                  <div
+                    key={map.id}
+                    onClick={() =>
+                      openMapViewer(
+                        map.category || currentCategory,
+                        mockMapData[map.category || currentCategory].maps.findIndex(
+                          (m) => m.id === map.id
+                        )
+                      )
+                    }
+                    onTouchStart={(e) => handleLongPressStart(e, map.title)}
+                    onTouchEnd={handleLongPressEnd}
+                    onTouchCancel={handleLongPressEnd}
+                    onMouseDown={(e) => handleLongPressStart(e, map.title)}
+                    onMouseUp={handleLongPressEnd}
+                    onMouseLeave={handleLongPressEnd}
+                    className={`flex items-center p-4 border-b border-gray-100 last:border-b-0 cursor-pointer hover:bg-gray-50 transition-all duration-300 ${
+                      shouldHighlight
+                        ? "bg-blue-50 ring-2 ring-blue-500 ring-inset"
+                        : ""
+                    }`}
+                  >
                     <img
                       src={map.thumbnail || "/placeholder.svg"}
                       alt={map.title}
                       className="w-16 h-12 object-cover rounded mr-4 flex-shrink-0"
                     />
                     <div className="flex-1 min-w-0">
-                      <p className="text-sm font-medium text-black truncate">{map.title}</p>
+                      <p className="text-sm font-medium text-black truncate">
+                        {map.title}
+                      </p>
                     </div>
                     <button
                       onClick={(e) => {
@@ -1766,7 +1922,11 @@ if (currentScreen === "category") {
                       className="ml-2 flex-shrink-0"
                     >
                       <Star
-                        className={`w-4 h-4 ${favorites.has(map.id) ? "text-yellow-500 fill-current" : "text-gray-400"}`}
+                        className={`w-4 h-4 ${
+                          favorites.has(map.id)
+                            ? "text-yellow-500 fill-current"
+                            : "text-gray-400"
+                        }`}
                       />
                     </button>
                   </div>
@@ -1780,26 +1940,28 @@ if (currentScreen === "category") {
               {/* Map Title List */}
               <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-4">
                 <div className="space-y-2">
-{maps.map((map, index) => (
-  <div 
-    key={`map-${map.id}`} 
-    className="flex items-start gap-2 pr-4 cursor-pointer hover:bg-gray-50 rounded p-1 -m-1"
-    onTouchStart={(e) => handleLongPressStart(e, map.title)}
-    onTouchEnd={handleLongPressEnd}
-    onTouchCancel={handleLongPressEnd}
-    onMouseDown={(e) => handleLongPressStart(e, map.title)}
-    onMouseUp={handleLongPressEnd}
-    onMouseLeave={handleLongPressEnd}
-  >
-    <div className="w-4 text-sm text-gray-600 font-mono shrink-0 leading-5 tabular-nums">{index + 1}
-    </div>
-    <div className="text-sm text-gray-600 mr-1">:
-    </div>
-    <div className="min-w-0 flex-1">
-      <div className="text-sm text-black leading-5 truncate">{map.title}</div>
-    </div>
-  </div>
-))}
+                  {maps.map((map, index) => (
+                    <div
+                      key={`map-${map.id}`}
+                      className="flex items-start gap-2 pr-4 cursor-pointer hover:bg-gray-50 rounded p-1 -m-1"
+                      onTouchStart={(e) => handleLongPressStart(e, map.title)}
+                      onTouchEnd={handleLongPressEnd}
+                      onTouchCancel={handleLongPressEnd}
+                      onMouseDown={(e) => handleLongPressStart(e, map.title)}
+                      onMouseUp={handleLongPressEnd}
+                      onMouseLeave={handleLongPressEnd}
+                    >
+                      <div className="w-4 text-sm text-gray-600 font-mono shrink-0 leading-5 tabular-nums">
+                        {index + 1}
+                      </div>
+                      <div className="text-sm text-gray-600 mr-1">:</div>
+                      <div className="min-w-0 flex-1">
+                        <div className="text-sm text-black leading-5 truncate">
+                          {map.title}
+                        </div>
+                      </div>
+                    </div>
+                  ))}
                 </div>
               </div>
 
@@ -1814,11 +1976,15 @@ if (currentScreen === "category") {
                         onClick={() =>
                           openMapViewer(
                             map.category || currentCategory,
-                            mockMapData[map.category || currentCategory].maps.findIndex((m) => m.id === map.id)
+                            mockMapData[map.category || currentCategory].maps.findIndex(
+                              (m) => m.id === map.id
+                            )
                           )
                         }
                         className={`bg-white rounded-lg shadow-sm overflow-hidden cursor-pointer hover:opacity-90 transition-all duration-300 ${
-                          shouldHighlight ? "ring-4 ring-blue-500 ring-opacity-75 shadow-lg" : ""
+                          shouldHighlight
+                            ? "ring-4 ring-blue-500 ring-opacity-75 shadow-lg"
+                            : ""
                         }`}
                       >
                         <div className="relative">
@@ -1836,14 +2002,22 @@ if (currentScreen === "category") {
                             className="absolute top-2 right-2"
                           >
                             <Star
-                              className={`w-5 h-5 ${favorites.has(map.id) ? "text-yellow-500 fill-current" : "text-gray-400"}`}
+                              className={`w-5 h-5 ${
+                                favorites.has(map.id)
+                                  ? "text-yellow-500 fill-current"
+                                  : "text-gray-400"
+                              }`}
                             />
                           </button>
                         </div>
                         <div className="p-3">
                           <div className="flex justify-between items-center">
-                            <p className="text-sm font-medium text-black truncate flex-1">{map.title}</p>
-                            <div className="bg-blue-500 text-white text-xs px-2 py-1 rounded-full ml-2">#{index + 1}</div>
+                            <p className="text-sm font-medium text-black truncate flex-1">
+                              {map.title}
+                            </p>
+                            <div className="bg-blue-500 text-white text-xs px-2 py-1 rounded-full ml-2">
+                              #{index + 1}
+                            </div>
                           </div>
                         </div>
                       </div>
@@ -1855,9 +2029,9 @@ if (currentScreen === "category") {
           )}
         </div>
       </div>
-      
+
       {/* Bottom Bar - Fixed with proper positioning */}
-      <div className="fixed bottom-0 left-0 right-0 h-14 shadow-sm flex-shrink-0 z-50 bg-lime-100/70">                 
+      <div className="fixed bottom-0 left-0 right-0 h-14 shadow-sm flex-shrink-0 z-50 bg-lime-100/70">
         <div className="flex items-center justify-center h-14">
           {/* Button Container with equal spacing */}
           <div className="flex items-center justify-between w-full max-w-md px-12">
@@ -1872,7 +2046,13 @@ if (currentScreen === "category") {
               className="flex flex-col items-center w-16"
             >
               <Search className="h-5 w-5 text-stone-700" />
-              <span className={`text-xs mt-1 ${activeTab === "search" ? "text-indigo-600" : "text-gray-400"}`}>
+              <span
+                className={`text-xs mt-1 ${
+                  activeTab === "search"
+                    ? "text-indigo-600"
+                    : "text-gray-400"
+                }`}
+              >
                 Search
               </span>
             </button>
@@ -1888,14 +2068,19 @@ if (currentScreen === "category") {
               className="flex flex-col items-center w-16"
             >
               <Star className="h-5 w-5 text-stone-700" />
-              <span className={`text-xs mt-1 ${activeTab === "favorites" ? "text-indigo-600" : "text-gray-400"}`}>
+              <span
+                className={`text-xs mt-1 ${
+                  activeTab === "favorites"
+                    ? "text-indigo-600"
+                    : "text-gray-400"
+                }`}
+              >
                 Favorites
               </span>
             </button>
           </div>
         </div>
       </div>
-
     </div>
   )
 }
