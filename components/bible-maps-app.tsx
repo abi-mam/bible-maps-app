@@ -857,15 +857,15 @@ if (currentScreen === "home") {
       {showTitlePopup && <TitlePopup title={popupTitle} onClose={() => setShowTitlePopup(false)} />}
   
       {/* Status Bar Pad - Fixed */}
-      <div className="bg-slate-600/70 w-full h-8 flex-shrink-0"></div>
+      <div className="bg-green-700 opacity-75 w-full h-8 flex-shrink-0"></div>
       
       {/* Main Header - Fixed */}
       <div className={`transition-all duration-300 ${isSearchingFromHome ? 'bg-stone-100' : 'bg-gradient-to-r from-slate-100 to-stone-100'} px-5 py-4 shadow-sm flex-shrink-0`}>
         <div className="flex items-center justify-center">
-          <div className="p-2 bg-gradient-to-br from-sky-700/90 to-sky-800 rounded-lg mr-3 shadow-md">
+          <div className="p-2 bg-gradient-to-br from-stone-600 to-stone-700 rounded-lg mr-3 shadow-md">
             <SimpleBookIcon className="w-6 h-6 brightness-0 invert opacity-95" />
           </div>
-          <h1 className="text-xl font-semibold text-sky-950 tracking-tight">Bible Maps</h1>
+          <h1 className="text-xl font-semibold text-stone-800 tracking-tight">Bible Maps</h1>
         </div>
       </div>
 
@@ -1038,7 +1038,7 @@ if (currentScreen === "home") {
             </div>
 
             {/* Footer Section */}
-            <div className="bg-gradient-to-r from-slate-600/90 to-slate-700 flex flex-col items-center justify-center px-6 py-12 shadow-lg">
+            <div className="bg-gradient-to-r from-slate-600/80 to-slate-700/90 flex flex-col items-center justify-center px-6 py-12 shadow-lg">
               <div className="flex items-center justify-center mb-6">
                 <div className="p-2 bg-white/10 rounded-lg mr-3 shadow-sm">
                   <div className="w-6 h-6" style={{ filter: 'brightness(0) saturate(100%) invert(98%) sepia(4%) saturate(339%) hue-rotate(202deg) brightness(106%) contrast(96%)' }}>
@@ -1086,7 +1086,7 @@ if (currentScreen === "search") {
       {showTitlePopup && <TitlePopup title={popupTitle} onClose={() => setShowTitlePopup(false)} />}
 
       {/* Status Bar Pad - Fixed */}
-      <div className="bg-slate-600/70 w-full h-8 flex-shrink-0"></div>
+      <div className="bg-green-700 opacity-75 w-full h-8 flex-shrink-0"></div>
 
       {/* Header - Fixed */}
       <div className="bg-gray-100 px-4 py-4 flex-shrink-0">
@@ -1316,7 +1316,7 @@ if (currentScreen === "favorites") {
       {showTitlePopup && <TitlePopup title={popupTitle} onClose={() => setShowTitlePopup(false)} />}
 
       {/* Status Bar Pad - Fixed */}
-      <div className="bg-slate-600/70 w-full h-8 flex-shrink-0"></div>
+      <div className="bg-green-700 opacity-75 w-full h-8 flex-shrink-0"></div>
 
       {/* Header - Fixed */}
       <div className="bg-gray-100 px-4 py-4 flex-shrink-0">
@@ -1532,7 +1532,7 @@ if (currentScreen === "category") {
       {showTitlePopup && <TitlePopup title={popupTitle} onClose={() => setShowTitlePopup(false)} />}
 
       {/* Status Bar Pad - Fixed */}
-      <div className="bg-slate-600/70 w-full h-8 flex-shrink-0 relative z-50"></div>
+      <div className="bg-green-700 opacity-75 w-full h-8 flex-shrink-0 relative z-50"></div>
 
       {/* Header - Fixed */}
       <div className="bg-gray-100 px-4 py-4 flex items-center justify-between flex-shrink-0 relative z-50">
@@ -1793,7 +1793,7 @@ if (currentScreen === "mapViewer" && activeMap) {
     const isLeftSwipe = distance > minSwipeDistance
     const isRightSwipe = distance < -minSwipeDistance
     
-    const allowSwipe = currentScale <= 1.1 && currentScale > 1.1
+    const allowSwipe = currentScale <= 1.1
 
     if (allowSwipe && isLeftSwipe && currentMapIndex < mockMapData[currentCategory].maps.length - 1) {
       e.preventDefault()
@@ -1812,6 +1812,21 @@ if (currentScreen === "mapViewer" && activeMap) {
     }
   }
 
+  // Double-tap detection for reset when at max zoom
+  const handleDoubleTap = (resetTransform) => {
+    const now = Date.now()
+    const DOUBLE_TAP_DELAY = 300
+    
+    if (now - lastTap < DOUBLE_TAP_DELAY && isAtMaxZoom) {
+      // Reset to fit-to-page when double-tapping at max zoom
+      resetTransform()
+      setShowControls(true)
+      setTimeout(() => setShowControls(false), 3000)
+    }
+    
+    setLastTap(now)
+  }
+  
   return (
     <div 
       className={`fixed inset-0 ${mapViewerTheme === "light" ? "bg-slate-50" : "bg-stone-800"}`}
