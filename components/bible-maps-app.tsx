@@ -655,7 +655,11 @@ const BibleMapsApp = () => {
   const [currentScale, setCurrentScale] = useState(1)
   const [canSwipe, setCanSwipe] = useState(true)
   const [isAtMaxZoom, setIsAtMaxZoom] = useState(false)
-   
+  const [showTooltip, setShowTooltip] = useState(false)
+  const [tooltipText, setTooltipText] = useState("")
+  const [tooltipPosition, setTooltipPosition] = useState({ x: 0, y: 0 })
+  const [longPressTimer, setLongPressTimer] = useState(null)
+ 
   // ADD THESE MOVED HOOKS HERE - at the top level
   const [isAtLeftEdge, setIsAtLeftEdge] = useState(false)
   const [isAtRightEdge, setIsAtRightEdge] = useState(false)
@@ -673,6 +677,27 @@ const BibleMapsApp = () => {
     setPopupTitle(title)
     setShowTitlePopup(true)
   } 
+
+  const handleLongPressStart = (e, title) => {
+  const rect = e.currentTarget.getBoundingClientRect()
+  const timer = setTimeout(() => {
+    setTooltipText(title)
+    setTooltipPosition({ 
+      x: rect.left + rect.width / 2, 
+      y: rect.top - 10 
+    })
+    setShowTooltip(true)
+  }, 500)
+  setLongPressTimer(timer)
+}
+
+const handleLongPressEnd = () => {
+  if (longPressTimer) {
+    clearTimeout(longPressTimer)
+    setLongPressTimer(null)
+  }
+  setShowTooltip(false)
+}
 
   // Simple screen change logging - no system manipulation
   useEffect(() => {
@@ -1535,6 +1560,21 @@ if (currentScreen === "category") {
       {/* Status Bar Pad - Fixed */}
       <div className="bg-blue-700 opacity-75 w-full h-8 flex-shrink-0 relative z-50"></div>
 
+      {showTooltip && (
+  <div 
+    className="fixed z-50 pointer-events-none"
+    style={{
+      left: tooltipPosition.x,
+      top: tooltipPosition.y,
+      transform: 'translateX(-50%) translateY(-100%)'
+    }}
+  >
+    <div className="bg-black/80 text-white text-sm px-3 py-1.5 rounded-lg shadow-lg backdrop-blur-sm max-w-xs">
+      <p className="font-medium">{tooltipText}</p>
+    </div>
+  </div>
+)}
+
       {/* Header - Fixed */}
       <div className="bg-gray-100 px-4 py-4 flex items-center justify-between flex-shrink-0 relative z-50">
         <div className="flex items-center">
@@ -1620,18 +1660,24 @@ if (currentScreen === "category") {
                 const isActiveMap = activeMap && map.id === activeMap.id
                 const shouldHighlight = highlightActiveMap && isActiveMap
                 return (
-                  <div
-                    key={map.id}
-                    onClick={() =>
-                      openMapViewer(
-                        map.category || currentCategory,
-                        mockMapData[map.category || currentCategory].maps.findIndex((m) => m.id === map.id)
-                      )
-                    }
-                    className={`flex items-center p-4 border-b border-gray-100 last:border-b-0 cursor-pointer hover:bg-gray-50 transition-all duration-300 ${
-                      shouldHighlight ? "bg-blue-50 ring-2 ring-blue-500 ring-inset" : ""
-                    }`}
-                  >
+<div
+  key={map.id}
+  onClick={() =>
+    openMapViewer(
+      map.category || currentCategory,
+      mockMapData[map.category || currentCategory].maps.findIndex((m) => m.id === map.id)
+    )
+  }
+  onTouchStart={(e) => handleLongPressStart(e, map.title)}
+  onTouchEnd={handleLongPressEnd}
+  onTouchCancel={handleLongPressEnd}
+  onMouseDown={(e) => handleLongPressStart(e, map.title)}
+  onMouseUp={handleLongPressEnd}
+  onMouseLeave={handleLongPressEnd}
+  className={`flex items-center p-4 border-b border-gray-100 last:border-b-0 cursor-pointer hover:bg-gray-50 transition-all duration-300 ${
+    shouldHighlight ? "bg-blue-50 ring-2 ring-blue-500 ring-inset" : ""
+  }`}
+>
                     <img
                       src={map.thumbnail || "/placeholder.svg"}
                       alt={map.title}
