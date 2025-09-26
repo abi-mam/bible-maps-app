@@ -2128,7 +2128,7 @@ if (currentScreen === "mapViewer" && activeMap) {
   
   return (
     <div 
-      className={`fixed inset-0 ${mapViewerTheme === "light" ? "bg-slate-50" : "bg-stone-800"}`}
+      className={`fixed inset-0 ${mapViewerTheme === "light" ? "bg-slate-50" : "bg-stone-900"}`}
       onTouchStart={onTouchStart}
       onTouchMove={onTouchMove}
       onTouchEnd={onTouchEnd}
