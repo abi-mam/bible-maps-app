@@ -681,10 +681,16 @@ const BibleMapsApp = () => {
 const handleLongPressStart = (e, title) => {
   const rect = e.currentTarget.getBoundingClientRect()
   const timer = setTimeout(() => {
+    // Check if tooltip would be cut off at the top
+    const tooltipHeight = 50 // Approximate height of tooltip
+    const spaceAbove = rect.top
+    const showBelow = spaceAbove < tooltipHeight + 10 // 10px buffer
+    
     setTooltipText(title)
     setTooltipPosition({ 
       x: rect.left + rect.width / 2, 
-      y: rect.top 
+      y: showBelow ? rect.bottom : rect.top,
+      showBelow: showBelow
     })
     setShowTooltip(true)
   }, 500)
@@ -1111,13 +1117,15 @@ if (currentScreen === "search") {
     <div className="h-screen flex flex-col bg-gray-50">
       {showTitlePopup && <TitlePopup title={popupTitle} onClose={() => setShowTitlePopup(false)} />}
 
-      {showTooltip && (
+{showTooltip && (
   <div 
     className="fixed z-50 pointer-events-none"
     style={{
       left: tooltipPosition.x,
       top: tooltipPosition.y,
-      transform: 'translateX(-50%) translateY(-100%)'
+      transform: tooltipPosition.showBelow 
+        ? 'translateX(-50%)' 
+        : 'translateX(-50%) translateY(-100%)'
     }}
   >
     <div className="bg-black/80 text-white text-sm px-3 py-1.5 rounded-lg shadow-lg backdrop-blur-sm max-w-xs">
@@ -1371,13 +1379,15 @@ if (currentScreen === "favorites") {
     <div className="h-screen flex flex-col bg-gray-50">
       {showTitlePopup && <TitlePopup title={popupTitle} onClose={() => setShowTitlePopup(false)} />}
 
-      {showTooltip && (
+{showTooltip && (
   <div 
     className="fixed z-50 pointer-events-none"
     style={{
       left: tooltipPosition.x,
       top: tooltipPosition.y,
-      transform: 'translateX(-50%) translateY(-100%)'
+      transform: tooltipPosition.showBelow 
+        ? 'translateX(-50%)' 
+        : 'translateX(-50%) translateY(-100%)'
     }}
   >
     <div className="bg-black/80 text-white text-sm px-3 py-1.5 rounded-lg shadow-lg backdrop-blur-sm max-w-xs">
@@ -1626,7 +1636,9 @@ if (currentScreen === "category") {
     style={{
       left: tooltipPosition.x,
       top: tooltipPosition.y,
-      transform: 'translateX(-50%) translateY(-100%)'
+      transform: tooltipPosition.showBelow 
+        ? 'translateX(-50%)' 
+        : 'translateX(-50%) translateY(-100%)'
     }}
   >
     <div className="bg-black/80 text-white text-sm px-3 py-1.5 rounded-lg shadow-lg backdrop-blur-sm max-w-xs">
