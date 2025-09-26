@@ -681,10 +681,12 @@ const BibleMapsApp = () => {
 const handleLongPressStart = (e, title) => {
   const rect = e.currentTarget.getBoundingClientRect()
   const timer = setTimeout(() => {
-    // Check if tooltip would be cut off at the top
-    const tooltipHeight = 50 // Approximate height of tooltip
-    const spaceAbove = rect.top
-    const showBelow = spaceAbove < tooltipHeight + 10 // 10px buffer
+    const tooltipHeight = 50 // Conservative tooltip height estimate
+    const safeTopMargin = 130 // Status bar (32px) + header (~80px) + buffer (18px)
+    
+    // If tooltip would appear above the safe margin, show it below instead
+    const wouldOverlapHeader = (rect.top - tooltipHeight) < safeTopMargin
+    const showBelow = wouldOverlapHeader
     
     setTooltipText(title)
     setTooltipPosition({ 
@@ -1120,14 +1122,14 @@ if (currentScreen === "search") {
       )}
 
       {showTooltip && (
-        <div
+        <div 
           className="fixed z-50 pointer-events-none"
           style={{
             left: tooltipPosition.x,
             top: tooltipPosition.y,
-            transform: tooltipPosition.showBelow
-              ? "translateX(-50%)"
-              : "translateX(-50%) translateY(-100%)",
+            transform: tooltipPosition.showBelow 
+              ? 'translateX(-50%)' 
+              : 'translateX(-50%) translateY(-100%)'
           }}
         >
           <div className="bg-black/80 text-white text-sm px-3 py-1.5 rounded-lg shadow-lg backdrop-blur-sm max-w-xs">
@@ -1449,14 +1451,14 @@ if (currentScreen === "favorites") {
       )}
 
       {showTooltip && (
-        <div
+        <div 
           className="fixed z-50 pointer-events-none"
           style={{
             left: tooltipPosition.x,
             top: tooltipPosition.y,
-            transform: tooltipPosition.showBelow
-              ? "translateX(-50%)"
-              : "translateX(-50%) translateY(-100%)",
+            transform: tooltipPosition.showBelow 
+              ? 'translateX(-50%)' 
+              : 'translateX(-50%) translateY(-100%)'
           }}
         >
           <div className="bg-black/80 text-white text-sm px-3 py-1.5 rounded-lg shadow-lg backdrop-blur-sm max-w-xs">
@@ -1755,14 +1757,14 @@ if (currentScreen === "category") {
       <div className="bg-lime-700 opacity-90 w-full h-8 flex-shrink-0 relative z-50"></div>
 
       {showTooltip && (
-        <div
+        <div 
           className="fixed z-50 pointer-events-none"
           style={{
             left: tooltipPosition.x,
             top: tooltipPosition.y,
-            transform: tooltipPosition.showBelow
-              ? "translateX(-50%)"
-              : "translateX(-50%) translateY(-100%)",
+            transform: tooltipPosition.showBelow 
+              ? 'translateX(-50%)' 
+              : 'translateX(-50%) translateY(-100%)'
           }}
         >
           <div className="bg-black/80 text-white text-sm px-3 py-1.5 rounded-lg shadow-lg backdrop-blur-sm max-w-xs">
