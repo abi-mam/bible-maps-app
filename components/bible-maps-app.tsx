@@ -657,7 +657,8 @@ const BibleMapsApp = () => {
   const [lastTap, setLastTap] = useState(0)
   const [isAtMaxZoom, setIsAtMaxZoom] = useState(false)
   const [tapTimeout, setTapTimeout] = useState(null)
- 
+  const [debugInfo, setDebugInfo] = useState({ message: '', visible: false })
+
   // ADD THESE MOVED HOOKS HERE - at the top level
   const [isAtLeftEdge, setIsAtLeftEdge] = useState(false)
   const [isAtRightEdge, setIsAtRightEdge] = useState(false)
@@ -669,7 +670,7 @@ const BibleMapsApp = () => {
   const favoriteFromContextRef = useRef(favoriteFromContext);
   const searchFromViewModeRef = useRef(searchFromViewMode);
   const favoriteFromViewModeRef = useRef(favoriteFromViewMode);
-
+  
   // Handle long press for title popup
   const handleLongPress = (title) => {
     setPopupTitle(title)
@@ -1777,10 +1778,9 @@ if (currentScreen === "category") {
 
 // Map Viewer - Complete Section with Fixed Double-Tap Reset
 if (currentScreen === "mapViewer" && activeMap) {
-  // Add visual debug state (if not already added at top level)
-  const [debugInfo, setDebugInfo] = useState({ message: '', visible: false })
-
+  // Visual debug functions (debugInfo state should be declared at top level)
   const showDebugMessage = (message) => {
+    // This will use the debugInfo state declared at the top level of the component
     setDebugInfo({ message, visible: true })
     setTimeout(() => setDebugInfo(prev => ({ ...prev, visible: false })), 2000)
   }
