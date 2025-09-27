@@ -6,11 +6,10 @@ const config: CapacitorConfig = {
   webDir: 'out',
   plugins: {      
     SplashScreen: {
-      launchShowDuration: 1500, 
+      launchShowDuration: 2000, 
       launchAutoHide: false,   // we will hide manually in code
       androidSplashResourceName: 'splash', // your drawable name
       showSpinner: false,      // optional
-      backgroundColor: '#1a1a1a', // colorBibleMapsDark
     },
     Keyboard: {
       resize: 'native',

@@ -791,21 +791,6 @@ const BibleMapsApp = () => {
       setOpaqueStatusBar();
     }
   }, [currentScreen, mapViewerTheme]);
-
-  useEffect(() => {
-    const loadFavorites = async () => {
-      try {
-        const { value } = await StorageAdapter.get("favorites");
-        if (value) {
-          setFavorites(new Set(JSON.parse(value)));
-        }
-      } catch (err) {
-        console.error("Failed to load favorites:", err);
-      }
-    };
-    loadFavorites();
-  }, []); 
-
   useEffect(() => {
     const saveFavorites = async () => {
       try {
@@ -816,27 +801,51 @@ const BibleMapsApp = () => {
     };
     saveFavorites();
   }, [favorites]);
+  
+// Standard initialization pattern
+useEffect(() => {
+  const loadFavorites = async () => {
+    try {
+      const { value } = await StorageAdapter.get("favorites");
+      if (value) {
+        setFavorites(new Set(JSON.parse(value)));
+      }
+    } catch (err) {
+      console.error("Failed to load favorites:", err);
+    }
+  };
+  loadFavorites();
+}, []); 
 
 useEffect(() => {
-    const loadAppState = async () => {
-      try {
-        const { value: hasOpened } = await StorageAdapter.get("hasOpenedBefore");
-        const { value: lastActiveMap } = await StorageAdapter.get("lastActiveMap");
-        const { value: lastCategory } = await StorageAdapter.get("lastCategory");
-        const { value: lastMapIndex } = await StorageAdapter.get("lastMapIndex");
-        
-        if (hasOpened === "true" && lastActiveMap && lastCategory && lastMapIndex) {
-          setHasOpenedBefore(true);
-          setActiveMap(JSON.parse(lastActiveMap));
-          setCurrentCategory(lastCategory);
-          setCurrentMapIndex(parseInt(lastMapIndex));
-        }
-      } catch (err) {
-        console.error("Failed to load app state:", err);
+  const loadAppState = async () => {
+    try {
+      const { value: hasOpened } = await StorageAdapter.get("hasOpenedBefore");
+      const { value: lastActiveMap } = await StorageAdapter.get("lastActiveMap");
+      const { value: lastCategory } = await StorageAdapter.get("lastCategory");
+      const { value: lastMapIndex } = await StorageAdapter.get("lastMapIndex");
+      
+      if (hasOpened === "true" && lastActiveMap && lastCategory && lastMapIndex) {
+        setHasOpenedBefore(true);
+        setActiveMap(JSON.parse(lastActiveMap));
+        setCurrentCategory(lastCategory);
+        setCurrentMapIndex(parseInt(lastMapIndex));
       }
-    };
-    loadAppState();
-  }, []);
+
+      // ADD THIS: Hide splash after app state is loaded
+      if (window.Capacitor?.Plugins?.SplashScreen) {
+        await window.Capacitor.Plugins.SplashScreen.hide();
+      }
+    } catch (err) {
+      console.error("Failed to load app state:", err);
+      // Hide splash even if loading fails
+      if (window.Capacitor?.Plugins?.SplashScreen) {
+        await window.Capacitor.Plugins.SplashScreen.hide();
+      }
+    }
+  };
+  loadAppState();
+}, []);
 
   // Controls auto-hide
   useEffect(() => {
