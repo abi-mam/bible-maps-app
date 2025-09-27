@@ -1128,7 +1128,7 @@ if (currentScreen === "home") {
         ) : (
           <>
             {/* Category Cards */}
-            <div className="px-5 py-9 space-y-4 mb-19">
+            <div className="px-5 py-7 space-y-4 mb-19">
               {filteredCategories.map(([category, data]) => {
                 const Icon = data.icon
                 return (
@@ -1167,7 +1167,7 @@ if (currentScreen === "home") {
             </div>
 
             {/* Footer Section */}
-            <div className="bg-gradient-to-r from-stone-700/90 to-stone-800 flex flex-col items-center justify-center px-6 py-6 shadow-lg">
+            <div className="bg-gradient-to-r from-stone-700 to-stone-800 flex flex-col items-center justify-center px-6 py-6 shadow-lg">
               <div className="flex items-center justify-center mb-6">
                 <div className="p-2 bg-white/10 rounded-lg mr-3 shadow-sm">
                   <div className="w-6 h-6" style={{ 
