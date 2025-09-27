@@ -1136,14 +1136,14 @@ if (currentScreen === "search") {
       )}
 
       {showTooltip && (
-        <div 
+        <div
           className="fixed z-50 pointer-events-none"
           style={{
             left: tooltipPosition.x,
             top: tooltipPosition.y,
-            transform: tooltipPosition.showBelow 
-              ? 'translateX(-50%)' 
-              : 'translateX(-50%) translateY(-100%)'
+            transform: tooltipPosition.showBelow
+              ? "translateX(-50%)"
+              : "translateX(-50%) translateY(-100%)",
           }}
         >
           <div className="bg-black/80 text-white text-sm px-3 py-1.5 rounded-lg shadow-lg backdrop-blur-sm max-w-xs">
@@ -1251,61 +1251,64 @@ if (currentScreen === "search") {
           </div>
         ) : (
           <>
-{viewMode === "grid" && (
-  <div className="grid grid-cols-2 gap-4">
-    {searchResults.map((map, index) => (
-      <div
-        key={map.id}
-        onClick={() =>
-          openMapViewer(
-            map.category,
-            mockMapData[map.category].maps.findIndex(
-              (m) => m.id === map.id
-            )
-          )
-        }
-        className="bg-white rounded-lg shadow-sm overflow-hidden cursor-pointer hover:shadow-md transition-shadow"
-      >
-        <div className="relative">
-          <img
-            src={map.thumbnail || "/placeholder.svg"}
-            alt={map.title}
-            className="w-full h-32 object-cover"
-          />
-          <button
-            onClick={(e) => {
-              e.stopPropagation()
-              toggleFavorite(map.id)
-            }}
-            className="absolute top-2 right-2"
-          >
-            <Star
-              className={`w-5 h-5 ${
-                favorites.has(map.id)
-                  ? "text-yellow-500 fill-current"
-                  : "text-gray-400"
-              }`}
-            />
-          </button>
-        </div>
-        <div className="p-3">
-          <p 
-            className="text-sm font-medium text-black line-clamp-2 cursor-pointer"
-            onTouchStart={(e) => handleLongPressStart(e, map.title)}
-            onTouchEnd={handleLongPressEnd}
-            onTouchCancel={handleLongPressEnd}
-            onMouseDown={(e) => handleLongPressStart(e, map.title)}
-            onMouseUp={handleLongPressEnd}
-            onMouseLeave={handleLongPressEnd}
-          >
-            {map.title}
-          </p>
-          <p className="text-xs text-gray-500 mt-1">{map.category}</p>
-        </div>
-      </div>
-    ))}
-  </div>
-)}
+            {viewMode === "grid" && (
+              <div className="grid grid-cols-2 gap-4">
+                {searchResults.map((map, index) => (
+                  <div
+                    key={map.id}
+                    onClick={() =>
+                      openMapViewer(
+                        map.category,
+                        mockMapData[map.category].maps.findIndex(
+                          (m) => m.id === map.id
+                        )
+                      )
+                    }
+                    className="bg-white rounded-lg shadow-sm overflow-hidden cursor-pointer hover:shadow-md transition-shadow"
+                  >
+                    <div className="relative">
+                      <img
+                        src={map.thumbnail || "/placeholder.svg"}
+                        alt={map.title}
+                        className="w-full h-32 object-cover"
+                      />
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation()
+                          toggleFavorite(map.id)
+                        }}
+                        className="absolute top-2 right-2"
+                      >
+                        <Star
+                          className={`w-5 h-5 ${
+                            favorites.has(map.id)
+                              ? "text-yellow-500 fill-current"
+                              : "text-gray-400"
+                          }`}
+                        />
+                      </button>
+                    </div>
+                    <div className="p-3">
+                      <p
+                        className="text-sm font-medium text-black line-clamp-2 cursor-pointer"
+                        onTouchStart={(e) => handleLongPressStart(e, map.title)}
+                        onTouchEnd={handleLongPressEnd}
+                        onTouchCancel={handleLongPressEnd}
+                        onMouseDown={(e) => handleLongPressStart(e, map.title)}
+                        onMouseUp={handleLongPressEnd}
+                        onMouseLeave={handleLongPressEnd}
+                      >
+                        {map.title}
+                      </p>
+                      <p className="text-xs text-gray-500 mt-1">
+                        {map.category}
+                      </p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+
             {viewMode === "smallList" && (
               <div className="bg-white rounded-lg shadow-sm border border-gray-200">
                 {searchResults.map((map, index) => (
@@ -1365,24 +1368,30 @@ if (currentScreen === "search") {
                   <div className="space-y-2">
                     {searchResults.map((map, index) => (
                       <div
-              <div 
-                key={`title-${map.id}`} 
-                className="flex items-start gap-2 pr-4 cursor-pointer hover:bg-gray-50 rounded p-1 -m-1"
-                onClick={() => scrollToThumbnail(map.id)}
-                onTouchStart={(e) => handleLongPressStart(e, map.title)}
-                onTouchEnd={handleLongPressEnd}
-                onTouchCancel={handleLongPressEnd}
-                onMouseDown={(e) => handleLongPressStart(e, map.title)}
-                onMouseUp={handleLongPressEnd}
-                onMouseLeave={handleLongPressEnd}
-              >
-                <div className="w-6 h-6 bg-blue-100 text-blue-700 text-xs font-bold rounded-full flex items-center justify-center shrink-0">{index + 1}</div>
-                <div className="text-sm text-gray-600 mr-1">:</div>
-                <div className="min-w-0 flex-1">
-                  <div className="text-sm text-black leading-5 truncate">{map.title}</div>
-                  <div className="text-xs text-gray-500">{map.category}</div>
-                </div>
-              </div>                    ))}
+                        key={`title-${map.id}`}
+                        className="flex items-start gap-2 pr-4 cursor-pointer hover:bg-gray-50 rounded p-1 -m-1"
+                        onClick={() => scrollToThumbnail(map.id)}
+                        onTouchStart={(e) => handleLongPressStart(e, map.title)}
+                        onTouchEnd={handleLongPressEnd}
+                        onTouchCancel={handleLongPressEnd}
+                        onMouseDown={(e) => handleLongPressStart(e, map.title)}
+                        onMouseUp={handleLongPressEnd}
+                        onMouseLeave={handleLongPressEnd}
+                      >
+                        <div className="w-6 h-6 bg-blue-100 text-blue-700 text-xs font-bold rounded-full flex items-center justify-center shrink-0">
+                          {index + 1}
+                        </div>
+                        <div className="text-sm text-gray-600 mr-1">:</div>
+                        <div className="min-w-0 flex-1">
+                          <div className="text-sm text-black leading-5 truncate">
+                            {map.title}
+                          </div>
+                          <div className="text-xs text-gray-500">
+                            {map.category}
+                          </div>
+                        </div>
+                      </div>
+                    ))}
                   </div>
                 </div>
 
@@ -1395,13 +1404,19 @@ if (currentScreen === "search") {
                         onClick={() =>
                           openMapViewer(
                             map.category || currentCategory,
-                            mockMapData[map.category || currentCategory].maps.findIndex((m) => m.id === map.id)
+                            mockMapData[map.category || currentCategory].maps.findIndex(
+                              (m) => m.id === map.id
+                            )
                           )
                         }
                         className={`bg-white rounded-lg shadow-sm overflow-hidden cursor-pointer hover:opacity-90 transition-all duration-300 ${
-                          shouldHighlight ? "ring-4 ring-blue-500 ring-opacity-75 shadow-lg" : ""
+                          shouldHighlight
+                            ? "ring-4 ring-blue-500 ring-opacity-75 shadow-lg"
+                            : ""
                         } ${
-                          scrollToMapId === map.id ? "ring-2 ring-green-500 bg-green-50" : ""
+                          scrollToMapId === map.id
+                            ? "ring-2 ring-green-500 bg-green-50"
+                            : ""
                         }`}
                       >
                         <div className="relative">
@@ -1429,20 +1444,26 @@ if (currentScreen === "search") {
                         </div>
                         <div className="p-3">
                           <div className="flex justify-between items-center">
-                            <p 
+                            <p
                               className="text-sm font-medium text-black truncate flex-1 cursor-pointer"
-                              onTouchStart={(e) => handleLongPressStart(e, map.title)}
+                              onTouchStart={(e) =>
+                                handleLongPressStart(e, map.title)
+                              }
                               onTouchEnd={handleLongPressEnd}
                               onTouchCancel={handleLongPressEnd}
-                              onMouseDown={(e) => handleLongPressStart(e, map.title)}
+                              onMouseDown={(e) =>
+                                handleLongPressStart(e, map.title)
+                              }
                               onMouseUp={handleLongPressEnd}
                               onMouseLeave={handleLongPressEnd}
                             >
                               {map.title}
                             </p>
-                            <div className="bg-blue-500 text-white text-xs px-2 py-1 rounded-full ml-2">#{index + 1}</div>
+                            <div className="bg-blue-500 text-white text-xs px-2 py-1 rounded-full ml-2">
+                              #{index + 1}
+                            </div>
                           </div>
-                        </div
+                        </div>
                       </div>
                     </div>
                   ))}
@@ -1467,14 +1488,14 @@ if (currentScreen === "favorites") {
       )}
 
       {showTooltip && (
-        <div 
+        <div
           className="fixed z-50 pointer-events-none"
           style={{
             left: tooltipPosition.x,
             top: tooltipPosition.y,
-            transform: tooltipPosition.showBelow 
-              ? 'translateX(-50%)' 
-              : 'translateX(-50%) translateY(-100%)'
+            transform: tooltipPosition.showBelow
+              ? "translateX(-50%)"
+              : "translateX(-50%) translateY(-100%)",
           }}
         >
           <div className="bg-black/80 text-white text-sm px-3 py-1.5 rounded-lg shadow-lg backdrop-blur-sm max-w-xs">
@@ -1603,24 +1624,26 @@ if (currentScreen === "favorites") {
                         <Star className="w-5 h-5 text-yellow-500 fill-current" />
                       </button>
                     </div>
-        <div className="p-3">
-          <p 
-            className="text-sm font-medium text-black line-clamp-2 cursor-pointer"
-            onTouchStart={(e) => handleLongPressStart(e, map.title)}
-            onTouchEnd={handleLongPressEnd}
-            onTouchCancel={handleLongPressEnd}
-            onMouseDown={(e) => handleLongPressStart(e, map.title)}
-            onMouseUp={handleLongPressEnd}
-            onMouseLeave={handleLongPressEnd}
-          >
-            {map.title}
-          </p>
-          <p className="text-xs text-gray-500 mt-1">{map.category}</p>
-        </div>
-      </div>
-    ))}
-  </div>
-)}
+                    <div className="p-3">
+                      <p
+                        className="text-sm font-medium text-black line-clamp-2 cursor-pointer"
+                        onTouchStart={(e) => handleLongPressStart(e, map.title)}
+                        onTouchEnd={handleLongPressEnd}
+                        onTouchCancel={handleLongPressEnd}
+                        onMouseDown={(e) => handleLongPressStart(e, map.title)}
+                        onMouseUp={handleLongPressEnd}
+                        onMouseLeave={handleLongPressEnd}
+                      >
+                        {map.title}
+                      </p>
+                      <p className="text-xs text-gray-500 mt-1">
+                        {map.category}
+                      </p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
 
             {viewMode === "smallList" && (
               <div className="bg-white rounded-lg shadow-sm border border-gray-200">
@@ -1661,7 +1684,13 @@ if (currentScreen === "favorites") {
                       }}
                       className="ml-2 flex-shrink-0"
                     >
-                      <Star className="w-4 h-4 text-yellow-500 fill-current" />
+                      <Star
+                        className={`w-4 h-4 ${
+                          favorites.has(map.id)
+                            ? "text-yellow-500 fill-current"
+                            : "text-gray-400"
+                        }`}
+                      />
                     </button>
                   </div>
                 ))}
@@ -1674,24 +1703,30 @@ if (currentScreen === "favorites") {
                 <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-4">
                   <div className="space-y-2">
                     {favoritesList.map((map, index) => (
-              <div 
-                key={`favorite-${map.id}`} 
-                className="flex items-start gap-2 pr-4 cursor-pointer hover:bg-gray-50 rounded p-1 -m-1"
-                onClick={() => scrollToThumbnail(map.id)}
-                onTouchStart={(e) => handleLongPressStart(e, map.title)}
-                onTouchEnd={handleLongPressEnd}
-                onTouchCancel={handleLongPressEnd}
-                onMouseDown={(e) => handleLongPressStart(e, map.title)}
-                onMouseUp={handleLongPressEnd}
-                onMouseLeave={handleLongPressEnd}
-              >
-                <div className="w-6 h-6 bg-blue-100 text-blue-700 text-xs font-bold rounded-full flex items-center justify-center shrink-0">{index + 1}</div>
-                <div className="text-sm text-gray-600 mr-1">:</div>
-                <div className="min-w-0 flex-1">
-                  <div className="text-sm text-black leading-5 truncate">{map.title}</div>
-                  <div className="text-xs text-gray-500">{map.category}</div>
-                </div>
-              </div>
+                      <div
+                        key={`favorite-${map.id}`}
+                        className="flex items-start gap-2 pr-4 cursor-pointer hover:bg-gray-50 rounded p-1 -m-1"
+                        onClick={() => scrollToThumbnail(map.id)}
+                        onTouchStart={(e) => handleLongPressStart(e, map.title)}
+                        onTouchEnd={handleLongPressEnd}
+                        onTouchCancel={handleLongPressEnd}
+                        onMouseDown={(e) => handleLongPressStart(e, map.title)}
+                        onMouseUp={handleLongPressEnd}
+                        onMouseLeave={handleLongPressEnd}
+                      >
+                        <div className="w-6 h-6 bg-blue-100 text-blue-700 text-xs font-bold rounded-full flex items-center justify-center shrink-0">
+                          {index + 1}
+                        </div>
+                        <div className="text-sm text-gray-600 mr-1">:</div>
+                        <div className="min-w-0 flex-1">
+                          <div className="text-sm text-black leading-5 truncate">
+                            {map.title}
+                          </div>
+                          <div className="text-xs text-gray-500">
+                            {map.category}
+                          </div>
+                        </div>
+                      </div>
                     ))}
                   </div>
                 </div>
@@ -1705,13 +1740,19 @@ if (currentScreen === "favorites") {
                         onClick={() =>
                           openMapViewer(
                             map.category || currentCategory,
-                            mockMapData[map.category || currentCategory].maps.findIndex((m) => m.id === map.id)
+                            mockMapData[map.category || currentCategory].maps.findIndex(
+                              (m) => m.id === map.id
+                            )
                           )
                         }
                         className={`bg-white rounded-lg shadow-sm overflow-hidden cursor-pointer hover:opacity-90 transition-all duration-300 ${
-                          shouldHighlight ? "ring-4 ring-blue-500 ring-opacity-75 shadow-lg" : ""
+                          shouldHighlight
+                            ? "ring-4 ring-blue-500 ring-opacity-75 shadow-lg"
+                            : ""
                         } ${
-                          scrollToMapId === map.id ? "ring-2 ring-green-500 bg-green-50" : ""
+                          scrollToMapId === map.id
+                            ? "ring-2 ring-green-500 bg-green-50"
+                            : ""
                         }`}
                       >
                         <div className="relative">
@@ -1731,28 +1772,32 @@ if (currentScreen === "favorites") {
                             <Star className="w-5 h-5 text-yellow-500 fill-current" />
                           </button>
                         </div>
-        <div className="p-3">
-          <div className="flex justify-between items-center">
-            <p 
-              className="text-sm font-medium text-black truncate flex-1 cursor-pointer"
-              onTouchStart={(e) => handleLongPressStart(e, map.title)}
-              onTouchEnd={handleLongPressEnd}
-              onTouchCancel={handleLongPressEnd}
-              onMouseDown={(e) => handleLongPressStart(e, map.title)}
-              onMouseUp={handleLongPressEnd}
-              onMouseLeave={handleLongPressEnd}
-            >
-              {map.title}
-            </p>
-            <div className="bg-blue-500 text-white text-xs px-2 py-1 rounded-full ml-2">
-              #{index + 1}
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  ))}
-</div>
+                        <div className="p-3">
+                          <div className="flex justify-between items-center">
+                            <p
+                              className="text-sm font-medium text-black truncate flex-1 cursor-pointer"
+                              onTouchStart={(e) =>
+                                handleLongPressStart(e, map.title)
+                              }
+                              onTouchEnd={handleLongPressEnd}
+                              onTouchCancel={handleLongPressEnd}
+                              onMouseDown={(e) =>
+                                handleLongPressStart(e, map.title)
+                              }
+                              onMouseUp={handleLongPressEnd}
+                              onMouseLeave={handleLongPressEnd}
+                            >
+                              {map.title}
+                            </p>
+                            <div className="bg-blue-500 text-white text-xs px-2 py-1 rounded-full ml-2">
+                              #{index + 1}
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
               </div>
             )}
           </>
@@ -1778,14 +1823,14 @@ if (currentScreen === "category") {
       <div className="bg-lime-700 opacity-90 w-full h-8 flex-shrink-0 relative z-50"></div>
 
       {showTooltip && (
-        <div 
+        <div
           className="fixed z-50 pointer-events-none"
           style={{
             left: tooltipPosition.x,
             top: tooltipPosition.y,
-            transform: tooltipPosition.showBelow 
-              ? 'translateX(-50%)' 
-              : 'translateX(-50%) translateY(-100%)'
+            transform: tooltipPosition.showBelow
+              ? "translateX(-50%)"
+              : "translateX(-50%) translateY(-100%)",
           }}
         >
           <div className="bg-black/80 text-white text-sm px-3 py-1.5 rounded-lg shadow-lg backdrop-blur-sm max-w-xs">
@@ -1888,24 +1933,27 @@ if (currentScreen === "category") {
                         />
                       </button>
                     </div>
-        <div className="p-3">
-          <p 
-            className="text-sm font-medium text-black line-clamp-2 cursor-pointer"
-            onTouchStart={(e) => handleLongPressStart(e, map.title)}
-            onTouchEnd={handleLongPressEnd}
-            onTouchCancel={handleLongPressEnd}
-            onMouseDown={(e) => handleLongPressStart(e, map.title)}
-            onMouseUp={handleLongPressEnd}
-            onMouseLeave={handleLongPressEnd}
-          >
-            {map.title}
-          </p>
-          <p className="text-xs text-gray-500 mt-1">{map.category}</p>
-        </div>
-      </div>
-    ))}
-  </div>
-)}
+                    <div className="p-3">
+                      <p
+                        className="text-sm font-medium text-black line-clamp-2 cursor-pointer"
+                        onTouchStart={(e) => handleLongPressStart(e, map.title)}
+                        onTouchEnd={handleLongPressEnd}
+                        onTouchCancel={handleLongPressEnd}
+                        onMouseDown={(e) => handleLongPressStart(e, map.title)}
+                        onMouseUp={handleLongPressEnd}
+                        onMouseLeave={handleLongPressEnd}
+                      >
+                        {map.title}
+                      </p>
+                      <p className="text-xs text-gray-500 mt-1">
+                        {map.category}
+                      </p>
+                    </div>
+                  </div>
+                )
+              })}
+            </div>
+          )}
 
           {viewMode === "smallList" && (
             <div className="bg-white rounded-lg shadow-sm border border-gray-200">
@@ -1972,23 +2020,27 @@ if (currentScreen === "category") {
               <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-4">
                 <div className="space-y-2">
                   {maps.map((map, index) => (
-              <div 
-                key={`map-${map.id}`} 
-                className="flex items-start gap-2 pr-4 cursor-pointer hover:bg-gray-50 rounded p-1 -m-1"
-                onClick={() => scrollToThumbnail(map.id)}
-                onTouchStart={(e) => handleLongPressStart(e, map.title)}
-                onTouchEnd={handleLongPressEnd}
-                onTouchCancel={handleLongPressEnd}
-                onMouseDown={(e) => handleLongPressStart(e, map.title)}
-                onMouseUp={handleLongPressEnd}
-                onMouseLeave={handleLongPressEnd}
-              >
-                <div className="w-6 h-6 bg-blue-100 text-blue-700 text-xs font-bold rounded-full flex items-center justify-center shrink-0">{index + 1}</div>
-                <div className="text-sm text-gray-600 mr-1">:</div>
-                <div className="min-w-0 flex-1">
-                  <div className="text-sm text-black leading-5 truncate">{map.title}</div>
-                </div>
-              </div>
+                    <div
+                      key={`map-${map.id}`}
+                      className="flex items-start gap-2 pr-4 cursor-pointer hover:bg-gray-50 rounded p-1 -m-1"
+                      onClick={() => scrollToThumbnail(map.id)}
+                      onTouchStart={(e) => handleLongPressStart(e, map.title)}
+                      onTouchEnd={handleLongPressEnd}
+                      onTouchCancel={handleLongPressEnd}
+                      onMouseDown={(e) => handleLongPressStart(e, map.title)}
+                      onMouseUp={handleLongPressEnd}
+                      onMouseLeave={handleLongPressEnd}
+                    >
+                      <div className="w-6 h-6 bg-blue-100 text-blue-700 text-xs font-bold rounded-full flex items-center justify-center shrink-0">
+                        {index + 1}
+                      </div>
+                      <div className="text-sm text-gray-600 mr-1">:</div>
+                      <div className="min-w-0 flex-1">
+                        <div className="text-sm text-black leading-5 truncate">
+                          {map.title}
+                        </div>
+                      </div>
+                    </div>
                   ))}
                 </div>
               </div>
@@ -2005,13 +2057,19 @@ if (currentScreen === "category") {
                         onClick={() =>
                           openMapViewer(
                             map.category || currentCategory,
-                            mockMapData[map.category || currentCategory].maps.findIndex((m) => m.id === map.id)
+                            mockMapData[map.category || currentCategory].maps.findIndex(
+                              (m) => m.id === map.id
+                            )
                           )
                         }
                         className={`bg-white rounded-lg shadow-sm overflow-hidden cursor-pointer hover:opacity-90 transition-all duration-300 ${
-                          shouldHighlight ? "ring-4 ring-blue-500 ring-opacity-75 shadow-lg" : ""
+                          shouldHighlight
+                            ? "ring-4 ring-blue-500 ring-opacity-75 shadow-lg"
+                            : ""
                         } ${
-                          scrollToMapId === map.id ? "ring-2 ring-green-500 bg-green-50" : ""
+                          scrollToMapId === map.id
+                            ? "ring-2 ring-green-500 bg-green-50"
+                            : ""
                         }`}
                       >
                         <div className="relative">
@@ -2037,28 +2095,29 @@ if (currentScreen === "category") {
                             />
                           </button>
                         </div>
-        <div className="p-3">
-          <div className="flex justify-between items-center">
-            <p 
-              className="text-sm font-medium text-black truncate flex-1 cursor-pointer"
-              onTouchStart={(e) => handleLongPressStart(e, map.title)}
-              onTouchEnd={handleLongPressEnd}
-              onTouchCancel={handleLongPressEnd}
-              onMouseDown={(e) => handleLongPressStart(e, map.title)}
-              onMouseUp={handleLongPressEnd}
-              onMouseLeave={handleLongPressEnd}
-            >
-              {map.title}
-            </p>
-            <div className="bg-blue-500 text-white text-xs px-2 py-1 rounded-full ml-2">
-              #{index + 1}
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  ))}
-</div>
+                        <div className="p-3">
+                          <div className="flex justify-between items-center">
+                            <p
+                              className="text-sm font-medium text-black truncate flex-1 cursor-pointer"
+                              onTouchStart={(e) => handleLongPressStart(e, map.title)}
+                              onTouchEnd={handleLongPressEnd}
+                              onTouchCancel={handleLongPressEnd}
+                              onMouseDown={(e) => handleLongPressStart(e, map.title)}
+                              onMouseUp={handleLongPressEnd}
+                              onMouseLeave={handleLongPressEnd}
+                            >
+                              {map.title}
+                            </p>
+                            <div className="bg-blue-500 text-white text-xs px-2 py-1 rounded-full ml-2">
+                              #{index + 1}
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  )
+                })}
+              </div>
             </div>
           )}
         </div>
