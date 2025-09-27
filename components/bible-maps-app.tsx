@@ -711,7 +711,8 @@ const BibleMapsApp = () => {
   const [tooltipPosition, setTooltipPosition] = useState({ x: 0, y: 0 })
   const [longPressTimer, setLongPressTimer] = useState(null)
   const [scrollToMapId, setScrollToMapId] = useState(null)
-  
+  const [isTransitioning, setIsTransitioning] = useState(false)
+
   // ADD THESE MOVED HOOKS HERE - at the top level
   const [isAtLeftEdge, setIsAtLeftEdge] = useState(false)
   const [isAtRightEdge, setIsAtRightEdge] = useState(false)
@@ -764,20 +765,26 @@ const BibleMapsApp = () => {
     console.log('Screen changed to:', currentScreen)
   }, [currentScreen])
 
+  // Update the splash screen useEffect
   useEffect(() => {
-   if (currentScreen === "splash") {
-     const timer = setTimeout(() => {
-       if (hasOpenedBefore && activeMap) {
-         setCurrentScreen("mapViewer")
-       } else {
-         setCurrentScreen("home")
-       }
-     }, 2000) // You might want to reduce this to 1000ms for faster loading
-     return () => clearTimeout(timer)
-   }
- }, [currentScreen, hasOpenedBefore, activeMap])
+    if (currentScreen === "splash") {
+      const timer = setTimeout(() => {
+        setIsTransitioning(true)
+        // Wait for transition animation to complete before changing screen
+        setTimeout(() => {
+          if (hasOpenedBefore && activeMap) {
+            setCurrentScreen("mapViewer")
+          } else {
+            setCurrentScreen("home")
+          }
+          setIsTransitioning(false)
+        }, 800) // Match this with CSS transition duration
+      }, 2000) // You might want to reduce this to 1000ms for faster loading
+      return () => clearTimeout(timer)
+    }
+  }, [currentScreen, hasOpenedBefore, activeMap])
 
- useEffect(() => {
+  useEffect(() => {
     if (currentScreen === "mapViewer") {
       setTransparentStatusBar();
     } else {
@@ -897,25 +904,50 @@ useEffect(() => {
     return currentCategory ? mockMapData[currentCategory].maps : []
   }
 
-  // Splash Screen
-  if (currentScreen === "splash") {
-    return (
-      <div className="h-screen flex flex-col items-center justify-center bg-gradient-to-br from-slate-50 via-stone-50 to-slate-100">
-        <div className="bg-lime-700 opacity-90 w-full h-8 flex-shrink-0"></div>
-        <div className="flex-1 flex flex-col items-center justify-center">
-          <div className="flex items-center justify-center mb-8">
-            <div className="p-4 bg-gradient-to-br from-stone-600/90 to-stone-700 rounded-xl mr-4 shadow-lg">
-              <SimpleBookIcon className="w-12 h-12 brightness-0 invert opacity-95" />
-            </div>
-            <h1 className="text-3xl font-bold text-stone-800 tracking-tight">Bible Maps</h1>
+// Updated Splash Screen
+if (currentScreen === "splash") {
+  return (
+    <div className="h-screen flex flex-col bg-gradient-to-br from-slate-50 via-stone-50 to-slate-100 relative overflow-hidden">
+      {/* Status Bar */}
+      <div className="bg-lime-700 opacity-90 w-full h-8 flex-shrink-0"></div>
+      
+      {/* Transitioning Logo Container */}
+      <div className={`flex-1 flex items-center justify-center transition-all duration-800 ease-in-out ${
+        isTransitioning 
+          ? 'transform -translate-y-[calc(50vh-6rem)] scale-75' 
+          : ''
+      }`}>
+        <div className={`flex items-center justify-center transition-all duration-800 ease-in-out ${
+          isTransitioning ? 'scale-75' : ''
+        }`}>
+          <div className={`bg-gradient-to-br from-stone-600/90 to-stone-700 shadow-lg transition-all duration-800 ease-in-out ${
+            isTransitioning 
+              ? 'p-2 rounded-lg mr-3' 
+              : 'p-4 mr-4 rounded-xl'
+          }`}>
+            <SimpleBookIcon className={`brightness-0 invert opacity-95 transition-all duration-800 ease-in-out ${
+              isTransitioning ? 'w-6 h-6' : 'w-12 h-12'
+            }`} />
           </div>
-          <div className="w-8 h-8 border-4 border-stone-300 border-t-stone-600 rounded-full animate-spin"></div>
+          <h1 className={`font-bold text-stone-800 tracking-tight transition-all duration-800 ease-in-out ${
+            isTransitioning 
+              ? 'text-xl font-semibold' 
+              : 'text-3xl'
+          }`}>
+            Bible Maps
+          </h1>
         </div>
       </div>
-    )
-  } 
+      
+      {/* Overlay for smooth transition to home background */}
+      <div className={`absolute inset-0 bg-gradient-to-br from-slate-50 via-stone-50 to-slate-100 transition-opacity duration-800 ease-in-out ${
+        isTransitioning ? 'opacity-100' : 'opacity-0 pointer-events-none'
+      }`}></div>
+    </div>
+  )
+}
 
-// Home Screen
+// Update the Home Screen to handle the transition
 if (currentScreen === "home") {
   const filteredCategories = searchQuery.trim() 
     ? Object.entries(mockMapData).filter(([category, data]) =>
@@ -933,14 +965,18 @@ if (currentScreen === "home") {
   }
 
   return (
-    <div className={`h-screen flex flex-col transition-all duration-300 ${isSearchingFromHome ? 'bg-stone-50' : 'bg-gradient-to-br from-slate-50 via-stone-50 to-slate-100'}`}>
+    <div className={`h-screen flex flex-col transition-all duration-300 ${
+      isSearchingFromHome ? 'bg-stone-50' : 'bg-gradient-to-br from-slate-50 via-stone-50 to-slate-100'
+    }`}>
       {showTitlePopup && <TitlePopup title={popupTitle} onClose={() => setShowTitlePopup(false)} />}
   
       {/* Status Bar Pad - Fixed */}
       <div className="bg-lime-700 opacity-90 w-full h-8 flex-shrink-0"></div>
       
-      {/* Main Header - Fixed */}
-      <div className={`transition-all duration-300 ${isSearchingFromHome ? 'bg-stone-100' : 'bg-gradient-to-r from-slate-100 to-stone-100'} px-5 py-4 shadow-sm flex-shrink-0`}>
+      {/* Main Header - Fixed with transition-aware styling */}
+      <div className={`transition-all duration-300 ${
+        isSearchingFromHome ? 'bg-stone-100' : 'bg-gradient-to-r from-slate-100 to-stone-100'
+      } px-5 py-4 shadow-sm flex-shrink-0`}>
         <div className="flex items-center justify-center">
           <div className="p-2 bg-gradient-to-br from-stone-600/90 to-stone-700 rounded-lg mr-3 shadow-md">
             <SimpleBookIcon className="w-6 h-6 brightness-0 invert opacity-95" />
@@ -952,7 +988,9 @@ if (currentScreen === "home") {
       {/* Content - Scrollable */}
       <div className="flex-1 overflow-y-auto">
         {/* Secondary Header - Scrollable */}
-        <div className={`transition-all duration-300 ${isSearchingFromHome ? 'bg-stone-100' : 'bg-gradient-to-r from-slate-100 to-stone-100'} px-5 py-4 shadow-sm`}>
+        <div className={`transition-all duration-300 ${
+          isSearchingFromHome ? 'bg-stone-100' : 'bg-gradient-to-r from-slate-100 to-stone-100'
+        } px-5 py-4 shadow-sm`}>
           {/* Search and Favorites Row */}
           <div className="flex items-center gap-3">
             <div className="flex-1">
@@ -1024,7 +1062,9 @@ if (currentScreen === "home") {
                   <div className="space-y-2">
                     {searchResults.map((map, index) => (
                       <div key={`title-${map.id}`} className="flex items-center p-2 rounded-lg hover:bg-stone-50 transition-colors">
-                        <span className="text-xs text-stone-500 w-6 h-6 flex-shrink-0 font-medium bg-stone-100 rounded-full flex items-center justify-center">{index + 1}</span>
+                        <span className="text-xs text-stone-500 w-6 h-6 flex-shrink-0 font-medium bg-stone-100 rounded-full flex items-center justify-center">
+                          {index + 1}
+                        </span>
                         <span className="text-sm text-stone-700 truncate ml-3 font-medium flex-1">{map.title}</span>
                         <span className="text-xs text-stone-500 ml-2 bg-stone-100 px-2 py-1 rounded-md font-medium">{map.category}</span>
                       </div>
@@ -1039,7 +1079,10 @@ if (currentScreen === "home") {
                     {searchResults.map((map, index) => (
                       <div key={map.id}>
                         <div
-                          onClick={() => openMapViewer(map.category, mockMapData[map.category].maps.findIndex(m => m.id === map.id))}
+                          onClick={() => openMapViewer(
+                            map.category, 
+                            mockMapData[map.category].maps.findIndex(m => m.id === map.id)
+                          )}
                           className="bg-white rounded-lg shadow-sm border border-stone-200 overflow-hidden cursor-pointer hover:shadow-md transition-all duration-200 transform hover:-translate-y-0.5"
                         >
                           <div className="relative overflow-hidden">
@@ -1057,7 +1100,9 @@ if (currentScreen === "home") {
                               className="absolute top-3 right-3 p-2 bg-white/90 rounded-full shadow-md hover:bg-white transition-all duration-200"
                             >
                               <Star
-                                className={`w-4 h-4 transition-colors ${favorites.has(map.id) ? "text-amber-500 fill-current" : "text-stone-400"}`}
+                                className={`w-4 h-4 transition-colors ${
+                                  favorites.has(map.id) ? "text-amber-500 fill-current" : "text-stone-400"
+                                }`}
                               />
                             </button>
                           </div>
@@ -1067,7 +1112,9 @@ if (currentScreen === "home") {
                                 <p className="text-sm font-semibold text-stone-800 truncate mb-1">{map.title}</p>
                                 <p className="text-xs text-stone-500 font-medium">{map.category}</p>
                               </div>
-                              <div className="bg-stone-700 text-white text-xs font-semibold px-2.5 py-1 rounded-full ml-3">#{index + 1}</div>
+                              <div className="bg-stone-700 text-white text-xs font-semibold px-2.5 py-1 rounded-full ml-3">
+                                #{index + 1}
+                              </div>
                             </div>
                           </div>
                         </div>
@@ -1100,7 +1147,9 @@ if (currentScreen === "home") {
                         <Icon className="w-8 h-8 transition-transform duration-200 group-hover:scale-105" />
                       </div>
                       <div className="flex-1">
-                        <h3 className="text-lg font-semibold text-stone-800 group-hover:text-stone-900 transition-colors">{category}</h3>
+                        <h3 className="text-lg font-semibold text-stone-800 group-hover:text-stone-900 transition-colors">
+                          {category}
+                        </h3>
                         <p className="text-sm text-stone-500">{data.count} maps available</p>
                       </div>
                     </div>
@@ -1121,7 +1170,9 @@ if (currentScreen === "home") {
             <div className="bg-gradient-to-r from-stone-700/90 to-stone-800 flex flex-col items-center justify-center px-6 py-6 shadow-lg">
               <div className="flex items-center justify-center mb-6">
                 <div className="p-2 bg-white/10 rounded-lg mr-3 shadow-sm">
-                  <div className="w-6 h-6" style={{ filter: 'brightness(0) saturate(100%) invert(98%) sepia(4%) saturate(339%) hue-rotate(202deg) brightness(106%) contrast(96%)' }}>
+                  <div className="w-6 h-6" style={{ 
+                    filter: 'brightness(0) saturate(100%) invert(98%) sepia(4%) saturate(339%) hue-rotate(202deg) brightness(106%) contrast(96%)' 
+                  }}>
                     <img src="/open-book-icon.png" alt="Open Book" className="w-full h-full" />
                   </div>
                 </div>
@@ -1142,7 +1193,7 @@ if (currentScreen === "home") {
                 </p>
                 <p className="text-stone-500 text-xs mt-2">
                   by Mam's Abi
-                </p> 
+                </p>
               </div>
             </div>
           </>
