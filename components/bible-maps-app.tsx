@@ -1,6 +1,62 @@
 "use client"
 
-import { Storage } from "@capacitor/storage";
+"use client"
+
+// Storage abstraction layer for cross-platform compatibility
+const StorageAdapter = {
+  async get(key) {
+    if (typeof window === 'undefined') {
+      return { value: null };
+    }
+    
+    try {
+      // Check if Capacitor is available and properly initialized
+      if (window.Capacitor?.isNativePlatform?.() && window.Capacitor?.Plugins?.Storage) {
+        const result = await window.Capacitor.Plugins.Storage.get({ key });
+        return { value: result.value };
+      }
+    } catch (capacitorError) {
+      console.warn("Capacitor Storage unavailable, using localStorage:", capacitorError);
+    }
+    
+    // Fallback to localStorage (works for web and as backup)
+    try {
+      const value = localStorage.getItem(key);
+      return { value };
+    } catch (localStorageError) {
+      console.error("All storage methods failed:", localStorageError);
+      return { value: null };
+    }
+  },
+
+  async set(key, value) {
+    if (typeof window === 'undefined') {
+      return;
+    }
+    
+    let capacitorSuccess = false;
+    
+    try {
+      // Try Capacitor first if available
+      if (window.Capacitor?.isNativePlatform?.() && window.Capacitor?.Plugins?.Storage) {
+        await window.Capacitor.Plugins.Storage.set({ key, value });
+        capacitorSuccess = true;
+      }
+    } catch (capacitorError) {
+      console.warn("Capacitor Storage set failed, using localStorage:", capacitorError);
+    }
+    
+    // Always use localStorage as backup or primary
+    if (!capacitorSuccess) {
+      try {
+        localStorage.setItem(key, value);
+      } catch (localStorageError) {
+        console.error("All storage methods failed:", localStorageError);
+      }
+    }
+  }
+};
+
 import { setOpaqueStatusBar, setTransparentStatusBar } from '../helpers/statusBarHelper';
 import React, { useState, useEffect, useRef } from "react";
 import { TransformWrapper, TransformComponent } from "react-zoom-pan-pinch";
@@ -732,7 +788,7 @@ const BibleMapsApp = () => {
   useEffect(() => {
     const loadFavorites = async () => {
       try {
-        const { value } = await Storage.get({ key: "favorites" });
+        const { value } = await StorageAdapter.get("favorites");
         if (value) {
           setFavorites(new Set(JSON.parse(value)));
         }
@@ -746,10 +802,7 @@ const BibleMapsApp = () => {
   useEffect(() => {
     const saveFavorites = async () => {
       try {
-        await Storage.set({
-          key: "favorites",
-          value: JSON.stringify([...favorites]),
-        });
+        await StorageAdapter.set("favorites", JSON.stringify([...favorites]));
       } catch (err) {
         console.error("Failed to save favorites:", err);
       }
@@ -757,14 +810,14 @@ const BibleMapsApp = () => {
     saveFavorites();
   }, [favorites]);
 
-  useEffect(() => {
-  const loadAppState = async () => {
-    try {
-      const { value: hasOpened } = await Storage.get({ key: "hasOpenedBefore" });
-      const { value: lastActiveMap } = await Storage.get({ key: "lastActiveMap" });
-      const { value: lastCategory } = await Storage.get({ key: "lastCategory" });
-      const { value: lastMapIndex } = await Storage.get({ key: "lastMapIndex" });
-      
+useEffect(() => {
+    const loadAppState = async () => {
+      try {
+        const { value: hasOpened } = await StorageAdapter.get("hasOpenedBefore");
+        const { value: lastActiveMap } = await StorageAdapter.get("lastActiveMap");
+        const { value: lastCategory } = await StorageAdapter.get("lastCategory");
+        const { value: lastMapIndex } = await StorageAdapter.get("lastMapIndex");
+        
         if (hasOpened === "true" && lastActiveMap && lastCategory && lastMapIndex) {
           setHasOpenedBefore(true);
           setActiveMap(JSON.parse(lastActiveMap));
@@ -818,12 +871,12 @@ const BibleMapsApp = () => {
   
     // Save state to storage
     try {
-      await Storage.set({ key: "hasOpenedBefore", value: "true" });
-      await Storage.set({ key: "lastActiveMap", value: JSON.stringify(map) });
-     await Storage.set({ key: "lastCategory", value: category });
-      await Storage.set({ key: "lastMapIndex", value: mapIndex.toString() });
+      await StorageAdapter.set("hasOpenedBefore", "true");
+      await StorageAdapter.set("lastActiveMap", JSON.stringify(map));
+      await StorageAdapter.set("lastCategory", category);
+      await StorageAdapter.set("lastMapIndex", mapIndex.toString());
     } catch (err) {
-     console.error("Failed to save app state:", err);
+      console.error("Failed to save app state:", err);
     }
   }
 
