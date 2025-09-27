@@ -907,9 +907,9 @@ useEffect(() => {
 // Updated Splash Screen
 if (currentScreen === "splash") {
   return (
-    <div className="h-screen flex flex-col bg-gradient-to-br from-slate-50 via-stone-50 to-slate-100 relative overflow-hidden">
+    <div className="h-screen flex flex-col bg-lime-700 relative overflow-hidden">
       {/* Status Bar */}
-      <div className="bg-lime-700 opacity-90 w-full h-8 flex-shrink-0"></div>
+      <div className="bg-lime-700 w-full h-8 flex-shrink-0"></div>
       
       {/* Transitioning Logo Container */}
       <div className={`flex-1 flex items-center justify-center transition-all duration-800 ease-in-out ${
@@ -920,7 +920,7 @@ if (currentScreen === "splash") {
         <div className={`flex items-center justify-center transition-all duration-800 ease-in-out ${
           isTransitioning ? 'scale-75' : ''
         }`}>
-          <div className={`bg-gradient-to-br from-stone-600/90 to-stone-700 shadow-lg transition-all duration-800 ease-in-out ${
+          <div className={`bg-gradient-to-br from-stone-600/90 to-stone-700 border-2 border-white/80 shadow-lg transition-all duration-800 ease-in-out ${
             isTransitioning 
               ? 'p-2 rounded-lg mr-3' 
               : 'p-4 mr-4 rounded-xl'
@@ -929,18 +929,21 @@ if (currentScreen === "splash") {
               isTransitioning ? 'w-6 h-6' : 'w-12 h-12'
             }`} />
           </div>
-          <h1 className={`font-bold text-stone-800 tracking-tight transition-all duration-800 ease-in-out ${
+          <h1 className={`font-bold text-white drop-shadow-lg tracking-tight transition-all duration-800 ease-in-out ${
             isTransitioning 
               ? 'text-xl font-semibold' 
               : 'text-3xl'
-          }`}>
+          }`}
+          style={{
+            textShadow: '2px 2px 4px rgba(0,0,0,0.3), -1px -1px 2px rgba(255,255,255,0.8), 1px -1px 2px rgba(255,255,255,0.8), -1px 1px 2px rgba(255,255,255,0.8), 1px 1px 2px rgba(255,255,255,0.8)'
+          }}>
             Bible Maps
           </h1>
         </div>
       </div>
       
       {/* Overlay for smooth transition to home background */}
-      <div className={`absolute inset-0 bg-gradient-to-br from-slate-50 via-stone-50 to-slate-100 transition-opacity duration-800 ease-in-out ${
+      <div className={`absolute inset-0 bg-lime-700 transition-opacity duration-800 ease-in-out ${
         isTransitioning ? 'opacity-100' : 'opacity-0 pointer-events-none'
       }`}></div>
     </div>
