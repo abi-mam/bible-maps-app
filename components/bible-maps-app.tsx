@@ -1,11 +1,10 @@
 "use client"
 
+import { Storage } from "@capacitor/storage";
 import { setOpaqueStatusBar, setTransparentStatusBar } from '../helpers/statusBarHelper';
-import { App as CapacitorApp } from '@capacitor/app';
-import React, { useState, useEffect, useRef } from "react"
-import { StatusBar, Style } from '@capacitor/status-bar';
+import React, { useState, useEffect, useRef } from "react";
 import { TransformWrapper, TransformComponent } from "react-zoom-pan-pinch";
-import { Search, Star, Grid3X3, List, ChevronLeft, ChevronRight, ArrowLeft, Home } from "lucide-react"
+import { Search, Star, Grid3X3, List, ChevronLeft, ChevronRight, ArrowLeft, Home } from "lucide-react";
 
 const SimpleBookIcon = ({ className }) => (
   <div className={className}>
@@ -628,7 +627,7 @@ const mockMapData = {
 }
 
 const BibleMapsApp = () => {
-  const [currentScreen, setCurrentScreen] = useState("home")
+  const [currentScreen, setCurrentScreen] = useState("splash")
   const [currentCategory, setCurrentCategory] = useState(null)
   const [viewMode, setViewMode] = useState("smallList")
   const [currentMapIndex, setCurrentMapIndex] = useState(0)
@@ -645,40 +644,23 @@ const BibleMapsApp = () => {
   const [searchFromViewMode, setSearchFromViewMode] = useState("smallList")
   const [favoriteFromContext, setFavoriteFromContext] = useState(null)
   const [favoriteFromViewMode, setFavoriteFromViewMode] = useState("smallList")
-  const [isSystemNavVisible, setIsSystemNavVisible] = useState(false)
   const [highlightActiveMap, setHighlightActiveMap] = useState(false)
   const [showControls, setShowControls] = useState(false);
-  const [isAtFitToPage, setIsAtFitToPage] = useState(true);
   const [mapViewerTheme, setMapViewerTheme] = useState("light")
   const [touchStart, setTouchStart] = useState(null)
   const [touchEnd, setTouchEnd] = useState(null)
   const [currentScale, setCurrentScale] = useState(1)
-  const [canSwipe, setCanSwipe] = useState(true)
-  const [isAtMaxZoom, setIsAtMaxZoom] = useState(false)
   const [showTooltip, setShowTooltip] = useState(false)
   const [tooltipText, setTooltipText] = useState("")
   const [tooltipPosition, setTooltipPosition] = useState({ x: 0, y: 0 })
   const [longPressTimer, setLongPressTimer] = useState(null)
   const [scrollToMapId, setScrollToMapId] = useState(null)
-
+  
   // ADD THESE MOVED HOOKS HERE - at the top level
   const [isAtLeftEdge, setIsAtLeftEdge] = useState(false)
   const [isAtRightEdge, setIsAtRightEdge] = useState(false)
   const [lastPanDirection, setLastPanDirection] = useState(null)
   
-  // All your useRef hooks
-  const currentScreenRef = useRef(currentScreen);
-  const searchFromContextRef = useRef(searchFromContext);
-  const favoriteFromContextRef = useRef(favoriteFromContext);
-  const searchFromViewModeRef = useRef(searchFromViewMode);
-  const favoriteFromViewModeRef = useRef(favoriteFromViewMode);
-  
-  // Handle long press for title popup
-  const handleLongPress = (title) => {
-    setPopupTitle(title)
-    setShowTitlePopup(true)
-  } 
-
   const scrollToThumbnail = (mapId) => {
     const thumbnailElement = document.getElementById(`thumbnail-${mapId}`)
     if (thumbnailElement) {
@@ -692,7 +674,7 @@ const BibleMapsApp = () => {
     }
   }  
 
-const handleLongPressStart = (e, title) => {
+  const handleLongPressStart = (e, title) => {
   const rect = e.currentTarget.getBoundingClientRect()
   const timer = setTimeout(() => {
     const tooltipHeight = 50 // Conservative tooltip height estimate
@@ -702,24 +684,24 @@ const handleLongPressStart = (e, title) => {
     const wouldOverlapHeader = (rect.top - tooltipHeight) < safeTopMargin
     const showBelow = wouldOverlapHeader
     
-    setTooltipText(title)
-    setTooltipPosition({ 
-      x: rect.left + rect.width / 2, 
-      y: showBelow ? rect.bottom : rect.top,
-      showBelow: showBelow
-    })
-    setShowTooltip(true)
-  }, 500)
-  setLongPressTimer(timer)
-}
-
-const handleLongPressEnd = () => {
-  if (longPressTimer) {
-    clearTimeout(longPressTimer)
-    setLongPressTimer(null)
+      setTooltipText(title)
+      setTooltipPosition({ 
+        x: rect.left + rect.width / 2, 
+        y: showBelow ? rect.bottom : rect.top,
+        showBelow: showBelow
+      })
+      setShowTooltip(true)
+    }, 500)
+      setLongPressTimer(timer)
   }
-  setShowTooltip(false)
-}
+
+  const handleLongPressEnd = () => {
+    if (longPressTimer) {
+      clearTimeout(longPressTimer)
+      setLongPressTimer(null)
+    }
+    setShowTooltip(false)
+  }
 
   // Simple screen change logging - no system manipulation
   useEffect(() => {
@@ -727,26 +709,74 @@ const handleLongPressEnd = () => {
   }, [currentScreen])
 
   useEffect(() => {
-    // Splash screen logic
-    if (currentScreen === "splash") {
-      const timer = setTimeout(() => {
-        if (hasOpenedBefore && activeMap) {
-          setCurrentScreen("mapViewer")
-        } else {
-          setCurrentScreen("home")
-        }
-      }, 2000)
-      return () => clearTimeout(timer)
-    }
-  }, [currentScreen, hasOpenedBefore, activeMap])
+   if (currentScreen === "splash") {
+     const timer = setTimeout(() => {
+       if (hasOpenedBefore && activeMap) {
+         setCurrentScreen("mapViewer")
+       } else {
+         setCurrentScreen("home")
+       }
+     }, 2000) // You might want to reduce this to 1000ms for faster loading
+     return () => clearTimeout(timer)
+   }
+ }, [currentScreen, hasOpenedBefore, activeMap])
 
-useEffect(() => {
-  if (currentScreen === "mapViewer") {
-    setTransparentStatusBar();
-  } else {
-    setOpaqueStatusBar();
-  }
-}, [currentScreen, mapViewerTheme]);
+ useEffect(() => {
+    if (currentScreen === "mapViewer") {
+      setTransparentStatusBar();
+    } else {
+      setOpaqueStatusBar();
+    }
+  }, [currentScreen, mapViewerTheme]);
+
+  useEffect(() => {
+    const loadFavorites = async () => {
+      try {
+        const { value } = await Storage.get({ key: "favorites" });
+        if (value) {
+          setFavorites(new Set(JSON.parse(value)));
+        }
+      } catch (err) {
+        console.error("Failed to load favorites:", err);
+      }
+    };
+    loadFavorites();
+  }, []); 
+
+  useEffect(() => {
+    const saveFavorites = async () => {
+      try {
+        await Storage.set({
+          key: "favorites",
+          value: JSON.stringify([...favorites]),
+        });
+      } catch (err) {
+        console.error("Failed to save favorites:", err);
+      }
+    };
+    saveFavorites();
+  }, [favorites]);
+
+  useEffect(() => {
+  const loadAppState = async () => {
+    try {
+      const { value: hasOpened } = await Storage.get({ key: "hasOpenedBefore" });
+      const { value: lastActiveMap } = await Storage.get({ key: "lastActiveMap" });
+      const { value: lastCategory } = await Storage.get({ key: "lastCategory" });
+      const { value: lastMapIndex } = await Storage.get({ key: "lastMapIndex" });
+      
+        if (hasOpened === "true" && lastActiveMap && lastCategory && lastMapIndex) {
+          setHasOpenedBefore(true);
+          setActiveMap(JSON.parse(lastActiveMap));
+          setCurrentCategory(lastCategory);
+          setCurrentMapIndex(parseInt(lastMapIndex));
+        }
+      } catch (err) {
+        console.error("Failed to load app state:", err);
+      }
+    };
+    loadAppState();
+  }, []);
 
   // Controls auto-hide
   useEffect(() => {
@@ -756,15 +786,6 @@ useEffect(() => {
     }
   }, [showControls, currentScreen])
 
- // Update refs when values change
-  useEffect(() => {
-    currentScreenRef.current = currentScreen;
-  }, [currentScreen]);
-
-  useEffect(() => {
-    searchFromContextRef.current = searchFromContext;
-  }, [searchFromContext]);
-
   // Sync isSearchingFromHome with searchQuery state
   useEffect(() => {
     if (currentScreen === "home") {
@@ -772,98 +793,38 @@ useEffect(() => {
     }
   }, [searchQuery, currentScreen]);
 
-  useEffect(() => {
-    favoriteFromContextRef.current = favoriteFromContext;
-  }, [favoriteFromContext]);
 
-  useEffect(() => {
-    searchFromViewModeRef.current = searchFromViewMode;
-  }, [searchFromViewMode]);
-
-  useEffect(() => {
-    favoriteFromViewModeRef.current = favoriteFromViewMode;
-  }, [favoriteFromViewMode]);
-
-
-// System's back button handler for Android Capacitor
-useEffect(() => {
-  let backButtonListener = null;
-
-  const setupBackButtonListener = async () => {
-    try {
-      console.log('Setting up back button listener...');
-      backButtonListener = await CapacitorApp.addListener('backButton', (event) => {
-        console.log('Back button pressed, current screen:', currentScreenRef.current);
-        console.log('Event data:', event);
-
-        if (currentScreenRef.current === "home") {
-          console.log('Exiting app...');
-          CapacitorApp.exitApp();
-        } else if (currentScreenRef.current === "mapViewer") {
-          console.log('Navigating from mapViewer to category');
-          setHighlightActiveMap(true);
-          setCurrentScreen("category");
-          setTimeout(() => setHighlightActiveMap(false), 2000);
-        } else if (currentScreenRef.current === "category") {
-          console.log('Navigating from category to home');
-          setCurrentScreen("home");
-          setActiveTab("view");
-        } else if (currentScreenRef.current === "search") {
-          console.log('Navigating from search, context:', searchFromContextRef.current);
-          if (searchFromContextRef.current && searchFromContextRef.current !== "home") {
-            setCurrentScreen("category");
-            setViewMode(searchFromViewModeRef.current);
-          } else {
-            setCurrentScreen("home");
-          }
-          setSearchFromContext(null);
-          setActiveTab("view");
-        } else if (currentScreenRef.current === "favorites") {
-          console.log('Navigating from favorites, context:', favoriteFromContextRef.current);
-          if (favoriteFromContextRef.current && favoriteFromContextRef.current !== "home") {
-            setCurrentScreen("category");
-            setViewMode(favoriteFromViewModeRef.current);
-          } else {
-            setCurrentScreen("home");
-          }
-          setFavoriteFromContext(null);
-          setActiveTab("view");
-        }
-      });
-      console.log('Back button listener registered:', backButtonListener);
-    } catch (error) {
-      console.error('Error setting up back button listener:', error);
-    }
-  };
-
-  setupBackButtonListener();
-
-  return () => {
-    console.log('Cleaning up back button listener:', backButtonListener);
-    if (backButtonListener) {
-      backButtonListener.remove();
-    }
-  };
-}, []);
-  
   // ... rest of your component code (toggleFavorite, openMapViewer, etc.) ...
   
-  const toggleFavorite = (mapId) => {
-    const newFavorites = new Set(favorites)
-    if (newFavorites.has(mapId)) {
-      newFavorites.delete(mapId)
-    } else {
-      newFavorites.add(mapId)
-    }
-    setFavorites(newFavorites)
+  const toggleFavorite = (id) => {
+  setFavorites(prev => {
+    const next = new Set(prev)
+      if (next.has(id)) {
+        next.delete(id)
+      } else {
+        next.add(id)
+      }
+      return next
+    })
   }
 
-  const openMapViewer = (category, mapIndex) => {
+  const openMapViewer = async (category, mapIndex) => {
     setCurrentCategory(category)
     setCurrentMapIndex(mapIndex)
-    setActiveMap(mockMapData[category].maps[mapIndex])
+    const map = mockMapData[category].maps[mapIndex]
+    setActiveMap(map)
     setCurrentScreen("mapViewer")
     setHasOpenedBefore(true)
+  
+    // Save state to storage
+    try {
+      await Storage.set({ key: "hasOpenedBefore", value: "true" });
+      await Storage.set({ key: "lastActiveMap", value: JSON.stringify(map) });
+     await Storage.set({ key: "lastCategory", value: category });
+      await Storage.set({ key: "lastMapIndex", value: mapIndex.toString() });
+    } catch (err) {
+     console.error("Failed to save app state:", err);
+    }
   }
 
   const getAllMaps = () => {
@@ -882,6 +843,24 @@ useEffect(() => {
     }
     return currentCategory ? mockMapData[currentCategory].maps : []
   }
+
+  // Splash Screen
+  if (currentScreen === "splash") {
+    return (
+      <div className="h-screen flex flex-col items-center justify-center bg-gradient-to-br from-slate-50 via-stone-50 to-slate-100">
+        <div className="bg-lime-700 opacity-90 w-full h-8 flex-shrink-0"></div>
+        <div className="flex-1 flex flex-col items-center justify-center">
+          <div className="flex items-center justify-center mb-8">
+            <div className="p-4 bg-gradient-to-br from-stone-600/90 to-stone-700 rounded-xl mr-4 shadow-lg">
+              <SimpleBookIcon className="w-12 h-12 brightness-0 invert opacity-95" />
+            </div>
+            <h1 className="text-3xl font-bold text-stone-800 tracking-tight">Bible Maps</h1>
+          </div>
+          <div className="w-8 h-8 border-4 border-stone-300 border-t-stone-600 rounded-full animate-spin"></div>
+        </div>
+      </div>
+    )
+  } 
 
 // Home Screen
 if (currentScreen === "home") {
@@ -1397,76 +1376,82 @@ if (currentScreen === "search") {
 
                 {/* Large Thumbnails */}
                 <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-4">
-                  {searchResults.map((map, index) => (
-                    <div key={map.id} className={index > 0 ? "mt-4" : ""}>
-                      <div
-                        id={`thumbnail-${map.id}`}
-                        onClick={() =>
-                          openMapViewer(
-                            map.category || currentCategory,
-                            mockMapData[map.category || currentCategory].maps.findIndex(
-                              (m) => m.id === map.id
+                  {searchResults.map((map, index) => {
+                    // Define highlighting logic for search results
+                    const isActiveMap = activeMap && map.id === activeMap.id
+                    const shouldHighlight = highlightActiveMap && isActiveMap
+                    
+                    return (
+                      <div key={map.id} className={index > 0 ? "mt-4" : ""}>
+                        <div
+                          id={`thumbnail-${map.id}`}
+                          onClick={() =>
+                            openMapViewer(
+                              map.category,
+                              mockMapData[map.category].maps.findIndex(
+                                (m) => m.id === map.id
+                              )
                             )
-                          )
-                        }
-                        className={`bg-white rounded-lg shadow-sm overflow-hidden cursor-pointer hover:opacity-90 transition-all duration-300 ${
-                          shouldHighlight
-                            ? "ring-4 ring-blue-500 ring-opacity-75 shadow-lg"
-                            : ""
-                        } ${
-                          scrollToMapId === map.id
-                            ? "ring-2 ring-green-500 bg-green-50"
-                            : ""
-                        }`}
-                      >
-                        <div className="relative">
-                          <img
-                            src={map.thumbnail || "/placeholder.svg"}
-                            alt={map.title}
-                            className="w-full h-auto object-contain"
-                            style={{ maxHeight: "none" }}
-                          />
-                          <button
-                            onClick={(e) => {
-                              e.stopPropagation()
-                              toggleFavorite(map.id)
-                            }}
-                            className="absolute top-2 right-2"
-                          >
-                            <Star
-                              className={`w-5 h-5 ${
-                                favorites.has(map.id)
-                                  ? "text-yellow-500 fill-current"
-                                  : "text-gray-400"
-                              }`}
+                          }
+                          className={`bg-white rounded-lg shadow-sm overflow-hidden cursor-pointer hover:opacity-90 transition-all duration-300 ${
+                            shouldHighlight
+                              ? "ring-4 ring-blue-500 ring-opacity-75 shadow-lg"
+                              : ""
+                          } ${
+                            scrollToMapId === map.id
+                              ? "ring-2 ring-green-500 bg-green-50"
+                              : ""
+                          }`}
+                        >
+                          <div className="relative">
+                            <img
+                              src={map.thumbnail || "/placeholder.svg"}
+                              alt={map.title}
+                              className="w-full h-auto object-contain"
+                              style={{ maxHeight: "none" }}
                             />
-                          </button>
-                        </div>
-                        <div className="p-3">
-                          <div className="flex justify-between items-center">
-                            <p
-                              className="text-sm font-medium text-black truncate flex-1 cursor-pointer"
-                              onTouchStart={(e) =>
-                                handleLongPressStart(e, map.title)
-                              }
-                              onTouchEnd={handleLongPressEnd}
-                              onTouchCancel={handleLongPressEnd}
-                              onMouseDown={(e) =>
-                                handleLongPressStart(e, map.title)
-                              }
-                              onMouseUp={handleLongPressEnd}
-                              onMouseLeave={handleLongPressEnd}
+                            <button
+                              onClick={(e) => {
+                                e.stopPropagation()
+                                toggleFavorite(map.id)
+                              }}
+                              className="absolute top-2 right-2"
                             >
-                              {map.title}
-                            </p>
-                            <div className="bg-blue-500 text-white text-xs px-2 py-1 rounded-full ml-2">
-                              #{index + 1}
+                              <Star
+                                className={`w-5 h-5 ${
+                                  favorites.has(map.id)
+                                    ? "text-yellow-500 fill-current"
+                                    : "text-gray-400"
+                                }`}
+                              />
+                            </button>
+                          </div>
+                          <div className="p-3">
+                            <div className="flex justify-between items-center">
+                              <p
+                                className="text-sm font-medium text-black truncate flex-1 cursor-pointer"
+                                onTouchStart={(e) =>
+                                  handleLongPressStart(e, map.title)
+                                }
+                                onTouchEnd={handleLongPressEnd}
+                                onTouchCancel={handleLongPressEnd}
+                                onMouseDown={(e) =>
+                                  handleLongPressStart(e, map.title)
+                                }
+                                onMouseUp={handleLongPressEnd}
+                                onMouseLeave={handleLongPressEnd}
+                              >
+                                {map.title}
+                              </p>
+                              <div className="bg-blue-500 text-white text-xs px-2 py-1 rounded-full ml-2">
+                                #{index + 1}
+                              </div>
                             </div>
                           </div>
                         </div>
                       </div>
-                    </div>
-                  ))}
+                    )
+                  })}
                 </div>
               </div>
             )}
@@ -1733,70 +1718,76 @@ if (currentScreen === "favorites") {
 
                 {/* Large Thumbnails */}
                 <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-4">
-                  {favoritesList.map((map, index) => (
-                    <div key={map.id} className={index > 0 ? "mt-4" : ""}>
-                      <div
-                        id={`thumbnail-${map.id}`}
-                        onClick={() =>
-                          openMapViewer(
-                            map.category || currentCategory,
-                            mockMapData[map.category || currentCategory].maps.findIndex(
-                              (m) => m.id === map.id
+                  {favoritesList.map((map, index) => {
+                    // Define highlighting logic for favorites
+                    const isActiveMap = activeMap && map.id === activeMap.id
+                    const shouldHighlight = highlightActiveMap && isActiveMap
+                    
+                    return (
+                      <div key={map.id} className={index > 0 ? "mt-4" : ""}>
+                        <div
+                          id={`thumbnail-${map.id}`}
+                          onClick={() =>
+                            openMapViewer(
+                              map.category,
+                              mockMapData[map.category].maps.findIndex(
+                                (m) => m.id === map.id
+                              )
                             )
-                          )
-                        }
-                        className={`bg-white rounded-lg shadow-sm overflow-hidden cursor-pointer hover:opacity-90 transition-all duration-300 ${
-                          shouldHighlight
-                            ? "ring-4 ring-blue-500 ring-opacity-75 shadow-lg"
-                            : ""
-                        } ${
-                          scrollToMapId === map.id
-                            ? "ring-2 ring-green-500 bg-green-50"
-                            : ""
-                        }`}
-                      >
-                        <div className="relative">
-                          <img
-                            src={map.thumbnail || "/placeholder.svg"}
-                            alt={map.title}
-                            className="w-full h-auto object-contain"
-                            style={{ maxHeight: "none" }}
-                          />
-                          <button
-                            onClick={(e) => {
-                              e.stopPropagation()
-                              toggleFavorite(map.id)
-                            }}
-                            className="absolute top-2 right-2"
-                          >
-                            <Star className="w-5 h-5 text-yellow-500 fill-current" />
-                          </button>
-                        </div>
-                        <div className="p-3">
-                          <div className="flex justify-between items-center">
-                            <p
-                              className="text-sm font-medium text-black truncate flex-1 cursor-pointer"
-                              onTouchStart={(e) =>
-                                handleLongPressStart(e, map.title)
-                              }
-                              onTouchEnd={handleLongPressEnd}
-                              onTouchCancel={handleLongPressEnd}
-                              onMouseDown={(e) =>
-                                handleLongPressStart(e, map.title)
-                              }
-                              onMouseUp={handleLongPressEnd}
-                              onMouseLeave={handleLongPressEnd}
+                          }
+                          className={`bg-white rounded-lg shadow-sm overflow-hidden cursor-pointer hover:opacity-90 transition-all duration-300 ${
+                            shouldHighlight
+                              ? "ring-4 ring-blue-500 ring-opacity-75 shadow-lg"
+                              : ""
+                          } ${
+                            scrollToMapId === map.id
+                              ? "ring-2 ring-green-500 bg-green-50"
+                              : ""
+                          }`}
+                        >
+                          <div className="relative">
+                            <img
+                              src={map.thumbnail || "/placeholder.svg"}
+                              alt={map.title}
+                              className="w-full h-auto object-contain"
+                              style={{ maxHeight: "none" }}
+                            />
+                            <button
+                              onClick={(e) => {
+                                e.stopPropagation()
+                                toggleFavorite(map.id)
+                              }}
+                              className="absolute top-2 right-2"
                             >
-                              {map.title}
-                            </p>
-                            <div className="bg-blue-500 text-white text-xs px-2 py-1 rounded-full ml-2">
-                              #{index + 1}
+                              <Star className="w-5 h-5 text-yellow-500 fill-current" />
+                            </button>
+                          </div>
+                          <div className="p-3">
+                            <div className="flex justify-between items-center">
+                              <p
+                                className="text-sm font-medium text-black truncate flex-1 cursor-pointer"
+                                onTouchStart={(e) =>
+                                  handleLongPressStart(e, map.title)
+                                }
+                                onTouchEnd={handleLongPressEnd}
+                                onTouchCancel={handleLongPressEnd}
+                                onMouseDown={(e) =>
+                                  handleLongPressStart(e, map.title)
+                                }
+                                onMouseUp={handleLongPressEnd}
+                                onMouseLeave={handleLongPressEnd}
+                              >
+                                {map.title}
+                              </p>
+                              <div className="bg-blue-500 text-white text-xs px-2 py-1 rounded-full ml-2">
+                                #{index + 1}
+                              </div>
                             </div>
                           </div>
                         </div>
                       </div>
-                    </div>
-                  ))}
+                    )
+                  })}
                 </div>
               </div>
             )}
@@ -2267,7 +2258,12 @@ if (currentScreen === "mapViewer" && activeMap) {
               </button>
             </div>
             <div 
-              onClick={() => handleLongPress(activeMap.title)}
+              onTouchStart={(e) => handleLongPressStart(e, activeMap.title)}
+              onTouchEnd={handleLongPressEnd}
+              onTouchCancel={handleLongPressEnd}
+              onMouseDown={(e) => handleLongPressStart(e, activeMap.title)}
+              onMouseUp={handleLongPressEnd}
+              onMouseLeave={handleLongPressEnd}
               className={`text-sm backdrop-blur-sm px-3 py-1.5 rounded-lg shadow-lg cursor-pointer transition-all duration-200 ${
                 mapViewerTheme === "light" 
                   ? "bg-white/30 hover:bg-white/50" 
@@ -2376,11 +2372,7 @@ if (currentScreen === "mapViewer" && activeMap) {
         limitToBounds={true}
         onTransformed={(ref, state) => {
           if (state && typeof state.scale === 'number') {
-            setCurrentScale(state.scale)
-            setIsAtFitToPage(state.scale <= 1.1)
-            setIsSystemNavVisible(state.scale > 1.2)
-            setIsAtMaxZoom(state.scale >= 2.9)
-            
+            setCurrentScale(state.scale)          
             if (ref && ref.instance && ref.instance.transformState) {
               const { positionX } = ref.instance.transformState
               const containerWidth = ref.instance.wrapperComponent?.offsetWidth || window.innerWidth
