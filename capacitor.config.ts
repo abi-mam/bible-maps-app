@@ -6,7 +6,7 @@ const config: CapacitorConfig = {
   webDir: 'out',
   plugins: {      
     SplashScreen: {
-      launchShowDuration: 2000, 
+      launchShowDuration: 3000, 
       launchAutoHide: false,   // we will hide manually in code
       androidSplashResourceName: 'splash', // your drawable name
       showSpinner: false,      // optional
